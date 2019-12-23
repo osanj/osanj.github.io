@@ -1,28 +1,17 @@
 +++
 title = "About"
 description = "Hugo, the world’s fastest framework for building websites"
-date = "2019-02-28"
+date = "2019-12-23"
 aliases = ["about-us","about-hugo","contact"]
-author = "Hugo Authors"
 +++
 
-Written in Go, Hugo is an open source static site generator available under the [Apache Licence 2.0.](https://github.com/gohugoio/hugo/blob/master/LICENSE) Hugo supports TOML, YAML and JSON data file types, Markdown and HTML content files and uses shortcodes to add rich content. Other notable features are taxonomies, multilingual mode, image processing, custom output formats, HTML/CSS/JS minification and support for Sass SCSS workflows.
+This is the notebook of Jonas Schüpfer. Currently based in the beautiful Munich and software engineer at [IDnow](https://www.idnow.io/).
 
-Hugo makes use of a variety of open source projects including:
+Other things to check out:
 
-* https://github.com/russross/blackfriday
-* https://github.com/alecthomas/chroma
-* https://github.com/muesli/smartcrop
-* https://github.com/spf13/cobra
-* https://github.com/spf13/viper
-
-Hugo is ideal for blogs, corporate websites, creative portfolios, online magazines, single page applications or even a website with thousands of pages.
-
-Hugo is for people who want to hand code their own website without worrying about setting up complicated runtimes, dependencies and databases.
-
-Websites built with Hugo are extremelly fast, secure and can be deployed anywhere including, AWS, GitHub Pages, Heroku, Netlify and any other hosting provider.
-
-Learn more and contribute on [GitHub](https://github.com/gohugoio).
+* [Github](https://github.com/osanj)
+* [LinkedIn](https://www.linkedin.com/in/jonas-sch%C3%BCpfer-a97318124/)
+* [My Sister's Website](http://www.emmaschuepfer.de/)
 
 
-
+This blog is generated with [Hugo](https://gohugo.io/), the theme is the ported version of [Hyde](https://github.com/spf13/hyde/tree/master) for Jekyll.

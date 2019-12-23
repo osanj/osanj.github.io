@@ -1,0 +1,35 @@
+baseURL: "https://osanj.github.io"
+title: "Logs"
+languageCode: "en-us"
+theme: ["hyde"]
+enableEmoji: yes
+
+params:
+  description: "All the Things Worth Sharing"
+  copyright: "© 2020 Jonas Schuepfer"
+  themeColor: "theme-base-0b"  # https://github.com/spf13/hyde/tree/8bfa46de4850c1bf018adf396e413474a19ba96d#themes
+
+
+taxonomies:
+  tag: "tags"
+
+
+menu:
+  main:
+    - identifier: "about"
+      name: "About"
+      url: "/about/"
+      weight: 10
+    - identifier: "tags"
+      name: "Tags"
+      url: "/tags/"
+      weight: 20
+    - identifier: "lava"
+      name: "Lava"
+      url: "https://github.com/osanj/lava"
+      weight: 5
+    - identifier: "sister"
+      name: "Sister"
+      url: "http://www.emmaschuepfer.de/"
+      weight: 5
+

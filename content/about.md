@@ -5,7 +5,7 @@ date = "2019-12-23"
 aliases = ["about-us","about-hugo","contact"]
 +++
 
-This is the notebook of Jonas Schüpfer. Currently based in the beautiful Munich and software engineer at [IDnow](https://www.idnow.io/).
+This is the notebook of Jonas Schüpfer, based in beautiful Munich, software engineer at [IDnow](https://www.idnow.io/).
 
 Other things to check out:
 

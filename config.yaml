@@ -1,7 +1,7 @@
 baseURL: "https://osanj.github.io"
 title: "Notebook"
 languageCode: "en-us"
-theme: ["hyde"]
+theme: ["hyde-custom", "hyde"]
 enableEmoji: yes
 
 params:

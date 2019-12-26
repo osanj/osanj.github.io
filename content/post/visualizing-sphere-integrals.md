@@ -11,14 +11,13 @@ You know that feeling when you have been using some rule blindly forever and one
 
 <!--more-->
 
-## 2D Prerequisites
 
-### Circle Circumference
+## Circle Circumference
 
 
 ![Circle Area and Circumference](/images/visualizing-sphere-integrals/circle-area.png)
 
-The circumference $$U$$ let's chop up the circle in $$n$$ triangles with $$\phi = \frac{2\pi}{n}$$. One of them is highlighted above. The length of side $$u$$ can be computed the following way:
+To compute the circumference $$U$$ let's chop up the circle in $$n$$ triangles with $$\phi = \frac{2\pi}{n}$$. One of them is highlighted above. The length of side $$u$$ can be computed the following way:
 
 $$
 \begin{aligned}
@@ -44,7 +43,7 @@ U = \lim_{n \to \infty} n \cdot r \cdot \tan\left(\frac{2\pi}{n}\right) = \lim_{
 $$
 
 
-### Circle Area
+## Circle Area
 
 
 The approach to determine area $$A$$ is quite similar. This time the area of the $$n$$ triangles are considered, the area of a single triangle is defined as:
@@ -68,12 +67,24 @@ $$
 
 ![Sphere Surface](/images/visualizing-sphere-integrals/sphere-surface.png)
 
+When decomposing the the sphere surface in lots of small quads we can approximate the surface area. The area of each quad is a simple multiplication, the sides are defined as:
+
 $$
 \begin{aligned}
   b &= \frac{d\phi_b}{2\pi} \cdot 2\pi r = d\phi_b \cdot r \\ \\
   a &= \frac{d\phi_a}{2\pi} \cdot 2\pi r_a = d\phi_b \cdot r_a \\ \\
-r_a &= r \cdot \cos\left(\phi_b\right) \\ \\
-\\ \\
+r_a &= r \cdot \cos\left(\phi_b\right)
+\end{aligned}
+$$
+
+
+In the limit the quads become infinitesimal and the approximation converges to the correct solution. This time an integration over $$\phi_a$$ and $$\phi_b$$ does the job. The way the integral is constructed it "moves along the z-axis", after each step in $$\phi_b$$ it sums up the areas of all quads along this "latitude of the sphere".
+
+Please note that this integral only considers an eigth of the actual sphere, in the last step we multiply by accordingly to arrive at the solution for the entire sphere.
+
+
+$$
+\begin{aligned}
 A = a \cdot b &= \int_0^{\frac{1}{2} \pi} \int_0^{\frac{1}{2} \pi} r^2 \cos\left(\phi_b\right) ~ d\phi_b ~ d\phi_a \\ \\
 &= r^2 \cdot \int_0^{\frac{1}{2} \pi} \left[ \sin\left(\phi_b \right) \right] _0^{\frac{1}{2}\pi} ~ d\phi_a \\ \\
 &= r^2 \cdot \int_0^{\frac{1}{2} \pi} \left(\sin\left(\frac{1}{2}\pi\right) - \sin(0) \right) ~ d\phi_a \\ \\
@@ -89,10 +100,18 @@ $$
 
 ![Sphere Volumne](/images/visualizing-sphere-integrals/sphere-volume.png)
 
+For the volume a different kind of decomposition is chosen. As depicted above the sphere can be approximated with a set of thin disks. The radius of each disks is defined as:
+
 $$
 \begin{aligned}
-r_u &= \sqrt{r^2 - u^2} \\ \\
-\\ \\
+r_u &= \sqrt{r^2 - u^2}
+\end{aligned}
+$$
+
+Using the formula for the area of a circle we can easily compute the volume of a disk. Integration over $$u$$ leads to infinitesimally thin disks and convergence to the correct solution. Please note that the integral below only considers a half of the sphere.
+
+$$
+\begin{aligned}
 V &= A(r_u) \cdot du = \pi {r_u}^2 \cdot du \\ \\
 &= \int_0^r \pi (r^2 - u^2) ~ du \\ \\
 &= \pi \left( r^2 \int_0^r du - \int_0^r u^2 ~du \right) \\ \\
@@ -104,4 +123,12 @@ V &= A(r_u) \cdot du = \pi {r_u}^2 \cdot du \\ \\
 $$
 
 
-text5
+## ToDo
+
+* surface area
+  * first pizza slice is missing 90deg quad
+  * second pizza slice is in x-y not z-y
+  * dA = a * b instead of A?
+* volume
+  * dx should be du?
+  * dV = A * du instead of V?

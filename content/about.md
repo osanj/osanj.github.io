@@ -1,8 +1,8 @@
-+++
-title = "About"
-summary = "Hello World!"
-date = "2014-01-01"
-+++
+---
+title: "About"
+summary: "Hello World!"
+date: "2014-01-01"
+---
 
 This is the notebook of Jonas Schüpfer, based in beautiful Munich, software engineer at [IDnow](https://www.idnow.io/).
 

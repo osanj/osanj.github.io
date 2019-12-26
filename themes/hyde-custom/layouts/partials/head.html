@@ -19,6 +19,9 @@
   <link type="text/css" rel="stylesheet" href="{{ .Site.BaseURL }}css/poole.css">
   <link type="text/css" rel="stylesheet" href="{{ .Site.BaseURL }}css/syntax.css">
   <link type="text/css" rel="stylesheet" href="{{ .Site.BaseURL }}css/hyde.css">
+  {{ if .Params.use_justify }}
+  <link type="text/css" rel="stylesheet" href="{{ .Site.BaseURL }}css/justified_text.css">
+  {{ end }}
   {{ partial "head_fonts.html" . }}
 
   <!-- Icons -->
@@ -32,7 +35,7 @@
 
   {{ partial "hook_head_end.html" . }}
 
-  {{ if .Params.math }}
+  {{ if .Params.use_math }}
   {{ partial "math.html" . }}
   {{ end }}
 </head>

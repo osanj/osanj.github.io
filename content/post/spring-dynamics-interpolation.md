@@ -2,8 +2,9 @@
 title: Using Spring Dynamics ODE for Animation Interpolation (Rebuilding Facebook Rebound)
 date: 2015-01-03
 tags: ["math", "runge-kutta", "ordinary differential equation", "matlab"]
-math: true
 markup: "mmark"
+use_math: true
+use_justify: true
 ---
 
 
@@ -21,13 +22,9 @@ The task of an animation is to visually transition a graphic object from a start
 
 ![Comparison of Interpolators](/data/spring-dynamics-interpolation/interpolators-comparison.gif)
 
-???
+~~At this point you may think animation and interpolator are interchangable terms, but that is not correct. In programming terms an animation is a controller object which embeds/uses an interpolator object. Input ([i time]) and output ([i scale]) of an interpolator need to be normalized to be adapted to every situation. That means input and output are values between 0 and 1 (sometimes also <0 and/or >1, see the graphs above). To illustrate that, consider following pseudo java code:~~
 
-At this point you may think animation and interpolator are interchangable terms, but that is not correct. In programming terms an animation is a controller object which embeds/uses an interpolator object. Input ([i time]) and output ([i scale]) of an interpolator need to be normalized to be adapted to every situation. That means input and output are values between 0 and 1 (sometimes also <0 and/or >1, see the graphs above). To illustrate that, consider following pseudo java code:
-
-[code pseudo animation]
-
-???
+~~[code pseudo animation]~~
 
 
 
@@ -39,7 +36,7 @@ As a starting point I tried to find a mechanical concept which could show a simi
 
 ![Mechanical Concept with Forces](/data/spring-dynamics-interpolation/mech-concept-labelled.png)
 
-As you can see it's a mass attached to two fixed boards (they won't oscillate). The connections are done with a spring and a damper. To get the system oscillating an external stimulation is necessary. That "input" is realized by instantaneously lowering the the bottom board (Pos B) which causes an imbalance which the system tries to counteract. The motion of the mass (x) then should be the desired curve.
+As you can see it's a mass attached to two fixed boards (they won't oscillate). The connections are done with a spring and a damper. To get the system oscillating an external stimulation is necessary. That "input" is realized by instantaneously lowering the the bottom board (Pos B) which causes the equilibrium to shift to another state. The system is now in an non-equilibrium state and will move to the new one. The motion of the mass (x) then should be the desired curve.
 
 ![Mechanical Concept Animation](/data/spring-dynamics-interpolation/mech-concept-animation.gif)
 

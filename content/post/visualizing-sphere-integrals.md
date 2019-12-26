@@ -2,8 +2,9 @@
 title: Visualizing Sphere Integrals
 date: 2014-11-18
 tags: ["math"]
-math: true
 markup: "mmark"
+use_math: true
+use_justify: true
 ---
 
 

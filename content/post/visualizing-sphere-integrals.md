@@ -15,7 +15,7 @@ You know that feeling when you have been using some rule blindly forever and one
 ## Circle Circumference
 
 
-![Circle Area and Circumference](/images/visualizing-sphere-integrals/circle-area.png)
+![Circle Area and Circumference](/data/visualizing-sphere-integrals/circle-area.png)
 
 To compute the circumference $$U$$ let's chop up the circle in $$n$$ triangles with $$\phi = \frac{2\pi}{n}$$. One of them is highlighted above. The length of side $$u$$ can be computed the following way:
 
@@ -98,7 +98,7 @@ $$
 
 ## Volume of a Sphere
 
-![Sphere Volumne](/images/visualizing-sphere-integrals/sphere-volume.png)
+![Sphere Volumne](/data/visualizing-sphere-integrals/sphere-volume.png)
 
 For the volume a different kind of decomposition is chosen. As depicted above the sphere can be approximated with a set of thin disks. The radius of each disks is defined as:
 

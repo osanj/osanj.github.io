@@ -1,5 +1,5 @@
 baseURL: "https://osanj.github.io"
-title: "Notebook"
+title: "Just a Notepad"
 languageCode: "en-us"
 theme: ["hyde-custom", "hyde"]
 enableEmoji: yes
@@ -7,7 +7,7 @@ enableEmoji: yes
 params:
   description: "Logs, Ideas, Insights"
   copyright: "© 2020 Jonas Schuepfer"
-  themeColor: "theme-base-0b"  # https://github.com/spf13/hyde/tree/8bfa46de4850c1bf018adf396e413474a19ba96d#themes
+#  themeColor: "theme-base-0b"  # https://github.com/spf13/hyde/tree/8bfa46de4850c1bf018adf396e413474a19ba96d#themes
 
 
 taxonomies:

@@ -67,7 +67,7 @@ $$
 
 ![Sphere Surface](/data/visualizing-sphere-integrals/sphere-surface.png)
 
-When decomposing the the sphere surface in lots of small quads we can approximate the surface area. The area of each quad is a simple multiplication, the sides are defined as:
+When decomposing the the sphere surface in lots of small quads we can approximate the surface area. The sides are defined as:
 
 $$
 \begin{aligned}
@@ -77,20 +77,28 @@ r_a &= r \cdot \cos\left(\phi_b\right)
 \end{aligned}
 $$
 
+The area of a quad is simply:
+
+$$
+\begin{aligned}
+A_{quad} = a \cdot b = r^2 \cos\left(\phi_b\right) ~ d\phi_b ~ d\phi_a
+\end{aligned}
+$$
 
 In the limit the quads become infinitesimal and the approximation converges to the correct solution. This time an integration over $$\phi_a$$ and $$\phi_b$$ does the job. The way the integral is constructed it "moves along the z-axis", after each step in $$\phi_b$$ it sums up the areas of all quads along this "latitude of the sphere".
 
-Please note that this integral only considers an eigth of the actual sphere, in the last step we multiply by accordingly to arrive at the solution for the entire sphere.
+Please note that this integral only considers an eigth of the actual sphere. Accordingly, a factor of $$8$$ is included.
 
 
 $$
 \begin{aligned}
-A = a \cdot b &= \int_0^{\frac{1}{2} \pi} \int_0^{\frac{1}{2} \pi} r^2 \cos\left(\phi_b\right) ~ d\phi_b ~ d\phi_a \\ \\
-&= r^2 \cdot \int_0^{\frac{1}{2} \pi} \left[ \sin\left(\phi_b \right) \right] _0^{\frac{1}{2}\pi} ~ d\phi_a \\ \\
-&= r^2 \cdot \int_0^{\frac{1}{2} \pi} \left(\sin\left(\frac{1}{2}\pi\right) - \sin(0) \right) ~ d\phi_a \\ \\
-&= r^2 \cdot \int_0^{\frac{1}{2} \pi} ~ d\phi_a \\ \\
-&= r^2 \cdot \frac{1}{2} \pi \\ \\
-&\rightarrow 8 \cdot \frac{1}{2} \pi r^2 = 4 \pi r^2
+A &= 8 \cdot \int_0^{\frac{1}{2} \pi} \int_0^{\frac{1}{2} \pi} A_{quad} \\ \\
+&= 8 \cdot \int_0^{\frac{1}{2} \pi} \int_0^{\frac{1}{2} \pi} r^2 \cos\left(\phi_b\right) ~ d\phi_b ~ d\phi_a \\ \\
+&= 8 r^2 \cdot \int_0^{\frac{1}{2} \pi} \left[ \sin\left(\phi_b \right) \right] _0^{\frac{1}{2}\pi} ~ d\phi_a \\ \\
+&= 8 r^2 \cdot \int_0^{\frac{1}{2} \pi} \left(\sin\left(\frac{1}{2}\pi\right) - \sin(0) \right) ~ d\phi_a \\ \\
+&= 8 r^2 \cdot \int_0^{\frac{1}{2} \pi} ~ d\phi_a \\ \\
+&= 8 r^2 \cdot \frac{1}{2} \pi \\ \\
+&= 4 \pi r^2
 \end{aligned}
 $$
 
@@ -100,7 +108,7 @@ $$
 
 ![Sphere Volumne](/data/visualizing-sphere-integrals/sphere-volume.png)
 
-For the volume a different kind of decomposition is chosen. As depicted above the sphere can be approximated with a set of thin disks. The radius of each disks is defined as:
+For the volume a different kind of decomposition is chosen. As depicted above the sphere can be approximated with a set of thin disks. The radius of each disk is defined as:
 
 $$
 \begin{aligned}
@@ -108,17 +116,25 @@ r_u &= \sqrt{r^2 - u^2}
 \end{aligned}
 $$
 
-Using the formula for the area of a circle we can easily compute the volume of a disk. Integration over $$u$$ leads to infinitesimally thin disks and convergence to the correct solution. Please note that the integral below only considers a half of the sphere.
+Using the formula for the area of a circle the volume of a disk is:
 
 $$
 \begin{aligned}
-V &= A(r_u) \cdot du = \pi {r_u}^2 \cdot du \\ \\
-&= \int_0^r \pi (r^2 - u^2) ~ du \\ \\
-&= \pi \left( r^2 \int_0^r du - \int_0^r u^2 ~du \right) \\ \\
-&= \pi \left( r^2 \cdot r - \left[ \frac{1}{3} u^3 \right]_0^r \right) \\ \\
-&= \pi \left( r^3 - \frac{1}{3} r^3 \right) \\ \\
-&= \frac{2}{3} \pi r^3 \\ \\
-&\rightarrow 2 \cdot \frac{2}{3} \pi r^3 = \frac{4}{3} \pi r^3 
+V_{disk} = \pi {r_u}^2 \cdot du
+\end{aligned}
+$$
+
+Integration over $$u$$ leads to infinitesimally thin disks and convergence to the correct solution. Please note that the integral below only considers one half of the sphere, to account for that a factor of $$2$$ is included.
+
+$$
+\begin{aligned}
+V &= 2 \cdot \int_0^r V_{disk} \\ \\
+&= 2 \cdot \int_0^r \pi {r_u}^2 ~ du \\ \\
+&= 2 \cdot \int_0^r \pi (r^2 - u^2) ~ du \\ \\
+&= 2 \pi \left( r^2 \int_0^r du - \int_0^r u^2 ~du \right) \\ \\
+&= 2 \pi \left( r^2 \cdot r - \left[ \frac{1}{3} u^3 \right]_0^r \right) \\ \\
+&= 2 \pi \left( r^3 - \frac{1}{3} r^3 \right) \\ \\
+&= \frac{4}{3} \pi r^3
 \end{aligned}
 $$
 

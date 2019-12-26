@@ -65,7 +65,7 @@ $$
 
 ## Surface Area of a Sphere
 
-![Sphere Surface](/images/visualizing-sphere-integrals/sphere-surface.png)
+![Sphere Surface](/data/visualizing-sphere-integrals/sphere-surface.png)
 
 When decomposing the the sphere surface in lots of small quads we can approximate the surface area. The area of each quad is a simple multiplication, the sides are defined as:
 

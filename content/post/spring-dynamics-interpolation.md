@@ -1,5 +1,5 @@
 ---
-title: Using ODEs for Animation Interpolation (Rebuilding Facebook Rebound)
+title: Using Spring Dynamics ODE for Animation Interpolation (Rebuilding Facebook Rebound)
 date: 2015-01-03
 tags: ["math", "runge-kutta", "ordinary differential equation", "matlab"]
 math: true
@@ -19,7 +19,7 @@ My version of Rebound can be found [here](https://github.com/osanj/spring-interp
 The task of an animation is to visually transition a graphic object from a start state to an end state. Usually these states differ in the values of an attribute, e.g. scale a button from 50% to 100% to get the user's attention. The transition happens over time from its inital value to its final value. Interpolators encode the mathematical relation which is used to carry out that transition [1]. A linear relation is the most basic one, but there exist more sophisticated interpolators, too.
 
 
-![Comparison of Interpolators](/data/ode-interpolation/interpolators-comparison.gif)
+![Comparison of Interpolators](/data/spring-dynamics-interpolation/interpolators-comparison.gif)
 
 ???
 
@@ -37,11 +37,11 @@ I started with the characteristic curve of the Rebound interpolator (see animati
 
 As a starting point I tried to find a mechanical concept which could show a similiar motion. I came up with following configuration:
 
-![Mechanical Concept with Forces](/data/ode-interpolation/mech-concept-labelled.png)
+![Mechanical Concept with Forces](/data/spring-dynamics-interpolation/mech-concept-labelled.png)
 
 As you can see it's a mass attached to two fixed boards (they won't oscillate). The connections are done with a spring and a damper. To get the system oscillating an external stimulation is necessary. That "input" is realized by instantaneously lowering the the bottom board (Pos B) which causes an imbalance which the system tries to counteract. The motion of the mass (x) then should be the desired curve.
 
-![Mechanical Concept Animation](/data/ode-interpolation/mech-concept-animation.gif)
+![Mechanical Concept Animation](/data/spring-dynamics-interpolation/mech-concept-animation.gif)
 
 In the context of an interpolator for animations moving the board from one position to the other is triggered when the animation should start playing, for example the user clicking a button.
 
@@ -76,5 +76,5 @@ Simulink ...
 ## References
 
 1. Google Inc. [Android API Guides](http://developer.android.com/guide/topics/resources/animation-resource.html#Interpolators)
-2. Braack, Malte (2011). [Numerik für Differentialgleichungen](/data/ode-interpolation/lecture_notes_uni_kiel_ode.pdf) (german, lecture notes, RK4-Definition on pdf-page 30)
+2. Braack, Malte (2011). [Numerik für Differentialgleichungen](/data/spring-dynamics-interpolation/lecture_notes_uni_kiel_ode.pdf) (german, lecture notes, RK4-Definition on pdf-page 30)
 3. Ziessow, Dieter & Gross, Richard. [Umwandlung in ein System erster Ordnung](http://www.chemgapedia.de/vsengine/vlu/vsc/de/ma/1/mc/ma_13/ma_13_02/ma_13_02_11.vlu/Page/vsc/de/ma/1/mc/ma_13/ma_13_02/ma_13_02_31.vscml.html) (german)

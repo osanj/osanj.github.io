@@ -15,28 +15,66 @@ use_justify: true
 
 ## Interpolators in UIs
 
-
 The task of an animation is to visually transition a graphic object from a start state to an end state. Usually these states differ in the values of an attribute, e.g. scale a button from 50% to 100% to get the user's attention. The transition happens over time from its inital value to its final value. Interpolators encode the mathematical relation which is used to carry out that transition [1]. A linear relation is the most basic one, but there exist more sophisticated interpolators, too.
 
 
 ![Comparison of Interpolators](data/interpolators-comparison.gif)
 
-~~At this point you may think animation and interpolator are interchangable terms, but that is not correct. In programming terms an animation is a controller object which embeds/uses an interpolator object. Input ([i time]) and output ([i scale]) of an interpolator need to be normalized to be adapted to every situation. That means input and output are values between 0 and 1 (sometimes also <0 and/or >1, see the graphs above). To illustrate that, consider following pseudo java code:~~
+In code animations are often container and the interpolator logic is encapsulated in a separate class. The output of the interpolator is normalized between $$0$$ and $$1$$ (sometimes it can also be $$<0$$ and/or $$>1$$). Consider the following pseudo Java code:
 
-~~[code pseudo animation]~~
 
+{{< highlight Java >}}
+public class Animation {
+	
+	private long durationMillis;
+	private long startMillis;
+	private float startScale; // start value of attribute (e.g. 0.5)
+	private float destScale; // end value of attribute (e.g. 1.0)
+	private UiRect rect; // object to be manipulated
+	private Interpolator interpolator;
+	
+	
+	public Animation(long duration, UiRect rect, float destScale){
+		this.durationMillis = duration;
+		this.startMillis = System.currentTimeMillis();
+		
+		this.rect = rect;
+		this.startScale = rect.getScale();
+		this.destScale = destScale;
+	
+		interpolator = new Interpolator();
+	}
+	
+	// called every 16ms (60fps)
+	public void onAnimate(){
+		long t = System.currentTimeMillis();
+
+		// normalized value of time (0 ... 1)
+		float animationTime = (t - startMillis) / durationMillis;
+		
+		// normalized value for setting the scale (0 ... 1)
+		float scaleFactor = interpol.getValue(animationTime);
+		
+		// manipulating UI-object
+		float scaleDelta = scaleFactor * (destScale - startScale);
+		rect.setScale(startScale + scaleDelta);
+	}
+}
+{{< / highlight >}}
 
 
 
 ## A Mechanical Concept
 
-I started with the characteristic curve of the Rebound interpolator (see animation above). You can reproduce it by clicking the demo on the [website](http://facebook.github.io/rebound/") of Rebound. A different way to experience it, is to maximize/minimize a Chat Head of Facebooks Messenger.
+I started with the characteristic curve of the Rebound interpolator. You can reproduce it by clicking the demo on the [website](http://facebook.github.io/rebound/") of Rebound. A different way to experience it, is to maximize/minimize a Chat Head of Facebooks Messenger.
+
+![Rebound Curve](data/rebound-curve.png)
 
 As a starting point I tried to find a mechanical concept which could show a similiar motion. I came up with following configuration:
 
 ![Mechanical Concept with Forces](data/mech-concept-labelled.png)
 
-As you can see it's a mass attached to two fixed boards (they won't oscillate). The connections are done with a spring and a damper. To get the system oscillating an external stimulation is necessary. That "input" is realized by instantaneously lowering the the bottom board (`Pos B`) which causes the equilibrium to shift to another state. The system is now in an non-equilibrium state and will move to the new one. The motion of the mass $$x$$ then should be the desired curve.
+As you can see it's a mass attached to two fixed boards (these won't oscillate). The connections are done with a spring and a damper. To get the system oscillating an external stimulation is necessary. That "input" is realized by instantaneously lowering the the bottom board (`Pos B`) which causes the equilibrium to shift to another state. The system is now in an non-equilibrium state and will move to the new one. The motion of the mass $$x$$ then should be the desired curve.
 
 ![Mechanical Concept Animation](data/mech-concept-animation.gif)
 
@@ -57,7 +95,7 @@ k x + d \dot{x} + m \ddot{x} & = k_f (- x + u \cdot d_u) - d_f \dot{x}
 $$
 
 Remember that the force of a spring is proportional to its extension. That means compressing the spring results in a negative force. When switching the position of the bottom board to `Pos B`, it will instantly extend the spring which changes $$F_{kf}$$ and therefore stimulate the system.
-To represent this system in Simulink rearranging the equation as a formula of the highest order of x is helpful.
+To represent this system in Simulink rearranging the equation as a formula of the highest order of $$x$$ is helpful.
 
 $$
 \begin{aligned}
@@ -65,7 +103,7 @@ $$
 \end{aligned}
 $$
 
-Also the final position $$x_e$$ of the mass is important to normalize $$x$$ later. The system needs to be in an equilibrium after the stimulation, i.e. $$t \rightarrow \infty$$. Then all derivatives of x are zero: $$\dot{x} = \ddot{x} = 0$$. That simplifies the equation:
+Also the final position $$x_e$$ of the mass is important to normalize $$x$$ later. The system needs to be in an equilibrium after the stimulation, i.e. $$t \rightarrow \infty$$. Then all derivatives of $$x$$ are zero: $$\dot{x} = \ddot{x} = 0$$. That simplifies the equation:
 
 $$
 \begin{aligned}
@@ -113,11 +151,11 @@ m_0 & = f(x_0,y_0)
 \end{aligned}
 $$
 
-It is shown that for each configuration of x and y the slope of y can be computed (slope field). In order to solve the ODE we need an initial condition which is shown above. When solving this equation numerically for each step (in this case steps of x) the slope is computed and the next value of y is determined. Solving it numerically/recursively would look like this:
+It is shown that for each configuration of $$x$$ and $$y$$ the slope of $$y$$ can be computed (slope field). In order to solve the ODE we need an initial condition which is shown above. When solving this equation numerically for each step (in this case steps of $$x$$) the slope is computed and the next value of $$y$$ is determined. Solving it numerically/recursively would look like this:
 
 `[math forward euler recursive example]`
 
-Basically the slope is computed to get an approximation of the next value of y. The smaller h is, the more accurate the approximation will be. While the method of the example (Forward Euler) uses the slope directly computed by the ODE, the Runge-Kutta method weights slopes for multiple values within the next step and generates a weighted average. Here is the definition [2]:
+Basically the slope is computed to get an approximation of the next value of $$y$$. The smaller $$h$$ is, the more accurate the approximation will be. While the method of the example ([Forward Euler](https://en.wikipedia.org/wiki/Euler_method)) uses the slope directly computed by the ODE, the Runge-Kutta method weights slopes for multiple values within the next step and generates a weighted average. Here is the definition [2]:
 
 $$
 \begin{aligned}
@@ -166,7 +204,7 @@ v_{t+1} & = v_t + h \cdot d\dot{v}
 $$
 
 
-This concludes the mathematical part of this project. Now, with the system equations and the Runge-Kutta 4 equations implementation is quite straightforward. It can be found in [SpringSystem.java](https://github.com/osanj/spring-interpolator/blob/master/interpolator/src/de/anotherblogger/rebuilt/SpringSystem.java). The important methods are `ode` and `updateSystem`.
+This concludes the mathematical part of this project. Now, with the system equations and the Runge-Kutta 4 equations at hand implementation is quite straightforward. It can be found in [SpringSystem.java](https://github.com/osanj/spring-interpolator/blob/master/interpolator/src/de/anotherblogger/rebuilt/SpringSystem.java). The important methods are `ode` and `updateSystem`.
 
 
 
@@ -176,7 +214,7 @@ With the current configuration a single transition takes about 5 seconds (see th
 
 ![Time Mapping](data/mapping-sim-real-time.png)
 
-As you might have noticed the duration of the motion and therefore of the animation depends on the configuration of the parameters $$d$$, $$k$$ and now also on the real-time-mapping. Instead of trying to predict the duration, an event-based approach is more reasonable. This breaks the "traditional" concept of an interpolator ~~which is shown in the pseudo code at the beginning~~. In the implementation the listener interface for the interpolator has an additional method which fires once the final position is reached. It can be found in [OnSpringUpdateListener.java](https://github.com/osanj/spring-interpolator/blob/master/interpolator/src/de/anotherblogger/rebuilt/OnSpringUpdateListener.java):
+As you might have noticed the duration of the motion and therefore of the animation depends on the configuration of the parameters $$d$$, $$k$$ and now also on the real-time-mapping. Instead of trying to predict the duration, an event-based approach is more reasonable. This breaks the "traditional" concept of an interpolator which is shown in the pseudo code at the beginning. In the implementation the listener interface for the interpolator has an additional method which fires once the final position is reached. It can be found in [OnSpringUpdateListener.java](https://github.com/osanj/spring-interpolator/blob/master/interpolator/src/de/anotherblogger/rebuilt/OnSpringUpdateListener.java):
 
 * `onSpringUpdate` provides the receiver with the current normalized value to update the animation
 * `onSpringFinalPosition` notifies the receiver that the system is in an equilibrium and reached a position permanently (as long as the input value $$u$$ is not changed)
@@ -188,7 +226,7 @@ The detection of an equilibrium is implemented rather heuristically. An array ke
 
 ## How To Use `SpringInterpolator`
 
-Once `SpringInterpolator` is included in a project it can be used by implementing the listener interface and connecting the interpolator to an event in your application. Below is a stub for animating a button.
+Once `SpringInterpolator` is included in a project it can be used by implementing the listener interface and connecting the interpolator to an event in your application. Below is a Java stub for animating a button.
 
 {{< highlight Java >}}
 class ButtonAnimator implements OnSpringUpdateListener,
@@ -200,15 +238,15 @@ class ButtonAnimator implements OnSpringUpdateListener,
 	public ButtonAnimator(Button button){
 		this.button = button;
 		
-		//new interpolator with 30fps update-cycle
+		// new interpolator with 30fps update-cycle
 		interpolator = new SpringInterpolator(30);
 		
-		//customize curve and duration
+		// customize curve and duration
 		interpolator.setStiffness(5f);
 		interpolator.setDampening(1f);
-		interpolator.setApproximateDuration(500);	//500ms
+		interpolator.setApproximateDuration(500); // milliseconds
 		
-		//setting interfaces
+		// setting interfaces
 		button.addOnClickListener(this);
 		interpolator.addListener(this);
 	}
@@ -219,12 +257,15 @@ class ButtonAnimator implements OnSpringUpdateListener,
 	}
 	
 	@Override
-	public void onSpringUpdate(SpringInterpolator interpolator, float interpolatedValue){
+	public void onSpringUpdate(SpringInterpolator interpolator,
+							   float interpolatedValue){
 		// do animating here!
 	}
 	
 	@Override
-	public void onSpringFinalPosition(SpringInterpolator interpolator, float finalInterpolatedValue, boolean finalPosition){
+	public void onSpringFinalPosition(SpringInterpolator interpolator,
+									  float finalInterpolatedValue,
+									  boolean finalPosition){
 		// do final stuff here!
 	} 
  }
@@ -244,3 +285,10 @@ The project on Github also includes an example application similar to the intera
 1. Google Inc. [Android API Guides](http://developer.android.com/guide/topics/resources/animation-resource.html#Interpolators)
 2. Braack, Malte (2011). [Numerik für Differentialgleichungen](data/lecture_notes_uni_kiel_ode.pdf) (german, lecture notes, RK4-Definition on pdf-page 30)
 3. Ziessow, Dieter & Gross, Richard. [Umwandlung in ein System erster Ordnung](http://www.chemgapedia.de/vsengine/vlu/vsc/de/ma/1/mc/ma_13/ma_13_02/ma_13_02_11.vlu/Page/vsc/de/ma/1/mc/ma_13/ma_13_02/ma_13_02_31.vscml.html) (german)
+
+
+
+## ToDo
+
+* clean up spring interpolator source code
+* add missing equations (euler forward)

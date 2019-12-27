@@ -8,7 +8,7 @@ use_justify: true
 ---
 
 
-aasd You know that feeling when you have been using some rule blindly forever and one day you finally spend the time to figure out where this rule comes from? Below is my effort to visualize the integrals which lead to the formulas for surface area and volume of spheres.
+You know that feeling when you have been using some rule blindly forever and one day you finally spend the time to figure out where this rule comes from? Below is my effort to visualize the integrals which lead to the formulas for surface area and volume of spheres.
 
 <!--more-->
 

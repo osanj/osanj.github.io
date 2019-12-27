@@ -168,7 +168,7 @@ k_4 & = f(t + h, x + k_3 h)
 $$
 
 
-Where $$N_{RK(4)}$$ is the numerical representation of $$z'(t)$$, $$h$$ the stepsize and $$x$$ the previously computed value (numerical representation of $$z(t)$$). In order to apply that method the 2nd order ODE which is used to represent the spring system it has to be transformed in a linear system of 1st order ODEs with 2 rows. Decomposing higher order ODEs into 1st order ODEs is done by introducing new variables [3]. In this case it is sufficient to define $$\dot{x} = v$$, then our system looks like the following:
+Where $$N_{RK(4)}$$ is the numerical representation of $$z'(t)$$, $$h$$ the stepsize and $$x$$ the previously computed value (numerical representation of $$z(t)$$). In order to apply that method the 2nd order ODE which is used to represent the spring system has to be transformed in a linear system of 1st order ODEs with 2 rows. Decomposing higher order ODEs into 1st order ODEs is done by introducing new variables [3]. In this case it is sufficient to define $$\dot{x} = v$$, then our system looks like the following:
 
 $$
 \begin{aligned}
@@ -214,14 +214,14 @@ With the current configuration a single transition takes about 5 seconds (see th
 
 ![Time Mapping](data/mapping-sim-real-time.png)
 
-As you might have noticed the duration of the motion and therefore of the animation depends on the configuration of the parameters $$d$$, $$k$$ and now also on the real-time-mapping. Instead of trying to predict the duration, an event-based approach is more reasonable. This breaks the "traditional" concept of an interpolator which is shown in the pseudo code at the beginning. In the implementation the listener interface for the interpolator has an additional method which fires once the final position is reached. It can be found in [OnSpringUpdateListener.java](https://github.com/osanj/spring-interpolator/blob/master/interpolator/src/de/anotherblogger/rebuilt/OnSpringUpdateListener.java):
+As you might have noticed the duration of the motion and therefore of the animation depends on the configuration of the parameters $$d$$, $$k$$ and now also on the real-time-mapping. Instead of trying to predict the duration, an event-based approach is more reasonable. This breaks the "traditional" concept of an interpolator which is shown in the pseudo code at the beginning. In the implementation the listener interface for the interpolator has an additional method which fires once the final position is reached. See [OnSpringUpdateListener.java](https://github.com/osanj/spring-interpolator/blob/master/interpolator/src/de/anotherblogger/rebuilt/OnSpringUpdateListener.java):
 
 * `onSpringUpdate` provides the receiver with the current normalized value to update the animation
 * `onSpringFinalPosition` notifies the receiver that the system is in an equilibrium and reached a position permanently (as long as the input value $$u$$ is not changed)
 
 The listeners are held by [SpringInterpolator.java](https://github.com/osanj/spring-interpolator/blob/master/interpolator/src/de/anotherblogger/rebuilt/SpringInterpolator.java). Every computation step the time mapping is performed and the events are dispatched. The computation steps are invoked by a loop which runs in a separate thread.
 
-The detection of an equilibrium is implemented rather heuristically. An array keeps track the last few $$x$$ values, if all of them were close enough to $$x_e$$ an equlibrium is assumed, the system is stopped and the event is dispatched.
+The detection of an equilibrium is implemented rather heuristically. An array keeps track of the last few $$x$$ values, if all of them were close enough to $$x_e$$ an equilibrium is assumed, the system is stopped and the event is dispatched.
 
 
 ## How To Use `SpringInterpolator`

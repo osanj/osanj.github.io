@@ -1,0 +1,31 @@
+baseURL: "https://osanj.github.io"
+title: "Just a Notepad"
+languageCode: "en-us"
+theme: ["hyde-custom", "hyde"]
+enableEmoji: yes
+
+params:
+  description: "Logs, Ideas, Insights"
+  copyright: "© 2020 Jonas Schuepfer"
+#  themeColor: "theme-base-0b"  # https://github.com/spf13/hyde/tree/8bfa46de4850c1bf018adf396e413474a19ba96d#themes
+
+
+taxonomies:
+  tag: "tags"
+
+
+menu:
+  main:
+    - identifier: "about"
+      name: "About"
+      url: "/about/"
+      weight: 30
+    - identifier: "tags"
+      name: "Tags"
+      url: "/tags/"
+      weight: 20
+    - identifier: "lava"
+      name: "Lava"
+      url: "https://github.com/osanj/lava"
+      weight: 5
+

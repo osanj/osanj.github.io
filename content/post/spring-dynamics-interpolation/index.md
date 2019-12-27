@@ -19,7 +19,7 @@ use_justify: true
 The task of an animation is to visually transition a graphic object from a start state to an end state. Usually these states differ in the values of an attribute, e.g. scale a button from 50% to 100% to get the user's attention. The transition happens over time from its inital value to its final value. Interpolators encode the mathematical relation which is used to carry out that transition [1]. A linear relation is the most basic one, but there exist more sophisticated interpolators, too.
 
 
-![Comparison of Interpolators](/data/spring-dynamics-interpolation/interpolators-comparison.gif)
+![Comparison of Interpolators](data/interpolators-comparison.gif)
 
 ~~At this point you may think animation and interpolator are interchangable terms, but that is not correct. In programming terms an animation is a controller object which embeds/uses an interpolator object. Input ([i time]) and output ([i scale]) of an interpolator need to be normalized to be adapted to every situation. That means input and output are values between 0 and 1 (sometimes also <0 and/or >1, see the graphs above). To illustrate that, consider following pseudo java code:~~
 
@@ -34,11 +34,11 @@ I started with the characteristic curve of the Rebound interpolator (see animati
 
 As a starting point I tried to find a mechanical concept which could show a similiar motion. I came up with following configuration:
 
-![Mechanical Concept with Forces](/data/spring-dynamics-interpolation/mech-concept-labelled.png)
+![Mechanical Concept with Forces](data/mech-concept-labelled.png)
 
 As you can see it's a mass attached to two fixed boards (they won't oscillate). The connections are done with a spring and a damper. To get the system oscillating an external stimulation is necessary. That "input" is realized by instantaneously lowering the the bottom board (`Pos B`) which causes the equilibrium to shift to another state. The system is now in an non-equilibrium state and will move to the new one. The motion of the mass $$x$$ then should be the desired curve.
 
-![Mechanical Concept Animation](/data/spring-dynamics-interpolation/mech-concept-animation.gif)
+![Mechanical Concept Animation](data/mech-concept-animation.gif)
 
 In the context of an interpolator for animations moving the board from one position to the other is triggered when the animation should start playing, for example the user clicking a button.
 
@@ -78,9 +78,9 @@ $$
 
 The rearranged equation of motion is easily represented in a Simulink model. As discussed before $$u$$ is the only way to influence the system from the outside. Switching it between $$0$$ and $$1$$ leads system stimulation. Later this variable will also be found in the implementation, of course. For the validation the common [step function](https://en.wikipedia.org/wiki/Heaviside_step_function) was used. Observing $$x$$ we can reproduce a similar pattern like the one which can be found on the website of Rebound. The intensity of the oscillation depends on the parametrization of the system.
 
-![Simulink Model](/data/spring-dynamics-interpolation/mech-concept-simulink.png)
+![Simulink Model](data/mech-concept-simulink.png)
 
-![Simulink Output](/data/spring-dynamics-interpolation/mech-concept-damping-variation.png)
+![Simulink Output](data/mech-concept-damping-variation.png)
 
 I started with following configuration
 * $$m = 1$$
@@ -90,7 +90,7 @@ I started with following configuration
 * $$d_f = 0.2$$
 * $$d_u = u_0 - u_1 = 1$$
 
-For the implementation I decided to keep $$m$$, $$k_f$$, $$d_f$$ and $$u_1$$ fixed. It is sufficient to make $$d$$ and $$k$$ variable to make the curve "adjustable" (see the image above). If you want to do some experiments yourself, check out the [Simulink file](/data/spring-dynamics-interpolation/simulink_mech_concept.slx).
+For the implementation I decided to keep $$m$$, $$k_f$$, $$d_f$$ and $$u_1$$ fixed. It is sufficient to make $$d$$ and $$k$$ variable to make the curve "adjustable" (see the image above). If you want to do some experiments yourself, check out the [Simulink file](data/simulink_mech_concept.slx).
 
 
 
@@ -174,7 +174,7 @@ This concludes the mathematical part of this project. Now, with the system equat
 
 With the current configuration a single transition takes about 5 seconds (see the system response of $$x$$ for $$d = 2$$ in the image above). This is definitely too long for an animation. More common would be durations up to 1000 milliseconds. We can account for that by mapping it to a desired duration, basically playing the simulation faster or slower than it actually occured. Following picture tries to depict this:
 
-![Time Mapping](/data/spring-dynamics-interpolation/mapping-sim-real-time.png)
+![Time Mapping](data/mapping-sim-real-time.png)
 
 As you might have noticed the duration of the motion and therefore of the animation depends on the configuration of the parameters $$d$$, $$k$$ and now also on the real-time-mapping. Instead of trying to predict the duration, an event-based approach is more reasonable. This breaks the "traditional" concept of an interpolator ~~which is shown in the pseudo code at the beginning~~. In the implementation the listener interface for the interpolator has an additional method which fires once the final position is reached. It can be found in [OnSpringUpdateListener.java](https://github.com/osanj/spring-interpolator/blob/master/interpolator/src/de/anotherblogger/rebuilt/OnSpringUpdateListener.java):
 
@@ -233,7 +233,7 @@ class ButtonAnimator implements OnSpringUpdateListener,
 
 The project on Github also includes an example application similar to the interactive demo on the Rebound website. It can be found [here](https://github.com/osanj/spring-interpolator/tree/master/interpolator-example-application).
 
-![Interpolation Demo](/data/spring-dynamics-interpolation/demo.gif)
+![Interpolation Demo](data/demo.gif)
 
 
 
@@ -242,5 +242,5 @@ The project on Github also includes an example application similar to the intera
 ## References
 
 1. Google Inc. [Android API Guides](http://developer.android.com/guide/topics/resources/animation-resource.html#Interpolators)
-2. Braack, Malte (2011). [Numerik für Differentialgleichungen](/data/spring-dynamics-interpolation/lecture_notes_uni_kiel_ode.pdf) (german, lecture notes, RK4-Definition on pdf-page 30)
+2. Braack, Malte (2011). [Numerik für Differentialgleichungen](data/lecture_notes_uni_kiel_ode.pdf) (german, lecture notes, RK4-Definition on pdf-page 30)
 3. Ziessow, Dieter & Gross, Richard. [Umwandlung in ein System erster Ordnung](http://www.chemgapedia.de/vsengine/vlu/vsc/de/ma/1/mc/ma_13/ma_13_02/ma_13_02_11.vlu/Page/vsc/de/ma/1/mc/ma_13/ma_13_02/ma_13_02_31.vscml.html) (german)

@@ -1,7 +1,7 @@
 # osanj.github.io
 
 * development in `source` branch
-* serving from `master` branch ()
+* serving from `master` branch
 
 To build the blog do:
 1. checkout `source`

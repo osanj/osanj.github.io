@@ -8,7 +8,7 @@ use_justify: true
 ---
 
 
-You know that feeling when you have been using some rule blindly forever and one day you finally spend the time to figure out where this rule comes from? Below is my effort to visualize the integrals which lead to the formulas for surface area and volume of spheres.
+aasd You know that feeling when you have been using some rule blindly forever and one day you finally spend the time to figure out where this rule comes from? Below is my effort to visualize the integrals which lead to the formulas for surface area and volume of spheres.
 
 <!--more-->
 
@@ -16,7 +16,7 @@ You know that feeling when you have been using some rule blindly forever and one
 ## Circle Circumference
 
 
-![Circle Area and Circumference](/data/visualizing-sphere-integrals/circle-area.png)
+![Circle Area and Circumference](data/circle-area.png)
 
 To compute the circumference $$U$$ let's chop up the circle in $$n$$ triangles with $$\phi = \frac{2\pi}{n}$$. One of them is highlighted above. The length of side $$u$$ can be computed the following way:
 
@@ -66,7 +66,7 @@ $$
 
 ## Surface Area of a Sphere
 
-![Sphere Surface](/data/visualizing-sphere-integrals/sphere-surface.png)
+![Sphere Surface](data/sphere-surface.png)
 
 When decomposing the the sphere surface in lots of small quads we can approximate the surface area. The sides are defined as:
 
@@ -107,7 +107,7 @@ $$
 
 ## Volume of a Sphere
 
-![Sphere Volumne](/data/visualizing-sphere-integrals/sphere-volume.png)
+![Sphere Volumne](data/sphere-volume.png)
 
 For the volume a different kind of decomposition is chosen. As depicted above the sphere can be approximated with a set of thin disks. The radius of each disk is defined as:
 

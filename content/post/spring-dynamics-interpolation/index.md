@@ -20,7 +20,7 @@ The task of an animation is to visually transition a graphic object from a start
 
 ![Comparison of Interpolators](data/interpolators-comparison.gif)
 
-In code animations are often container and the interpolator logic is encapsulated in a separate class. The output of the interpolator is normalized between $$0$$ and $$1$$ (sometimes it can also be $$<0$$ and/or $$>1$$). Consider the following pseudo Java code:
+In code animations are often containers and the interpolator logic is encapsulated in a separate class. The output of the interpolator is normalized between $$0$$ and $$1$$ (sometimes it can also be $$<0$$ and/or $$>1$$). Consider the following pseudo Java code:
 
 
 {{< highlight Java >}}
@@ -137,25 +137,37 @@ For the implementation I decided to keep $$m$$, $$k_f$$, $$d_f$$ and $$u_1$$ fix
 
 There exist various methods for solving an Ordinary Differential Equation (ODE) numerically. One very common one is Runge-Kutta of 4th order (RK4). Those methods are usually defined for ODEs of first order:
 
-`[math first order ode]`
+$$
+\begin{aligned}
+z'(t) & = f(t,z(t))
+\end{aligned}
+$$
 
 To understand the basic principle, here is an example:
 
-`[math first order ode example]`
-
 $$
 \begin{aligned}
-z'(t) & = f(t,z(t)) \\ \\
 y' & = x \cdot y = f(x,y) \\ \\
 m_0 & = f(x_0,y_0)
 \end{aligned}
 $$
 
-It is shown that for each configuration of $$x$$ and $$y$$ the slope of $$y$$ can be computed (slope field). In order to solve the ODE we need an initial condition which is shown above. When solving this equation numerically for each step (in this case steps of $$x$$) the slope is computed and the next value of $$y$$ is determined. Solving it numerically/recursively would look like this:
+The ODE allows to compute the slope of $$y$$ for each configuration of $$x$$ and $$y$$. In order to solve the ODE we need an initial condition which is also included above. When solving this equation numerically for each step (in this case steps of $$x$$) the slope is computed and the next value of $$y$$ is determined. Solving it numerically/recursively would look like this:
 
-`[math forward euler recursive example]`
+$$
+\begin{aligned}
+m_0 & = x_0 \cdot y_0 \\ \\
+y_1 & = m_0 \cdot h + y_0 \\ \\
+m_1 & = (x_0 + h) \cdot y_1 \\ \\
+y_2 & = m_1 \cdot h + y_1 \\ \\
+m_2 & = (x_0 + 2h) \cdot y_2 \\ \\
+& \cdots \\ \\
+m_n & = (x_0 + n \cdot h) \cdot y_n \\ \\
+y_{n+1} & = m_n \cdot h + y_n \\ \\
+\end{aligned}
+$$
 
-Basically the slope is computed to get an approximation of the next value of $$y$$. The smaller $$h$$ is, the more accurate the approximation will be. While the method of the example ([Forward Euler](https://en.wikipedia.org/wiki/Euler_method)) uses the slope directly computed by the ODE, the Runge-Kutta method weights slopes for multiple values within the next step and generates a weighted average. Here is the definition [2]:
+With the slope an approximation of the next value for $$y$$ can be computed. The smaller $$h$$ is, the more accurate the approximation will be. This method is also kown as [Forward Euler](https://en.wikipedia.org/wiki/Euler_method). When applying Runge-Kutta methods one computes a weighted average of multiple slope values within the next step. Here is the definition of RK4 [2]:
 
 $$
 \begin{aligned}
@@ -177,7 +189,7 @@ F(x,v,u) = \dot{v} & = -v\left(\frac{d_f + d}{m} \right) - x\left(\frac{k_f + k}
 \end{aligned}
 $$
 
-To keep the formulas concise the dependency of $$x$$ and $$v$$ on time $$t$$ is omitted. You could argue that $$u$$ depends on $$t$$, but we assume $$u$$ to be constant during a timestep ($$u$$ can not be switched slower or faster it is an instantaneous event). Remember that $$u$$ is the variable which will be switched under the hood from $$0$$ to $$1$$ as a result of the user hitting a button. Now RK4 can be applied to both 1st order ODEs of this system. For the newly introduced variable it is:
+To keep the formulas concise the dependency of $$x$$ and $$v$$ on time $$t$$ is omitted. You could argue that $$u$$ depends on $$t$$, but we assume $$u$$ to be constant during a timestep ($$u$$ can not be switched slower or faster, it is an instantaneous event). Remember that $$u$$ is the variable which will be switched under the hood from $$0$$ to $$1$$ as a result of the user hitting a button. Now RK4 can be applied to both 1st order ODEs of this system. For the newly introduced variable it is:
 
 $$
 \begin{aligned}
@@ -204,7 +216,7 @@ v_{t+1} & = v_t + h \cdot d\dot{v}
 $$
 
 
-This concludes the mathematical part of this project. Now, with the system equations and the Runge-Kutta 4 equations at hand implementation is quite straightforward. It can be found in [SpringSystem.java](https://github.com/osanj/spring-interpolator/blob/master/interpolator/src/de/anotherblogger/rebuilt/SpringSystem.java). The important methods are `ode` and `updateSystem`.
+This concludes the mathematical part of this project. Now, with the system equations and the Runge-Kutta 4 equations at hand implementation is quite straightforward. It can be found in [SpringSystem.java](https://github.com/osanj/spring-interpolator/blob/master/interpolator/src/de/osanj/springinterpolator/SpringSystem.java). The important methods are `ode` and `updateSystem`.
 
 
 
@@ -214,12 +226,12 @@ With the current configuration a single transition takes about 5 seconds (see th
 
 ![Time Mapping](data/mapping-sim-real-time.png)
 
-As you might have noticed the duration of the motion and therefore of the animation depends on the configuration of the parameters $$d$$, $$k$$ and now also on the real-time-mapping. Instead of trying to predict the duration, an event-based approach is more reasonable. This breaks the "traditional" concept of an interpolator which is shown in the pseudo code at the beginning. In the implementation the listener interface for the interpolator has an additional method which fires once the final position is reached. See [OnSpringUpdateListener.java](https://github.com/osanj/spring-interpolator/blob/master/interpolator/src/de/anotherblogger/rebuilt/OnSpringUpdateListener.java):
+As you might have noticed the duration of the motion and therefore of the animation depends on the configuration of the parameters $$d$$, $$k$$ and now also on the real-time-mapping. Instead of trying to predict the duration, an event-based approach is more reasonable. This breaks the "traditional" concept of an interpolator which is shown in the pseudo code at the beginning. In the implementation the listener interface for the interpolator has an additional method which fires once the final position is reached. See [OnSpringUpdateListener.java](https://github.com/osanj/spring-interpolator/blob/master/interpolator/src/de/osanj/springinterpolator/OnSpringUpdateListener.java):
 
 * `onSpringUpdate` provides the receiver with the current normalized value to update the animation
 * `onSpringFinalPosition` notifies the receiver that the system is in an equilibrium and reached a position permanently (as long as the input value $$u$$ is not changed)
 
-The listeners are held by [SpringInterpolator.java](https://github.com/osanj/spring-interpolator/blob/master/interpolator/src/de/anotherblogger/rebuilt/SpringInterpolator.java). Every computation step the time mapping is performed and the events are dispatched. The computation steps are invoked by a loop which runs in a separate thread.
+The listeners are held by [SpringInterpolator.java](https://github.com/osanj/spring-interpolator/blob/master/interpolator/src/de/osanj/springinterpolator/SpringInterpolator.java). Every computation step the time mapping is performed and the events are dispatched. The computation steps are invoked by a loop which runs in a separate thread.
 
 The detection of an equilibrium is implemented rather heuristically. An array keeps track of the last few $$x$$ values, if all of them were close enough to $$x_e$$ an equilibrium is assumed, the system is stopped and the event is dispatched.
 
@@ -286,9 +298,3 @@ The project on Github also includes an example application similar to the intera
 2. Braack, Malte (2011). [Numerik für Differentialgleichungen](data/lecture_notes_uni_kiel_ode.pdf) (german, lecture notes, RK4-Definition on pdf-page 30)
 3. Ziessow, Dieter & Gross, Richard. [Umwandlung in ein System erster Ordnung](http://www.chemgapedia.de/vsengine/vlu/vsc/de/ma/1/mc/ma_13/ma_13_02/ma_13_02_11.vlu/Page/vsc/de/ma/1/mc/ma_13/ma_13_02/ma_13_02_31.vscml.html) (german)
 
-
-
-## ToDo
-
-* clean up spring interpolator source code
-* add missing equations (euler forward)

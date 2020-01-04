@@ -10,4 +10,4 @@ To build the blog do:
 4. replace all contents with the files from `public`
 5. do a commit
 
-Ńot beautiful, but I don't want to do another [submodule setup](https://gohugo.io/hosting-and-deployment/hosting-on-github/#github-user-or-organization-pages).
+Not beautiful, but I don't want to do another [submodule setup](https://gohugo.io/hosting-and-deployment/hosting-on-github/#github-user-or-organization-pages).

@@ -95,14 +95,13 @@ $$
 \begin{aligned}
 A &= 8 \cdot \int_0^{\frac{1}{2} \pi} \int_0^{\frac{1}{2} \pi} A_{quad} \\ \\
 &= 8 \cdot \int_0^{\frac{1}{2} \pi} \int_0^{\frac{1}{2} \pi} r^2 \cos\left(\phi_b\right) ~ d\phi_b ~ d\phi_a \\ \\
-&= 8 r^2 \cdot \int_0^{\frac{1}{2} \pi} \left[ \sin\left(\phi_b \right) \right] _0^{\frac{1}{2}\pi} ~ d\phi_a \\ \\
+&= 8 r^2 \cdot \int_0^{\frac{1}{2} \pi} \bigg\lvert \sin\left(\phi_b \right) \bigg\rvert _0^{\frac{1}{2}\pi} ~ d\phi_a \\ \\
 &= 8 r^2 \cdot \int_0^{\frac{1}{2} \pi} \left(\sin\left(\frac{1}{2}\pi\right) - \sin(0) \right) ~ d\phi_a \\ \\
 &= 8 r^2 \cdot \int_0^{\frac{1}{2} \pi} ~ d\phi_a \\ \\
 &= 8 r^2 \cdot \frac{1}{2} \pi \\ \\
 &= 4 \pi r^2
 \end{aligned}
 $$
-
 
 
 ## Volume of a Sphere
@@ -133,11 +132,12 @@ V &= 2 \cdot \int_0^r V_{disk} \\ \\
 &= 2 \cdot \int_0^r \pi {r_u}^2 ~ du \\ \\
 &= 2 \cdot \int_0^r \pi (r^2 - u^2) ~ du \\ \\
 &= 2 \pi \left( r^2 \int_0^r du - \int_0^r u^2 ~du \right) \\ \\
-&= 2 \pi \left( r^2 \cdot r - \left[ \frac{1}{3} u^3 \right]_0^r \right) \\ \\
+&= 2 \pi \left( r^2 \cdot r - \bigg\lvert \frac{1}{3} u^3 \bigg\rvert _0^r \right) \\ \\
 &= 2 \pi \left( r^3 - \frac{1}{3} r^3 \right) \\ \\
 &= \frac{4}{3} \pi r^3
 \end{aligned}
 $$
+
 
 
 ## ToDo

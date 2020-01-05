@@ -1,4 +1,4 @@
-baseURL: "https://osanj.github.io"
+baseURL: "https://osanj.github.io/"
 title: "Just a Notepad"
 languageCode: "en-us"
 theme: ["hyde-custom", "hyde"]

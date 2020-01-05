@@ -137,15 +137,3 @@ V &= 2 \cdot \int_0^r V_{disk} \\ \\
 &= \frac{4}{3} \pi r^3
 \end{aligned}
 $$
-
-
-
-## ToDo
-
-* surface area
-  * first pizza slice is missing 90deg quad
-  * second pizza slice is in x-y not z-y
-  * dA = a * b instead of A?
-* volume
-  * dx should be du?
-  * dV = A * du instead of V?

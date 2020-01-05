@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>matlab on Just a Notepad</title>
-    <link>/tags/matlab/</link>
+    <link>https://osanj.github.io/tags/matlab/</link>
     <description>Recent content in matlab on Just a Notepad</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Sat, 03 Jan 2015 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="/tags/matlab/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://osanj.github.io/tags/matlab/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Using Spring Dynamics ODE for Animation Interpolation (Rebuilding Facebook Rebound)</title>
-      <link>/post/spring-dynamics-interpolation/</link>
+      <link>https://osanj.github.io/post/spring-dynamics-interpolation/</link>
       <pubDate>Sat, 03 Jan 2015 00:00:00 +0000</pubDate>
       
-      <guid>/post/spring-dynamics-interpolation/</guid>
+      <guid>https://osanj.github.io/post/spring-dynamics-interpolation/</guid>
       <description>Rebound is an open-source project by Facebook. It is used to control the course of animations. In case you are familiar with Android, you might know that Android provides several Interpolator classes (AccelerateInterpolator, DecelerateInterpolator, ...) to handle that task. While most of these provide a rather simple course of animation, Facebook&#39;s Rebound is based on spring dynamics which is not trivial to implement. This article describes my attempt to reverse engineer the Rebound library.</description>
     </item>
     

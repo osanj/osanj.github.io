@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <link href="//gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.62.1" />
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Using Spring Dynamics ODE for Animation Interpolation (Rebuilding Facebook Rebound) &middot; Just a Notepad</title>
+
+  
+  <link type="text/css" rel="stylesheet" href="https://osanj.github.iocss/print.css" media="print">
+  <link type="text/css" rel="stylesheet" href="https://osanj.github.iocss/poole.css">
+  <link type="text/css" rel="stylesheet" href="https://osanj.github.iocss/syntax.css">
+  <link type="text/css" rel="stylesheet" href="https://osanj.github.iocss/hyde.css">
+  
+  <link type="text/css" rel="stylesheet" href="https://osanj.github.iocss/justified_text.css">
+  
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface|PT+Sans:400,400i,700">
+
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  
+
+  
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
+  
+</head>
+
+  <body class=" ">
+  <aside class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://osanj.github.io"><h1>Just a Notepad</h1></a>
+      <p class="lead">
+       For Stuff Worth Sharing 
+      </p>
+    </div>
+
+    <nav>
+      <ul class="sidebar-nav">
+        <li><a href="https://osanj.github.io">Home</a> </li>
+        <li><a href="https://github.com/osanj/lava"> Lava </a></li><li><a href="/tags/"> Tags </a></li><li><a href="/about/"> About </a></li>
+      </ul>
+    </nav>
+
+    <p>© 2020 Jonas Schuepfer</p>
+  </div>
+</aside>
+
+    <main class="content container">
+    <div class="post">
+  <h1>Using Spring Dynamics ODE for Animation Interpolation (Rebuilding Facebook Rebound)</h1>
+  <time datetime=2015-01-03T00:00:00Z class="post-date">Sat, Jan 3, 2015</time>
+  <p><a href="http://facebook.github.io/rebound/">Rebound</a> is an open-source project by Facebook. It is used to control the course of animations. In case you are familiar with Android, you might know that Android provides several <code>Interpolator</code> classes (<code>AccelerateInterpolator</code>, <code>DecelerateInterpolator</code>, ...) to handle that task. While most of these provide a rather simple course of animation, Facebook's Rebound is based on <em>spring dynamics</em> which is not trivial to implement. This article describes my attempt to reverse engineer the Rebound library. Of course, it is open source, but I did not take a look at it, you gotta believe me there 😬. The finished project can be found on <a href="https://github.com/osanj/spring-interpolator">Github</a>.</p>
+
+<h2 id="interpolators-in-uis">Interpolators in UIs</h2>
+
+<p>The task of an animation is to visually transition a graphic object from a start state to an end state. Usually these states differ in the values of an attribute, e.g. scale a button from 50% to 100% to get the user's attention. The transition happens over time from its inital value to its final value. Interpolators encode the mathematical relation which is used to carry out that transition [1]. A linear relation is the most basic one, but there exist more sophisticated interpolators, too.</p>
+
+<p><figure><img src="data/interpolators-comparison.gif" alt="Comparison of Interpolators"></figure></p>
+
+<p>In code animations are often containers and the interpolator logic is encapsulated in a separate class. The output of the interpolator is normalized between <span  class="math">\(0\)</span> and <span  class="math">\(1\)</span> (sometimes it can also be <span  class="math">\(<0\)</span> and/or <span  class="math">\(>1\)</span>). Consider the following pseudo Java code:</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Animation</span> <span style="color:#f92672">{</span>
+	
+	<span style="color:#66d9ef">private</span> <span style="color:#66d9ef">long</span> durationMillis<span style="color:#f92672">;</span>
+	<span style="color:#66d9ef">private</span> <span style="color:#66d9ef">long</span> startMillis<span style="color:#f92672">;</span>
+	<span style="color:#66d9ef">private</span> <span style="color:#66d9ef">float</span> startScale<span style="color:#f92672">;</span> <span style="color:#75715e">// start value of attribute (e.g. 0.5)
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">private</span> <span style="color:#66d9ef">float</span> destScale<span style="color:#f92672">;</span> <span style="color:#75715e">// end value of attribute (e.g. 1.0)
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">private</span> UiRect rect<span style="color:#f92672">;</span> <span style="color:#75715e">// object to be manipulated
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">private</span> Interpolator interpolator<span style="color:#f92672">;</span>
+	
+	
+	<span style="color:#66d9ef">public</span> <span style="color:#a6e22e">Animation</span><span style="color:#f92672">(</span><span style="color:#66d9ef">long</span> duration<span style="color:#f92672">,</span> UiRect rect<span style="color:#f92672">,</span> <span style="color:#66d9ef">float</span> destScale<span style="color:#f92672">)</span><span style="color:#f92672">{</span>
+		<span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">durationMillis</span> <span style="color:#f92672">=</span> duration<span style="color:#f92672">;</span>
+		<span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">startMillis</span> <span style="color:#f92672">=</span> System<span style="color:#f92672">.</span><span style="color:#a6e22e">currentTimeMillis</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+		
+		<span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">rect</span> <span style="color:#f92672">=</span> rect<span style="color:#f92672">;</span>
+		<span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">startScale</span> <span style="color:#f92672">=</span> rect<span style="color:#f92672">.</span><span style="color:#a6e22e">getScale</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+		<span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">destScale</span> <span style="color:#f92672">=</span> destScale<span style="color:#f92672">;</span>
+	
+		interpolator <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Interpolator<span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+	<span style="color:#f92672">}</span>
+	
+	<span style="color:#75715e">// called every 16ms (60fps)
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">onAnimate</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">{</span>
+		<span style="color:#66d9ef">long</span> t <span style="color:#f92672">=</span> System<span style="color:#f92672">.</span><span style="color:#a6e22e">currentTimeMillis</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+
+		<span style="color:#75715e">// normalized value of time (0 ... 1)
+</span><span style="color:#75715e"></span>		<span style="color:#66d9ef">float</span> animationTime <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>t <span style="color:#f92672">-</span> startMillis<span style="color:#f92672">)</span> <span style="color:#f92672">/</span> durationMillis<span style="color:#f92672">;</span>
+		
+		<span style="color:#75715e">// normalized value for setting the scale (0 ... 1)
+</span><span style="color:#75715e"></span>		<span style="color:#66d9ef">float</span> scaleFactor <span style="color:#f92672">=</span> interpol<span style="color:#f92672">.</span><span style="color:#a6e22e">getValue</span><span style="color:#f92672">(</span>animationTime<span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+		
+		<span style="color:#75715e">// manipulating UI-object
+</span><span style="color:#75715e"></span>		<span style="color:#66d9ef">float</span> scaleDelta <span style="color:#f92672">=</span> scaleFactor <span style="color:#f92672">*</span> <span style="color:#f92672">(</span>destScale <span style="color:#f92672">-</span> startScale<span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+		rect<span style="color:#f92672">.</span><span style="color:#a6e22e">setScale</span><span style="color:#f92672">(</span>startScale <span style="color:#f92672">+</span> scaleDelta<span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+	<span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span></code></pre></div>
+
+<h2 id="a-mechanical-concept">A Mechanical Concept</h2>
+
+<p>I started with the characteristic curve of the Rebound interpolator. You can reproduce it by clicking the demo on the <a href="http://facebook.github.io/rebound/">website</a> of Rebound. A different way to experience it, is to maximize/minimize a Chat Head of Facebooks Messenger.</p>
+
+<p><figure><img src="data/rebound-curve.png" alt="Rebound Curve"></figure></p>
+
+<p>As a starting point I tried to find a mechanical concept which could show a similiar motion. I came up with following configuration:</p>
+
+<p><figure><img src="data/mech-concept-labelled.png" alt="Mechanical Concept with Forces"></figure></p>
+
+<p>As you can see it's a mass attached to two fixed boards (these won't oscillate). The connections are done with a spring and a damper. To get the system oscillating an external stimulation is necessary. That &quot;input&quot; is realized by instantaneously lowering the the bottom board (<code>Pos B</code>) which causes the equilibrium to shift to another state. The system is now in an non-equilibrium state and will move to the new one. The motion of the mass <span  class="math">\(x\)</span> then should be the desired curve.</p>
+
+<p><figure><img src="data/mech-concept-animation.gif" alt="Mechanical Concept Animation"></figure></p>
+
+<p>In the context of an interpolator for animations moving the board from one position to the other is triggered when the animation should start playing, for example the user clicking a button.</p>
+
+<h2 id="concept-validation-with-simulink">Concept Validation with Simulink</h2>
+
+<p>In order to proof the concept I used MatLab and Simulink to simulate it. Therefore the equation of motion of the system had to be determined. One does this by setting up the balance of forces which affect the mass. Replacing the forces with the respective formulas leads to ordinary differential equation of second order.</p>
+
+<p><span  class="math">\[
+\begin{aligned}
+F_k + F_d + F_m & = F_{kf} + F_{df} \\ \\
+k x + d \dot{x} + m \ddot{x} & = k_f (- x + u \cdot d_u) - d_f \dot{x}
+\end{aligned}
+\]</span></p>
+
+<p>Remember that the force of a spring is proportional to its extension. That means compressing the spring results in a negative force. When switching the position of the bottom board to <code>Pos B</code>, it will instantly extend the spring which changes <span  class="math">\(F_{kf}\)</span> and therefore stimulate the system.
+To represent this system in Simulink rearranging the equation as a formula of the highest order of <span  class="math">\(x\)</span> is helpful.</p>
+
+<p><span  class="math">\[
+\begin{aligned}
+\ddot{x} & = -\dot{x}\left(\frac{d_f + d}{m} \right) - x\left(\frac{k_f + k}{m} \right) + d_u u\frac{k_f}{m}
+\end{aligned}
+\]</span></p>
+
+<p>Also the final position <span  class="math">\(x_e\)</span> of the mass is important to normalize <span  class="math">\(x\)</span> later. The system needs to be in an equilibrium after the stimulation, i.e. <span  class="math">\(t \rightarrow \infty\)</span>. Then all derivatives of <span  class="math">\(x\)</span> are zero: <span  class="math">\(\dot{x} = \ddot{x} = 0\)</span>. That simplifies the equation:</p>
+
+<p><span  class="math">\[
+\begin{aligned}
+k x + d \dot{x} + m \ddot{x} & = k_f (- x + u \cdot d_u) + d_f \dot{x} \\ \\
+k x & = - k_f x + k_f d_u u \\ \\
+x (k + k_f) & = k_f d_u u\\ \\
+x & = \frac{k_f}{k + k_f} d_u \cdot u = x_e
+\end{aligned}
+\]</span></p>
+
+<p>The rearranged equation of motion is easily represented in a Simulink model. As discussed before <span  class="math">\(u\)</span> is the only way to influence the system from the outside. Switching it between <span  class="math">\(0\)</span> and <span  class="math">\(1\)</span> leads system stimulation. Later this variable will also be found in the implementation, of course. For the validation the common <a href="https://en.wikipedia.org/wiki/Heaviside_step_function">step function</a> was used. Observing <span  class="math">\(x\)</span> we can reproduce a similar pattern like the one which can be found on the website of Rebound. The intensity of the oscillation depends on the parametrization of the system.</p>
+
+<p><figure><img src="data/mech-concept-simulink.png" alt="Simulink Model"></figure></p>
+
+<p><figure><img src="data/mech-concept-damping-variation.png" alt="Simulink Output"></figure></p>
+
+<p>I started with following configuration</p>
+
+<ul>
+<li><span  class="math">\(m = 1\)</span></li>
+<li><span  class="math">\(k = 5\)</span></li>
+<li><span  class="math">\(d = 0.5\)</span></li>
+<li><span  class="math">\(k_f = 2\)</span></li>
+<li><span  class="math">\(d_f = 0.2\)</span></li>
+<li><span  class="math">\(d_u = u_0 - u_1 = 1\)</span></li>
+</ul>
+
+<p>For the implementation I decided to keep <span  class="math">\(m\)</span>, <span  class="math">\(k_f\)</span>, <span  class="math">\(d_f\)</span> and <span  class="math">\(u_1\)</span> fixed. It is sufficient to make <span  class="math">\(d\)</span> and <span  class="math">\(k\)</span> variable to make the curve &quot;adjustable&quot; (see the image above). If you want to do some experiments yourself, check out the <a href="data/simulink_mech_concept.slx">Simulink file</a>.</p>
+
+<h2 id="solving-the-ode-with-rungekutta">Solving the ODE with Runge-Kutta</h2>
+
+<p>There exist various methods for solving an Ordinary Differential Equation (ODE) numerically. One very common one is Runge-Kutta of 4th order (RK4). Those methods are usually defined for ODEs of first order:</p>
+
+<p><span  class="math">\[
+\begin{aligned}
+z'(t) & = f(t,z(t))
+\end{aligned}
+\]</span></p>
+
+<p>To understand the basic principle, here is an example:</p>
+
+<p><span  class="math">\[
+\begin{aligned}
+y' & = x \cdot y = f(x,y) \\ \\
+m_0 & = f(x_0,y_0)
+\end{aligned}
+\]</span></p>
+
+<p>The ODE allows to compute the slope of <span  class="math">\(y\)</span> for each configuration of <span  class="math">\(x\)</span> and <span  class="math">\(y\)</span>. In order to solve the ODE we need an initial condition which is also included above. When solving this equation numerically for each step (in this case steps of <span  class="math">\(x\)</span>) the slope is computed and the next value of <span  class="math">\(y\)</span> is determined. Solving it numerically/recursively would look like this:</p>
+
+<p><span  class="math">\[
+\begin{aligned}
+m_0 & = x_0 \cdot y_0 \\ \\
+y_1 & = m_0 \cdot h + y_0 \\ \\
+m_1 & = (x_0 + h) \cdot y_1 \\ \\
+y_2 & = m_1 \cdot h + y_1 \\ \\
+m_2 & = (x_0 + 2h) \cdot y_2 \\ \\
+& \cdots \\ \\
+m_n & = (x_0 + n \cdot h) \cdot y_n \\ \\
+y_{n+1} & = m_n \cdot h + y_n \\ \\
+\end{aligned}
+\]</span></p>
+
+<p>With the slope an approximation of the next value for <span  class="math">\(y\)</span> can be computed. The smaller <span  class="math">\(h\)</span> is, the more accurate the approximation will be. This method is also kown as <a href="https://en.wikipedia.org/wiki/Euler_method">Forward Euler</a>. When applying Runge-Kutta methods one computes a weighted average of multiple slope values within the next step. Here is the definition of RK4 [2]:</p>
+
+<p><span  class="math">\[
+\begin{aligned}
+N_{RK(4)}(h,t,x) & = \frac{1}{6}k_1 + \frac{1}{3}k_2 + \frac{1}{3}k_3 + \frac{1}{6}k_4 \\ \\
+k_1 & = f(t,x) \\ \\
+k_2 & = f(t + \frac{h}{2}, x + k_1 \frac{h}{2}) \\ \\
+k_3 & = f(t + \frac{h}{2}, x + k_2 \frac{h}{2}) \\ \\
+k_4 & = f(t + h, x + k_3 h)
+\end{aligned}
+\]</span></p>
+
+<p>Where <span  class="math">\(N_{RK(4)}\)</span> is the numerical representation of <span  class="math">\(z'(t)\)</span>, <span  class="math">\(h\)</span> the stepsize and <span  class="math">\(x\)</span> the previously computed value (numerical representation of <span  class="math">\(z(t)\)</span>). In order to apply that method the 2nd order ODE which is used to represent the spring system has to be transformed in a linear system of 1st order ODEs with 2 rows. Decomposing higher order ODEs into 1st order ODEs is done by introducing new variables [3]. In this case it is sufficient to define <span  class="math">\(\dot{x} = v\)</span>, then our system looks like the following:</p>
+
+<p><span  class="math">\[
+\begin{aligned}
+\dot{x} & = v \\ \\
+F(x,v,u) = \dot{v} & = -v\left(\frac{d_f + d}{m} \right) - x\left(\frac{k_f + k}{m} \right) + d_u u\frac{k_f}{m}
+\end{aligned}
+\]</span></p>
+
+<p>To keep the formulas concise the dependency of <span  class="math">\(x\)</span> and <span  class="math">\(v\)</span> on time <span  class="math">\(t\)</span> is omitted. You could argue that <span  class="math">\(u\)</span> depends on <span  class="math">\(t\)</span>, but we assume <span  class="math">\(u\)</span> to be constant during a timestep (<span  class="math">\(u\)</span> can not be switched slower or faster, it is an instantaneous event). Remember that <span  class="math">\(u\)</span> is the variable which will be switched under the hood from <span  class="math">\(0\)</span> to <span  class="math">\(1\)</span> as a result of the user hitting a button. Now RK4 can be applied to both 1st order ODEs of this system. For the newly introduced variable it is:</p>
+
+<p><span  class="math">\[
+\begin{aligned}
+k_{x1} & = v_t \\ \\
+k_{x2} & = v_t + k_{v1} \frac{h}{2} \\ \\
+k_{x3} & = v_t + k_{v2} \frac{h}{2} \\ \\
+k_{x4} & = v_t + k_{v3} h \\ \\
+d\dot{x} & = \frac{1}{6}\left(k_{x1} + 2 k_{x2} + 2 k_{x3} + k_{x4} \right) \\ \\
+x_{t+1} & = x_t + h \cdot d\dot{x} \\ \\
+\end{aligned}
+\]</span></p>
+
+<p>For the second ODE it is:</p>
+
+<p><span  class="math">\[
+\begin{aligned}
+k_{v1} & = F(x_t, v_t, u_t) \\ \\
+k_{v2} & = F(x_t + k_{x1} \frac{h}{2}, v_t + k_{v1} \frac{h}{2}, u_t) \\ \\
+k_{v3} & = F(x_t + k_{x2} \frac{h}{2}, v_t + k_{v2} \frac{h}{2}, u_t) \\ \\
+k_{v4} & = F(x_t + k_{x3} h, v_t + k_{v3} h, u_t) \\ \\
+d\dot{v} & = \frac{1}{6}\left(k_{v1} + 2 k_{v2} + 2 k_{v3} + k_{v4} \right) \\ \\
+v_{t+1} & = v_t + h \cdot d\dot{v}
+\end{aligned}
+\]</span></p>
+
+<p>This concludes the mathematical part of this project. Now, with the system equations and the Runge-Kutta 4 equations at hand implementation is quite straightforward. It can be found in <a href="https://github.com/osanj/spring-interpolator/blob/master/interpolator/src/de/osanj/springinterpolator/SpringSystem.java">SpringSystem.java</a>. The important methods are <code>ode</code> and <code>updateSystem</code>.</p>
+
+<h2 id="putting-everything-together">Putting Everything Together</h2>
+
+<p>With the current configuration a single transition takes about 5 seconds (see the system response of <span  class="math">\(x\)</span> for <span  class="math">\(d = 2\)</span> in the image above). This is definitely too long for an animation. More common would be durations up to 1000 milliseconds. We can account for that by mapping it to a desired duration, basically playing the simulation faster or slower than it actually occured. Following picture tries to depict this:</p>
+
+<p><figure><img src="data/mapping-sim-real-time.png" alt="Time Mapping"></figure></p>
+
+<p>As you might have noticed the duration of the motion and therefore of the animation depends on the configuration of the parameters <span  class="math">\(d\)</span>, <span  class="math">\(k\)</span> and now also on the real-time-mapping. Instead of trying to predict the duration, an event-based approach is more reasonable. This breaks the &quot;traditional&quot; concept of an interpolator which is shown in the pseudo code at the beginning. In the implementation the listener interface for the interpolator has an additional method which fires once the final position is reached. See <a href="https://github.com/osanj/spring-interpolator/blob/master/interpolator/src/de/osanj/springinterpolator/OnSpringUpdateListener.java">OnSpringUpdateListener.java</a>:</p>
+
+<ul>
+<li><code>onSpringUpdate</code> provides the receiver with the current normalized value to update the animation</li>
+<li><code>onSpringFinalPosition</code> notifies the receiver that the system is in an equilibrium and reached a position permanently (as long as the input value <span  class="math">\(u\)</span> is not changed)</li>
+</ul>
+
+<p>The listeners are held by <a href="https://github.com/osanj/spring-interpolator/blob/master/interpolator/src/de/osanj/springinterpolator/SpringInterpolator.java">SpringInterpolator.java</a>. Every computation step the time mapping is performed and the events are dispatched. The computation steps are invoked by a loop which runs in a separate thread.</p>
+
+<p>The detection of an equilibrium is implemented rather heuristically. An array keeps track of the last few <span  class="math">\(x\)</span> values, if all of them were close enough to <span  class="math">\(x_e\)</span> an equilibrium is assumed, the system is stopped and the event is dispatched.</p>
+
+<h2 id="how-to-use-springinterpolator">How To Use <code>SpringInterpolator</code></h2>
+
+<p>Once <code>SpringInterpolator</code> is included in a project it can be used by implementing the listener interface and connecting the interpolator to an event in your application. Below is a Java stub for animating a button.</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ButtonAnimator</span> <span style="color:#66d9ef">implements</span> OnSpringUpdateListener<span style="color:#f92672">,</span>
+								OnClickListener<span style="color:#f92672">{</span>
+
+	<span style="color:#66d9ef">private</span> SpringInterpolator interpolator<span style="color:#f92672">;</span>
+	<span style="color:#66d9ef">private</span> Button button<span style="color:#f92672">;</span>
+
+	<span style="color:#66d9ef">public</span> <span style="color:#a6e22e">ButtonAnimator</span><span style="color:#f92672">(</span>Button button<span style="color:#f92672">)</span><span style="color:#f92672">{</span>
+		<span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">button</span> <span style="color:#f92672">=</span> button<span style="color:#f92672">;</span>
+		
+		<span style="color:#75715e">// new interpolator with 30fps update-cycle
+</span><span style="color:#75715e"></span>		interpolator <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> SpringInterpolator<span style="color:#f92672">(</span>30<span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+		
+		<span style="color:#75715e">// customize curve and duration
+</span><span style="color:#75715e"></span>		interpolator<span style="color:#f92672">.</span><span style="color:#a6e22e">setStiffness</span><span style="color:#f92672">(</span>5f<span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+		interpolator<span style="color:#f92672">.</span><span style="color:#a6e22e">setDampening</span><span style="color:#f92672">(</span>1f<span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+		interpolator<span style="color:#f92672">.</span><span style="color:#a6e22e">setApproximateDuration</span><span style="color:#f92672">(</span>500<span style="color:#f92672">)</span><span style="color:#f92672">;</span> <span style="color:#75715e">// milliseconds
+</span><span style="color:#75715e"></span>		
+		<span style="color:#75715e">// setting interfaces
+</span><span style="color:#75715e"></span>		button<span style="color:#f92672">.</span><span style="color:#a6e22e">addOnClickListener</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+		interpolator<span style="color:#f92672">.</span><span style="color:#a6e22e">addListener</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+	<span style="color:#f92672">}</span>
+	
+	<span style="color:#a6e22e">@Override</span>
+	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">onClick</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">{</span>
+		interpolator<span style="color:#f92672">.</span><span style="color:#a6e22e">setFinalPosition</span><span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+	<span style="color:#f92672">}</span>
+	
+	<span style="color:#a6e22e">@Override</span>
+	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">onSpringUpdate</span><span style="color:#f92672">(</span>SpringInterpolator interpolator<span style="color:#f92672">,</span>
+							   <span style="color:#66d9ef">float</span> interpolatedValue<span style="color:#f92672">)</span><span style="color:#f92672">{</span>
+		<span style="color:#75715e">// do animating here!
+</span><span style="color:#75715e"></span>	<span style="color:#f92672">}</span>
+	
+	<span style="color:#a6e22e">@Override</span>
+	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">onSpringFinalPosition</span><span style="color:#f92672">(</span>SpringInterpolator interpolator<span style="color:#f92672">,</span>
+									  <span style="color:#66d9ef">float</span> finalInterpolatedValue<span style="color:#f92672">,</span>
+									  <span style="color:#66d9ef">boolean</span> finalPosition<span style="color:#f92672">)</span><span style="color:#f92672">{</span>
+		<span style="color:#75715e">// do final stuff here!
+</span><span style="color:#75715e"></span>	<span style="color:#f92672">}</span> 
+ <span style="color:#f92672">}</span></code></pre></div>
+
+<p>The project on Github also includes an example application similar to the interactive demo on the Rebound website. It can be found <a href="https://github.com/osanj/spring-interpolator/tree/master/interpolator-example-application">here</a>.</p>
+
+<p><figure><img src="data/demo.gif" alt="Interpolation Demo"></figure></p>
+
+<h2 id="references">References</h2>
+
+<ol>
+<li>Google Inc. <a href="http://developer.android.com/guide/topics/resources/animation-resource.html#Interpolators">Android API Guides</a></li>
+<li>Braack, Malte (2011). <a href="data/lecture_notes_uni_kiel_ode.pdf">Numerik für Differentialgleichungen</a> (german, lecture notes, RK4-Definition on pdf-page 30)</li>
+<li>Ziessow, Dieter &amp; Gross, Richard. <a href="http://www.chemgapedia.de/vsengine/vlu/vsc/de/ma/1/mc/ma_13/ma_13_02/ma_13_02_11.vlu/Page/vsc/de/ma/1/mc/ma_13/ma_13_02/ma_13_02_31.vscml.html">Umwandlung in ein System erster Ordnung</a> (german)</li>
+</ol>
+
+</div>
+
+
+    </main>
+
+    
+  </body>
+</html>

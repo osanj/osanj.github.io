@@ -88,7 +88,7 @@ $$
 
 In the limit the quads become infinitesimal and the approximation converges to the correct solution. This time an integration over $$\phi_a$$ and $$\phi_b$$ does the job. The way the integral is constructed it "moves along the z-axis", after each step in $$\phi_b$$ it sums up the areas of all quads along this "latitude of the sphere".
 
-Please note that this integral only considers an eigth of the actual sphere. Accordingly, a factor of $$8$$ is included.
+Please note that this integral only considers an eighth of the actual sphere. Accordingly, a factor of $$8$$ is included.
 
 
 $$

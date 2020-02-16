@@ -84,7 +84,7 @@
 
 <p>By leveraging data structures and avoiding unnecessary computations for intersections. Methods of this kind are often called <em>bounding volume hierarchy</em> (BVH) or, more generally, <em>acceleration structures</em>. Testing all triangles for an intersection is of linear complexity <span  class="math">\(\mathcal{O}(n)\)</span>, of course.</p>
 
-<p>The triangles of an object mesh are often arranged in a compact manner. Before testing all triangles one can first test a box which encloses all triangles for intersection. This way all the frames passing by that object already save a lot of unnecessary computations. The computations for rays which actually hit that object can also be accelerated by decomposing that box further and further into a search tree. In the example below a binary search tree was built with <a href="https://stackoverflow.com/questions/22512319/what-is-aabb-collision-detection">AABB</a>s.</p>
+<p>Usually the triangles of an object mesh are often arranged in a compact manner. Before testing all triangles one can first test a box which encloses all triangles for intersection. This way all the rays passing by that object already save a lot of unnecessary computations. The computations for rays which actually hit that object can also be accelerated by decomposing that box further and further into a search tree. In the example below a binary search tree was built with <a href="https://stackoverflow.com/questions/22512319/what-is-aabb-collision-detection">AABB</a>s.</p>
 
 <p><figure><img src="data/animation3_500ms_with_tree_v2.gif" alt="Animation BVH Intersection"></figure></p>
 

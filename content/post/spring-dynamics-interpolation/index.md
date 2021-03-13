@@ -85,7 +85,7 @@ In the context of an interpolator for animations moving the board from one posit
 
 ## Concept Validation with Simulink
 
-In order to proof the concept I used MatLab and Simulink to simulate it. Therefore the equation of motion of the system had to be determined. One does this by setting up the balance of forces which affect the mass. Replacing the forces with the respective formulas leads to ordinary differential equation of second order.
+In order to proof the concept I used MatLab and Simulink to simulate it. Therefore the equation of motion of the system had to be determined. One does this by setting up the balance of forces which affect the mass. Replacing the forces with the respective formulas leads to an ordinary differential equation of second order.
 
 $$
 \begin{aligned}

@@ -3,7 +3,7 @@
 <head>
   <link href="//gmpg.org/xfn/11" rel="profile">
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
-  <meta name="generator" content="Hugo 0.62.1" />
+  <meta name="generator" content="Hugo 0.83.1" />
 
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -80,30 +80,30 @@
 </span><span style="color:#75715e"></span>	<span style="color:#66d9ef">private</span> Interpolator interpolator<span style="color:#f92672">;</span>
 	
 	
-	<span style="color:#66d9ef">public</span> <span style="color:#a6e22e">Animation</span><span style="color:#f92672">(</span><span style="color:#66d9ef">long</span> duration<span style="color:#f92672">,</span> UiRect rect<span style="color:#f92672">,</span> <span style="color:#66d9ef">float</span> destScale<span style="color:#f92672">)</span><span style="color:#f92672">{</span>
+	<span style="color:#66d9ef">public</span> <span style="color:#a6e22e">Animation</span><span style="color:#f92672">(</span><span style="color:#66d9ef">long</span> duration<span style="color:#f92672">,</span> UiRect rect<span style="color:#f92672">,</span> <span style="color:#66d9ef">float</span> destScale<span style="color:#f92672">){</span>
 		<span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">durationMillis</span> <span style="color:#f92672">=</span> duration<span style="color:#f92672">;</span>
-		<span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">startMillis</span> <span style="color:#f92672">=</span> System<span style="color:#f92672">.</span><span style="color:#a6e22e">currentTimeMillis</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+		<span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">startMillis</span> <span style="color:#f92672">=</span> System<span style="color:#f92672">.</span><span style="color:#a6e22e">currentTimeMillis</span><span style="color:#f92672">();</span>
 		
 		<span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">rect</span> <span style="color:#f92672">=</span> rect<span style="color:#f92672">;</span>
-		<span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">startScale</span> <span style="color:#f92672">=</span> rect<span style="color:#f92672">.</span><span style="color:#a6e22e">getScale</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+		<span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">startScale</span> <span style="color:#f92672">=</span> rect<span style="color:#f92672">.</span><span style="color:#a6e22e">getScale</span><span style="color:#f92672">();</span>
 		<span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">destScale</span> <span style="color:#f92672">=</span> destScale<span style="color:#f92672">;</span>
 	
-		interpolator <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Interpolator<span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+		interpolator <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Interpolator<span style="color:#f92672">();</span>
 	<span style="color:#f92672">}</span>
 	
 	<span style="color:#75715e">// called every 16ms (60fps)
-</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">onAnimate</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">{</span>
-		<span style="color:#66d9ef">long</span> t <span style="color:#f92672">=</span> System<span style="color:#f92672">.</span><span style="color:#a6e22e">currentTimeMillis</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">onAnimate</span><span style="color:#f92672">(){</span>
+		<span style="color:#66d9ef">long</span> t <span style="color:#f92672">=</span> System<span style="color:#f92672">.</span><span style="color:#a6e22e">currentTimeMillis</span><span style="color:#f92672">();</span>
 
 		<span style="color:#75715e">// normalized value of time (0 ... 1)
 </span><span style="color:#75715e"></span>		<span style="color:#66d9ef">float</span> animationTime <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>t <span style="color:#f92672">-</span> startMillis<span style="color:#f92672">)</span> <span style="color:#f92672">/</span> durationMillis<span style="color:#f92672">;</span>
 		
 		<span style="color:#75715e">// normalized value for setting the scale (0 ... 1)
-</span><span style="color:#75715e"></span>		<span style="color:#66d9ef">float</span> scaleFactor <span style="color:#f92672">=</span> interpol<span style="color:#f92672">.</span><span style="color:#a6e22e">getValue</span><span style="color:#f92672">(</span>animationTime<span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+</span><span style="color:#75715e"></span>		<span style="color:#66d9ef">float</span> scaleFactor <span style="color:#f92672">=</span> interpol<span style="color:#f92672">.</span><span style="color:#a6e22e">getValue</span><span style="color:#f92672">(</span>animationTime<span style="color:#f92672">);</span>
 		
 		<span style="color:#75715e">// manipulating UI-object
-</span><span style="color:#75715e"></span>		<span style="color:#66d9ef">float</span> scaleDelta <span style="color:#f92672">=</span> scaleFactor <span style="color:#f92672">*</span> <span style="color:#f92672">(</span>destScale <span style="color:#f92672">-</span> startScale<span style="color:#f92672">)</span><span style="color:#f92672">;</span>
-		rect<span style="color:#f92672">.</span><span style="color:#a6e22e">setScale</span><span style="color:#f92672">(</span>startScale <span style="color:#f92672">+</span> scaleDelta<span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+</span><span style="color:#75715e"></span>		<span style="color:#66d9ef">float</span> scaleDelta <span style="color:#f92672">=</span> scaleFactor <span style="color:#f92672">*</span> <span style="color:#f92672">(</span>destScale <span style="color:#f92672">-</span> startScale<span style="color:#f92672">);</span>
+		rect<span style="color:#f92672">.</span><span style="color:#a6e22e">setScale</span><span style="color:#f92672">(</span>startScale <span style="color:#f92672">+</span> scaleDelta<span style="color:#f92672">);</span>
 	<span style="color:#f92672">}</span>
 <span style="color:#f92672">}</span></code></pre></div>
 
@@ -125,7 +125,7 @@
 
 <h2 id="concept-validation-with-simulink">Concept Validation with Simulink</h2>
 
-<p>In order to proof the concept I used MatLab and Simulink to simulate it. Therefore the equation of motion of the system had to be determined. One does this by setting up the balance of forces which affect the mass. Replacing the forces with the respective formulas leads to ordinary differential equation of second order.</p>
+<p>In order to proof the concept I used MatLab and Simulink to simulate it. Therefore the equation of motion of the system had to be determined. One does this by setting up the balance of forces which affect the mass. Replacing the forces with the respective formulas leads to an ordinary differential equation of second order.</p>
 
 <p><span  class="math">\[
 \begin{aligned}
@@ -283,37 +283,37 @@ v_{t+1} & = v_t + h \cdot d\dot{v}
 	<span style="color:#66d9ef">private</span> SpringInterpolator interpolator<span style="color:#f92672">;</span>
 	<span style="color:#66d9ef">private</span> Button button<span style="color:#f92672">;</span>
 
-	<span style="color:#66d9ef">public</span> <span style="color:#a6e22e">ButtonAnimator</span><span style="color:#f92672">(</span>Button button<span style="color:#f92672">)</span><span style="color:#f92672">{</span>
+	<span style="color:#66d9ef">public</span> <span style="color:#a6e22e">ButtonAnimator</span><span style="color:#f92672">(</span>Button button<span style="color:#f92672">){</span>
 		<span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">button</span> <span style="color:#f92672">=</span> button<span style="color:#f92672">;</span>
 		
 		<span style="color:#75715e">// new interpolator with 30fps update-cycle
-</span><span style="color:#75715e"></span>		interpolator <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> SpringInterpolator<span style="color:#f92672">(</span>30<span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+</span><span style="color:#75715e"></span>		interpolator <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> SpringInterpolator<span style="color:#f92672">(</span>30<span style="color:#f92672">);</span>
 		
 		<span style="color:#75715e">// customize curve and duration
-</span><span style="color:#75715e"></span>		interpolator<span style="color:#f92672">.</span><span style="color:#a6e22e">setStiffness</span><span style="color:#f92672">(</span>5f<span style="color:#f92672">)</span><span style="color:#f92672">;</span>
-		interpolator<span style="color:#f92672">.</span><span style="color:#a6e22e">setDampening</span><span style="color:#f92672">(</span>1f<span style="color:#f92672">)</span><span style="color:#f92672">;</span>
-		interpolator<span style="color:#f92672">.</span><span style="color:#a6e22e">setApproximateDuration</span><span style="color:#f92672">(</span>500<span style="color:#f92672">)</span><span style="color:#f92672">;</span> <span style="color:#75715e">// milliseconds
+</span><span style="color:#75715e"></span>		interpolator<span style="color:#f92672">.</span><span style="color:#a6e22e">setStiffness</span><span style="color:#f92672">(</span>5f<span style="color:#f92672">);</span>
+		interpolator<span style="color:#f92672">.</span><span style="color:#a6e22e">setDampening</span><span style="color:#f92672">(</span>1f<span style="color:#f92672">);</span>
+		interpolator<span style="color:#f92672">.</span><span style="color:#a6e22e">setApproximateDuration</span><span style="color:#f92672">(</span>500<span style="color:#f92672">);</span> <span style="color:#75715e">// milliseconds
 </span><span style="color:#75715e"></span>		
 		<span style="color:#75715e">// setting interfaces
-</span><span style="color:#75715e"></span>		button<span style="color:#f92672">.</span><span style="color:#a6e22e">addOnClickListener</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
-		interpolator<span style="color:#f92672">.</span><span style="color:#a6e22e">addListener</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+</span><span style="color:#75715e"></span>		button<span style="color:#f92672">.</span><span style="color:#a6e22e">addOnClickListener</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">);</span>
+		interpolator<span style="color:#f92672">.</span><span style="color:#a6e22e">addListener</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">);</span>
 	<span style="color:#f92672">}</span>
 	
 	<span style="color:#a6e22e">@Override</span>
-	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">onClick</span><span style="color:#f92672">(</span><span style="color:#f92672">)</span><span style="color:#f92672">{</span>
-		interpolator<span style="color:#f92672">.</span><span style="color:#a6e22e">setFinalPosition</span><span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">)</span><span style="color:#f92672">;</span>
+	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">onClick</span><span style="color:#f92672">(){</span>
+		interpolator<span style="color:#f92672">.</span><span style="color:#a6e22e">setFinalPosition</span><span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">);</span>
 	<span style="color:#f92672">}</span>
 	
 	<span style="color:#a6e22e">@Override</span>
 	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">onSpringUpdate</span><span style="color:#f92672">(</span>SpringInterpolator interpolator<span style="color:#f92672">,</span>
-							   <span style="color:#66d9ef">float</span> interpolatedValue<span style="color:#f92672">)</span><span style="color:#f92672">{</span>
+							   <span style="color:#66d9ef">float</span> interpolatedValue<span style="color:#f92672">){</span>
 		<span style="color:#75715e">// do animating here!
 </span><span style="color:#75715e"></span>	<span style="color:#f92672">}</span>
 	
 	<span style="color:#a6e22e">@Override</span>
 	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">onSpringFinalPosition</span><span style="color:#f92672">(</span>SpringInterpolator interpolator<span style="color:#f92672">,</span>
 									  <span style="color:#66d9ef">float</span> finalInterpolatedValue<span style="color:#f92672">,</span>
-									  <span style="color:#66d9ef">boolean</span> finalPosition<span style="color:#f92672">)</span><span style="color:#f92672">{</span>
+									  <span style="color:#66d9ef">boolean</span> finalPosition<span style="color:#f92672">){</span>
 		<span style="color:#75715e">// do final stuff here!
 </span><span style="color:#75715e"></span>	<span style="color:#f92672">}</span> 
  <span style="color:#f92672">}</span></code></pre></div>

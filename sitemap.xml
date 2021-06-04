@@ -1,70 +1,53 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
-  
   <url>
     <loc>https://osanj.github.io/</loc>
-    <lastmod>2019-04-02T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+    <lastmod>2021-03-21T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://osanj.github.io/tags/build/</loc>
+    <lastmod>2021-03-21T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://osanj.github.io/tags/code/</loc>
+    <lastmod>2021-03-21T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://osanj.github.io/post/</loc>
+    <lastmod>2021-03-21T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://osanj.github.io/post/gradle-swig-task-for-android/</loc>
+    <lastmod>2021-03-21T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://osanj.github.io/tags/</loc>
+    <lastmod>2021-03-21T00:00:00+00:00</lastmod>
+  </url><url>
     <loc>https://osanj.github.io/post/efficient-triangle-intersection/</loc>
     <lastmod>2019-04-02T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://osanj.github.io/tags/graphics/</loc>
     <lastmod>2019-04-02T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://osanj.github.io/tags/math/</loc>
     <lastmod>2019-04-02T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://osanj.github.io/post/</loc>
-    <lastmod>2019-04-02T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://osanj.github.io/tags/shader/</loc>
     <lastmod>2019-04-02T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://osanj.github.io/tags/</loc>
-    <lastmod>2019-04-02T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://osanj.github.io/tags/matlab/</loc>
     <lastmod>2015-01-03T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://osanj.github.io/tags/ordinary-differential-equation/</loc>
     <lastmod>2015-01-03T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://osanj.github.io/tags/runge-kutta/</loc>
     <lastmod>2015-01-03T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://osanj.github.io/post/spring-dynamics-interpolation/</loc>
     <lastmod>2015-01-03T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://osanj.github.io/post/visualizing-sphere-integrals/</loc>
     <lastmod>2014-11-18T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://osanj.github.io/about/</loc>
     <lastmod>2014-01-01T00:00:00+00:00</lastmod>
   </url>
-  
 </urlset>

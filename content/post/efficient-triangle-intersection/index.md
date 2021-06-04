@@ -53,6 +53,5 @@ For developing the code to build BVHs, the following links proved useful to me:
 * http://www.aaronperley.com/parallel-downsampling/
 * https://medium.com/@bromanz/how-to-create-awesome-accelerators-the-surface-area-heuristic-e14b5dec6160
 
-How to properly query such BVHs, I asked and answered on [stackoverflow](https://stackoverflow.com/questions/55479683/traversal-of-bounding-volume-hierachy-in-shaders). :grimacing:
+How to properly query such BVHs, I asked and answered on [stackoverflow](https://stackoverflow.com/questions/55479683/traversal-of-bounding-volume-hierachy-in-shaders). :slightly_smiling_face:
 
-So long! :call_me_hand:

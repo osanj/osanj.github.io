@@ -7,11 +7,11 @@ use_math: true
 use_justify: true
 ---
 
-This is writeup of some formulas that proofed to be helpful understanding and working with homographies.
+This is writeup of some formulas that proved to be helpful understanding and working with homographies.
 
 <!--more-->
 
-It is based on some notes I made along the last few years. I apologize upfront for missing references and bad notation.
+It is based on some notes I made along the last few years. I apologize upfront for the lack of references.
 
 &nbsp;
 
@@ -162,7 +162,7 @@ $$
 \end{aligned}
 $$
 
-When expanding the equation, $$\frac{1}{s_1}$$ can be moved on the other side while maintaining the original structure of the equation:
+When expanding the equation, $$s_1$$ can be moved on the other side while maintaining the original structure of the equation:
 
 $$
 \begin{aligned}
@@ -202,7 +202,7 @@ def scale_homography(h: np.ndarray, s_src: float,
 
 ### Use a Homography for a Shifted Anchor
 
-Consider a homography is computed for a quad correspondence and the objective is to warp images into the original image _outside_ of the quad. When using [`cv.warpPerspective`](https://docs.opencv.org/4.5.5/da/d54/group__imgproc__transform.html#gaf73673a7e8e18ec6963e3774e6a94b87) it is only possible to warp to the right and bottom of the original domain, essentially everywhere where pixel indices are positive (remember that image coordinate systems are in the top left, positive x is rightwards and positive y is downwards). A remedy to this is to compute a homography which does already cover area to the left and top of the original quad.
+Consider a homography is computed for a quad correspondence and the objective is to warp images into the original image _outside_ of the quad. When using [`cv.warpPerspective`](https://docs.opencv.org/4.5.5/da/d54/group__imgproc__transform.html#gaf73673a7e8e18ec6963e3774e6a94b87) it is only possible to warp to the right and bottom of the original domain, essentially everywhere where pixel indices are positive (remember that image coordinate systems are in the top left, positive x is rightwards and positive y is downwards). A remedy to this is to compute a homography which does already cover the required area to the left and top of the original quad.
 
 ![Shifted Homography](data/homography_schema3.png)
 

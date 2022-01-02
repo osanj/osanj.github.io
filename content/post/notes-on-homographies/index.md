@@ -122,10 +122,10 @@ def dlt(src: np.ndarray, dst: np.ndarray) -> Optional[np.ndarray]:
 
     try:
         m_inv = np.linalg.inv(m)
-    except np.LinAlgError:
+    except np.linalg.LinAlgError:
         return None
 
-    k = np.concatenate((src[:, 0], src[:, 1]))
+    k = np.concatenate((dst[:, 0], dst[:, 1]))
     h = np.dot(m_inv, k)
     return np.reshape(np.concatenate((h, [1])), (3, 3))
 {{< / highlight >}}

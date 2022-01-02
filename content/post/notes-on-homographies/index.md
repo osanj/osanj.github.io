@@ -20,7 +20,7 @@ It is based on some notes I made along the last few years. I apologize upfront f
 To solve for a homography 4 correspondences are required. Given the locations of these points it is possible to construct a linear
 equation system and solve for the entries of the homography matrix.
 
-_schema1_
+![Image correspondences](data/homography_schema1.png)
 
 The relation between the image points and the homography is given by:
 
@@ -143,7 +143,7 @@ def dlt(src: np.ndarray, dst: np.ndarray) -> Optional[np.ndarray]:
 
 Consider a homography is computed on a certain scale, but it is used on a different scale. A concrete example is running tracking algorithms (e.g. keypoint based) on a smaller scale than the input to keep everything efficient, but then doing some kind of visualization on the original scale:
 
-_schema2_
+![Scaled Images](data/homography_schema2.png)
 
 Consider points that are on a different scale relative to the scale where the homography was computed on:
 
@@ -204,7 +204,7 @@ def scale_homography(h: np.ndarray, s_src: float,
 
 Consider a homography is computed for a quad correspondence and the objective is to warp images into the original image _outside_ of the quad. When using [`cv.warpPerspective`](https://docs.opencv.org/4.5.5/da/d54/group__imgproc__transform.html#gaf73673a7e8e18ec6963e3774e6a94b87) it is only possible to warp to the right and bottom of the original domain, essentially everywhere where pixel indices are positive (remember that image coordinate systems are in the top left, positive x is rightwards and positive y is downwards). A remedy to this is to compute a homography which does already cover area to the left and top of the original quad.
 
-_schema3_
+![Shifted Homography](data/homography_schema3.png)
 
 This time it is only required to introduce new variables for the source domain:
 

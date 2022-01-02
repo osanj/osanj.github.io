@@ -186,6 +186,18 @@ $$
 
 This is a generalization of a [Stackoverflow answer](https://stackoverflow.com/a/48915151) I submitted some years ago (on Stackoverflow only the case $$s = s_1 = s_2$$ is covered and the usage of scales is inverted). Depending on the exact usecase doing the computations on the original scale and only scaling the resulting geometry to your desired scale might be more straightforward. Also recomputing the homography with the DLT instead of modifying the existing one is an easy option. However, if you feel nerdy and want to make your code harder to read feel free to use this :upside_down_face:
 
+{{< highlight Python >}}
+import numpy as np
+
+def scale_homography(h: np.ndarray, s_src: float,
+                     s_dst: float) -> np.ndarray:
+    assert h.shape == (3, 3)
+    h2 = h.copy()
+    h2[:2, :] /= s_src
+    h2[:, :2] *= s_dst
+    return h2
+{{< / highlight >}}
+
 &nbsp;
 
 ### Use a Homography for a Shifted Anchor
@@ -223,3 +235,13 @@ $$
 
 For this usecase a pragmatic, less elegant alternative exists as well. One can project the 4 vertices of the image to be warped using the initial homography. After that one can recompute the homography using the corners of the warp image and the projected vertices as correspondences with the DLT.
 
+{{< highlight Python >}}
+import numpy as np
+
+def shift_homograpy(h: np.ndarray, tx: float,
+                    ty: float) -> np.ndarray:
+    assert h.shape == (3, 3)
+    h2 = h.copy()
+    h2[:, 2] -= h2[:, 0] * tx + h2[:, 0] * tx + h2[:, 1] * ty
+    return h2
+{{< / highlight >}}

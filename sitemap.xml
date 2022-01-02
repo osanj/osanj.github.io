@@ -3,7 +3,19 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://osanj.github.io/</loc>
-    <lastmod>2021-03-21T00:00:00+00:00</lastmod>
+    <lastmod>2021-12-27T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://osanj.github.io/tags/math/</loc>
+    <lastmod>2021-12-27T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://osanj.github.io/post/notes-on-homographies/</loc>
+    <lastmod>2021-12-27T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://osanj.github.io/post/</loc>
+    <lastmod>2021-12-27T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://osanj.github.io/tags/</loc>
+    <lastmod>2021-12-27T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://osanj.github.io/tags/build/</loc>
     <lastmod>2021-03-21T00:00:00+00:00</lastmod>
@@ -11,22 +23,13 @@
     <loc>https://osanj.github.io/tags/code/</loc>
     <lastmod>2021-03-21T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://osanj.github.io/post/</loc>
-    <lastmod>2021-03-21T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>https://osanj.github.io/post/gradle-swig-task-for-android/</loc>
-    <lastmod>2021-03-21T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://osanj.github.io/tags/</loc>
     <lastmod>2021-03-21T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://osanj.github.io/post/efficient-triangle-intersection/</loc>
     <lastmod>2019-04-02T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://osanj.github.io/tags/graphics/</loc>
-    <lastmod>2019-04-02T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://osanj.github.io/tags/math/</loc>
     <lastmod>2019-04-02T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://osanj.github.io/tags/shader/</loc>

@@ -13,11 +13,16 @@ This is writeup of some formulas that proofed to be helpful understanding and wo
 
 It is based on some notes I made along the last few years. I apologize upfront for missing references and bad notation.
 
+&nbsp;
 
 ## Solving for a Homography Given 2D Correspondences
 
 To solve for a homography 4 correspondences are required. Given the locations of these points it is possible to construct a linear
-equation system and solve for the entries of the homography matrix. The relation between the image points and the homography is given by:
+equation system and solve for the entries of the homography matrix.
+
+_schema1_
+
+The relation between the image points and the homography is given by:
 
 $$
 \begin{aligned}
@@ -99,9 +104,9 @@ $$
 
 Once this is done the elements of $$\vec{h}$$ and $$h_{33}$$ (or whatever element was fixed) can be arranged into a matrix again. Then the homography can be used to project points from one domain to another. Of course, the usual requirements for matrix inversion also apply here, i.e. $$M$$ needs to exhibit linear independence, for instance this is not given if two correspondence pairs are identical.
 
-This kind of approach is called _Direct Linear Transform_ in literature.
+This kind of approach is called _Direct Linear Transform_ (DLT) in literature. It is only a viable approach if the correspondences are sufficiently precise. Robust homography estimation is usually done with more than 4 correspondences and using RANSAC-style methods which can cope with incorrect correspondences.
 
-To conclude, here is a simple python implementation:
+To conclude, here is an implementation in Python:
 
 {{< highlight Python >}}
 from typing import Optional
@@ -130,34 +135,91 @@ def dlt(src: np.ndarray, dst: np.ndarray) -> Optional[np.ndarray]:
     return np.reshape(np.concatenate((h, [1])), (3, 3))
 {{< / highlight >}}
 
+&nbsp;
 
 ## Transforming Existing Homographies
 
+### Use a Homography for Different Scales
 
-This section is an extension on [one](https://stackoverflow.com/a/48915151) of my answers that I gave on stackoverflow. If a homography was computed for a certain set of
-correspondences, but needs to be used on a different scale or relative to a different coordinate frame there are ways to modify it accordingly instead of recomputing it.
+Consider a homography is computed on a certain scale, but it is used on a different scale. A concrete example is running tracking algorithms (e.g. keypoint based) on a smaller scale than the input to keep everything efficient, but then doing some kind of visualization on the original scale:
 
-### Scale and Translation
+_schema2_
+
+Consider points that are on a different scale relative to the scale where the homography was computed on:
 
 $$
 \begin{aligned}
-A &= n \cdot a = n \cdot \frac{1}{2} \cdot r^2 \cdot \tan\left(\frac{2\pi}{n}\right) \\
-A &= \lim_{n \to \infty} n \cdot \frac{1}{2} \cdot r^2 \cdot \tan\left(\frac{2\pi}{n}\right) = \lim_{n \to \infty} n \cdot \frac{1}{2} \cdot r^2 \cdot \frac{2\pi}{n} = \pi r^2
+\begin{pmatrix} X^\prime \\ Y^\prime \end{pmatrix} &= s_1 \begin{pmatrix} X \\ Y \end{pmatrix} \\ \\
+\begin{pmatrix} x^\prime \\ y^\prime \end{pmatrix} &= s_2 \begin{pmatrix} x \\ y \end{pmatrix}
 \end{aligned}
 $$
 
+The objective is now to transform the homography in a way that the scaling does not need to be done before/after applying the homography. For starters let's plug the scaled version into the basic equation:
 
-It is possible to include rotation as well, however since the equations got massive and there was no obvious usecase, it was excluded. Do these formulas lead to improvmenets w.r.t. runtime? Probably not, as solving for a homography with new correspondences is not very expensive either.
-It was a nice exercise, anyway. Check the next sections for shorthands on the specific cases and some usecases.
+$$
+\begin{aligned}
+\frac{1}{s_1} \begin{pmatrix} X^\prime \\ Y^\prime \end{pmatrix} = \Pi \left( H \frac{1}{s_2} \begin{pmatrix} x^\prime \\ y^\prime \\ s_2 \end{pmatrix} \right)
+\end{aligned}
+$$
 
-### Only Scale
+When expanding the equation, $$\frac{1}{s_1}$$ can be moved on the other side while maintaining the original structure of the equation:
 
+$$
+\begin{aligned}
+\begin{pmatrix} X^\prime \\ Y^\prime \end{pmatrix} &= s_1 \Pi \left( H \frac{1}{s_2} \begin{pmatrix} x^\prime \\ y^\prime \\ s_2 \end{pmatrix} \right) \\
+&= s_1 \Pi \left( \begin{pmatrix} \frac{1}{s_2} h_{11} x^\prime + \frac{1}{s_2} h_{12} y^\prime + h_{13} \\ \frac{1}{s_2} h_{21} x^\prime + \frac{1}{s_2} h_{22} y^\prime + h_{23} \\ \frac{1}{s_2} h_{31} x^\prime + \frac{1}{s_2} h_{32} y^\prime + h_{33} \end{pmatrix} \right) \\
+&= s_1 \frac{1}{\frac{1}{s_2} h_{31} x^\prime + \frac{1}{s_2} h_{32} y^\prime + h_{33}} \begin{pmatrix} \frac{1}{s_2} h_{11} x^\prime + \frac{1}{s_2} h_{12} y^\prime + h_{13} \\ \frac{1}{s_2} h_{21} x^\prime + \frac{1}{s_2} h_{22} y^\prime + h_{23} \end{pmatrix} \\
+&= \frac{1}{\frac{1}{s_2} h_{31} x^\prime + \frac{1}{s_2} h_{32} y^\prime + h_{33}} \begin{pmatrix} \frac{s_1}{s_2} h_{11} x^\prime + \frac{s_1}{s_2} h_{12} y^\prime + s_1 h_{13} \\ \frac{s_1}{s_2} h_{21} x^\prime + \frac{s_1}{s_2} h_{22} y^\prime + s_1 h_{23} \end{pmatrix} \\
+&= \Pi \left( H_s \begin{pmatrix} x^\prime \\ y^\prime \\ 1 \end{pmatrix} \right)
+\end{aligned}
+$$
 
-usecase: do tracking on lower scale, but visualization on original scale
+Now it is possible to read off the entries of a modified homography $$H_s$$ that maps between the scaled domains:
 
+$$
+H_s = \begin{pmatrix}
+\frac{s_1}{s_2} h_{11} & \frac{s_1}{s_2} h_{12} & s_1 h_{13} \\
+\frac{s_1}{s_2} h_{21} & \frac{s_1}{s_2} h_{22} & s_1 h_{23} \\
+\frac{1}{s_2} h_{31} & \frac{1}{s_2} h_{32} & h_{33}
+\end{pmatrix}
+$$
 
-### Only Translation
+This is a generalization of a [Stackoverflow answer](https://stackoverflow.com/a/48915151) I submitted some years ago (on Stackoverflow only the case $$s = s_1 = s_2$$ is covered and the usage of scales is inverted). Depending on the exact usecase doing the computations on the original scale and only scaling the resulting geometry to your desired scale might be more straightforward. Also recomputing the homography with the DLT instead of modifying the existing one is an easy option. However, if you feel nerdy and want to make your code harder to read feel free to use this :upside_down_face:
 
-usecase: solve for homography, but use cv warp to warp image which is to the left and top of origin
+&nbsp;
 
+### Use a Homography for a Shifted Anchor
+
+Consider a homography is computed for a quad correspondence and the objective is to warp images into the original image _outside_ of the quad. When using [`cv.warpPerspective`](https://docs.opencv.org/4.5.5/da/d54/group__imgproc__transform.html#gaf73673a7e8e18ec6963e3774e6a94b87) it is only possible to warp to the right and bottom of the original domain, essentially everywhere where pixel indices are positive (remember that image coordinate systems are in the top left, positive x is rightwards and positive y is downwards). A remedy to this is to compute a homography which does already cover area to the left and top of the original quad.
+
+_schema3_
+
+This time it is only required to introduce new variables for the source domain:
+
+$$
+\begin{pmatrix} x^\prime \\ y^\prime \end{pmatrix} = \begin{pmatrix} x + t_x \\ y + t_y \end{pmatrix}
+$$
+
+The modus operandi remains the same, let's plug this new relation in the basic equation, rearrange and read off the new homography:
+
+$$
+\begin{aligned}
+\begin{pmatrix} X \\ Y \end{pmatrix} &= \Pi \left( H \begin{pmatrix} x^\prime - t_x \\ y^\prime - t_y \\ 1 \end{pmatrix} \right) \\
+&= \Pi \left( \begin{pmatrix} h_{11} \left( x^\prime - t_x \right) + h_{12} \left( y^\prime - t_y \right) + h_{13} \\ h_{21} \left( x^\prime - t_x \right) + h_{22} \left( y^\prime - t_y \right) + h_{23} \\ h_{31} \left( x^\prime - t_x \right) + h_{32} \left( y^\prime - t_y \right) + h_{33} \end{pmatrix} \right) \\
+&= \Pi \left( \begin{pmatrix} h_{11} x^\prime + h_{12} y^\prime + h_{13} - h_{11} t_x - h_{12} t_y \\ h_{21} x^\prime + h_{22} y^\prime + h_{23} - h_{21} t_x - h_{22} t_y \\ h_{31} x^\prime + h_{32} y^\prime + h_{33} - h_{31} t_x - h_{32} t_y \end{pmatrix} \right) \\
+&= \Pi \left( H_t \begin{pmatrix} x^\prime \\ y^\prime \\ 1 \end{pmatrix} \right)
+\end{aligned}
+$$
+
+In this case the modified homography is:
+
+$$
+H_t = \begin{pmatrix}
+h_{11} & h_{12} & h_{13} - h_{11} t_x - h_{12} t_y \\
+h_{21} & h_{22} & h_{23} - h_{21} t_x - h_{22} t_y \\
+h_{31} & h_{32} & h_{33} - h_{31} t_x - h_{32} t_y
+\end{pmatrix}
+$$
+
+For this usecase a pragmatic, less elegant alternative exists as well. One can project the 4 vertices of the image to be warped using the initial homography. After that one can recompute the homography using the corners of the warp image and the projected vertices as correspondences with the DLT.
 

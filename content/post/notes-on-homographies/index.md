@@ -242,6 +242,6 @@ def shift_homograpy(h: np.ndarray, tx: float,
                     ty: float) -> np.ndarray:
     assert h.shape == (3, 3)
     h2 = h.copy()
-    h2[:, 2] -= h2[:, 0] * tx + h2[:, 0] * tx + h2[:, 1] * ty
+    h2[:, 2] -= h2[:, 0] * tx + h2[:, 1] * ty
     return h2
 {{< / highlight >}}

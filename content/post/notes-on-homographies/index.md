@@ -119,7 +119,7 @@ def dlt(src: np.ndarray, dst: np.ndarray) -> Optional[np.ndarray]:
     m = np.zeros((8, 8))
     m[0:4, 0] = m[4:8, 3] = src[:, 0]
     m[0:4, 1] = m[4:8, 4] = src[:, 1]
-    m[0:4, 2] = m[4:8, 5] = src[:, 2]
+    m[0:4, 2] = m[4:8, 5] = 1
     m[0:4, 6] = - src[:, 0] * dst[:, 0]
     m[0:4, 7] = - src[:, 1] * dst[:, 0]
     m[4:8, 6] = - src[:, 0] * dst[:, 1]

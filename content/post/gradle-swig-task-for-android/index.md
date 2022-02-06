@@ -1,7 +1,7 @@
 ---
 title: Quick and Dirty Gradle Task for Android Projects Using Swig
 date: 2021-03-21
-tags: ["code", "build"]
+tags: ["software engineering", "java", "c++", "build processes"]
 markup: "mmark"
 use_math: true
 use_justify: true

@@ -1,7 +1,7 @@
 ---
 title: Notes on Homographies
 date: 2021-12-27
-tags: ["math"]
+tags: ["math", "computer vision", "python"]
 markup: "mmark"
 use_math: true
 use_justify: true

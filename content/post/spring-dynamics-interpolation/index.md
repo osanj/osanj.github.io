@@ -1,7 +1,7 @@
 ---
 title: Using Spring Dynamics ODE for Animation Interpolation (Rebuilding Facebook Rebound)
 date: 2015-01-03
-tags: ["math", "runge-kutta", "ordinary differential equation", "matlab"]
+tags: ["math", "software engineering", "runge-kutta", "ordinary differential equation", "matlab", "java"]
 markup: "mmark"
 use_math: true
 use_justify: true

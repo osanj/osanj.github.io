@@ -1,7 +1,7 @@
 ---
 title: Efficient Triangle Intersection in 3D Scences
 date: 2019-04-02
-tags: ["math", "graphics", "shader"]
+tags: ["math", "software engineering", "computer graphics", "shader"]
 markup: "mmark"
 use_math: true
 use_justify: true

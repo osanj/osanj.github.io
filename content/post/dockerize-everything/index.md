@@ -40,7 +40,7 @@ There are some obvious and some less obvious usecases for containers, to the exp
 
 Ok, ok, ok, yes that sounds like a house of cards. Using Docker images to serve code in production is probably the easiest of the bunch (of usecases) and the reason why containers are so popular.
 
-It moves the responsibility of defining the dependencies to the developer who knows about them naturally since the code supposedly was tested _on his/her machine_. The people running and maintaining the production servers only need to setup their system to run the Docker image, with `docker run`, `docker-compose`, in a Kubernetes setup or whatever they deem reasonable. They no longer need to know about certain dependencies of some software that they have not written themselves and can focus on the other aspects of delivering code.
+It moves the responsibility of defining the dependencies to the developer who knows about them naturally since the code supposedly was tested _on his/her machine_. The people running and maintaining the production servers only need to care about how they run the Docker images, with plain `docker run` / `docker-compose`, in a Kubernetes setup or whatever they deem reasonable. They no longer need to know about certain dependencies of some software that they have not written themselves and can focus on the other aspects of delivering code.
 
 
 
@@ -55,10 +55,7 @@ It moves the responsibility of defining the dependencies to the developer who kn
 > **Imagine** needing to launch all these services everytime you do basic development and testing.
 
 
-Ok, first of all it's the other teams' fault or the person that decided not to use Docker images. Go tell them to change this. Once that is done, write yourself a docker compose file which defines all images you need, how you need them run and check this into your git repo.
-
-
-Docker Compose is your friend
+Ok, first of all it's the other teams' fault or the person that decided not to use Docker images. Go tell them to change this. Also tell them to use some registry to share the Docker images with other teams. Once that is done, write yourself a docker compose file which defines all images you need, how you need them to be started and check this into your git repo. Before developing run `docker-compose up` to get your dependencies running. If you need them running all the time, you might as well add a [turn the restart policy to always](https://docs.docker.com/compose/compose-file/compose-file-v3/#restart), this way the services are started together with Docker itself (i.e. when your machine starts - yes, I shutdown my notebook everyday).
 
 
 
@@ -78,31 +75,52 @@ Local and CI machine will do the _same_ stuff
 
 > **Imagine** all of this only works on a specific linux distro with some backported gcc
 
-Don't write all that stuff in a documentation for everyone to struggle and ask you anyway, just write a freaking Dockerfile.
+Compiling native projects is never easy. There are packaging systems like [conan](https://github.com/conan-io/conan) becoming more commonly used, but in my experience it is still a pain.
+Writing documentation about the build process is good, but making the build work _everywhere_ is even better. For this add two components:
 
-Turn your `cmake bla bla` into `docker run xyz bla bla`
+* a docker image which defines the build environment
+* a script which as single point of entry for the build process which does the following:
+  * runs the Docker image
+  * mounts (`-v`!) all project files into the image and adds volumes so build artifacts persist after the container is stopped
+  * triggers the build
 
-note cross compilation
-
-Packaging systems do emerge in C++, but wrapping your build with a Docker image is still worth the effort.
+This will turn your `cmake bla bla` into `docker run -v $(pwd):/source my_build_image bla bla` and allows for consistent and reproducible builds.
 
 
 ### Platform Independent Command Line Tools
 
 > **Imagine** you have written an awesome script and it would help your co-workers as well
 
-> **Imagine** you have the human decency to share it with them
+> **Imagine** you want to share it with them
 
 > **Imagine** it requires them to install Python `X.Y` and 3 other dependencies
 
 > **Imagine** having to _sell_ your script to your co-workers although it would ease their workflow
 
+How about 1 dependency? That seems okay, they will get some benefit from it after going through the pain of installing that 1 dependency after all. What if I told you a way where this dependency is likely to already be installed on your co-workers' systems. How about putting your script into a Docker container and setting the `ENTRYPOINT`?
 
-![slug life](https://i.chzbgr.com/full/9190240512/h3F011B10/snail-meme-slug-ididnt-choose-the-slug-life-the-slug-life-chose-me)
+{{< highlight Docker >}}
+FROM python:3.10-buster
+COPY script.py /script.py
+COPY requirements.txt /requirements.txt
+RUN pip install -r /requirements.txt # installing all dependencies
+ENTRYPOINT ["python3", "/script.py"]
+{{< / highlight >}}
 
+The docker image can now be used like the script itself without worrying about the installation, `docker run my_script_dockerized argument --option`. If you want it to feel less Docker, you could add a simple script in `/usr/local/bin` which starts the image and [forwards](https://stackoverflow.com/a/1537695) all inputs to the container:
 
-How about 1 dependency? That seems okay, they will get some benefit from it after going through the pain of installing that 1 dependency after all. What if I told you there was a way where it is likely that this 1 dependency is already installed. No, I do not mean using Go binaries, these require 0 dependencies (LINK?). But how about putting your script into a Docker container and setting the `ENTRYPOINT`?
+{{< highlight Bash >}}
+#!/bin/bash
+docker run my_script_dockerized $@
+{{< / highlight >}}
 
-If you wanna be fancy you can wrap it with a shell script in `/usr/local/bin`, so it feels less Docker
+There are some caveats here, though:
+
+* File paths for both input and output need to be mounted in the image otherwise the script within the container will not find the input file and, respectively, store output inside the container which will be gone once it is stopped. One could mount the entire root directory with `-v /:/host` and develop have corresponding logic in the script, but tbh I am not sure about the security implications of this mount
+* You might want to specify a host mode if the script is supposed to reach services which are running on the host machine
+
+You see that this is admittedly not the best way of distributing a script. But it certainly has its benefits and skips a lot of hurdles when building full-fledged packages, e.g. for the [Python Package Index](https://pypi.org/) or even on an OS level (e.g. Debian). 
+
+Another option might be to learn Go, rewrite your script and [cross-compile](https://golangcookbook.com/chapters/running/cross-compiling/) it into self-contained executables (one for each platform) :upside_down:
 
 

@@ -233,7 +233,7 @@ h_{31} & h_{32} & h_{33} - h_{31} t_x - h_{32} t_y
 \end{pmatrix}
 $$
 
-For this usecase a pragmatic, less elegant alternative exists as well. One can project the 4 vertices of the image to be warped using the initial homography. After that one can recompute the homography using the corners of the warp image and the projected vertices as correspondences with the DLT.
+For this usecase a pragmatic, less elegant alternative exists as well: Using the initial homography, the corners of the image with frame (top right corner will be $$\left(-a, -b\right)$$) can be mapped into the image. Afterwards a new homography can be estimated using these new points and the corners of the image with frame: $$\left(0, 0\right)$$, $$\left(0, w_2\right)$$, $$\left(h_2, w_2\right)$$ and $$\left(h_2, 0\right)$$ where $$h_2 = h + 2a$$ and $$w_2 = w + 2b$$.
 
 {{< highlight Python >}}
 import numpy as np

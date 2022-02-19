@@ -66,7 +66,10 @@ Ok, first of all it's the other teams' fault or the person that decided not to u
 > **Imagine** running the _same_ test on the _same_ code in a continuous integration pipeline and some test fail.
 
 
-Local and CI machine will do the _same_ stuff
+Tests are important and environment differences are annoying to debug. If your code depends on a native library, system packages or similar it is likely that your tests or even build will fail on the generic setup of a continuous integration (CI) pipeline. This can range from obvious errors where the tests don't start to more subtle things like everything runs fine, but some image encoding library being newer in the CI environment which leads to different pixel values.
+
+Fortunately, in most CI products it is possible to configure a Docker image which shall be used as a runtime environment. There you go, define your dependencies in the image to have the same environment there. To have the exact same environment on your local machine, just do the same: mount your code into the image and run the tests there.
+
 
 
 ### Native Build Processes
@@ -81,7 +84,7 @@ Writing documentation about the build process is good, but making the build work
 * a docker image which defines the build environment
 * a script which as single point of entry for the build process which does the following:
   * runs the Docker image
-  * mounts (`-v`!) all project files into the image and adds volumes so build artifacts persist after the container is stopped
+  * mounts all project files into the image
   * triggers the build
 
 This will turn your `cmake bla bla` into `docker run -v $(pwd):/source my_build_image bla bla` and allows for consistent and reproducible builds.
@@ -116,7 +119,7 @@ docker run my_script_dockerized $@
 
 There are some caveats here, though:
 
-* File paths for both input and output need to be mounted in the image otherwise the script within the container will not find the input file and, respectively, store output inside the container which will be gone once it is stopped. One could mount the entire root directory with `-v /:/host` and develop have corresponding logic in the script, but tbh I am not sure about the security implications of this mount
+* File paths for both input and output need to be mounted in the image otherwise the script within the container will not find the input file and, respectively, store output inside the container which will be gone once it is stopped. One could mount the entire root directory with `-v /:/host` and develop have corresponding logic in the script, but tbh I am not sure about the security implications of this
 * You might want to specify a host mode if the script is supposed to reach services which are running on the host machine
 
 You see that this is admittedly not the best way of distributing a script. But it certainly has its benefits and skips a lot of hurdles when building full-fledged packages, e.g. for the [Python Package Index](https://pypi.org/) or even on an OS level (e.g. Debian). 

@@ -1,6 +1,6 @@
 ---
 title: How to Retrieve Video Frames Efficiently from S3 Buckets
-date: 2022-02-06
+date: 2022-02-18
 tags: ["software engineering", "python"]
 markup: "mmark"
 use_math: false
@@ -37,24 +37,28 @@ reference to AWS Rest API
 
 reference to MinIO Rest API
 
+
 > `def read(self, n: int = -1) -> bytes: ...`
 
-...
+Returns `n` bytes starting at `offset`. If less than `n` bytes are left, only the remaining bytes will be returned. If `-1` is passed, all remaining bytes from `offset` will be returned. Afterwards `offset` is set to the position after the last byte which was returned.
+
 
 > `def write(self, b: bytes) -> None: ...`
 
-...
-
-> `def seek(self, delta: int, whence: int) -> None: ...`
+Replaces `len(b)` bytes starting from `offset`. Afterwards `offset` is set to the position after the last written byte.
 
 
-sets `offset` of the object depending on `whence`
-* `offset = delta` for `whence == 0` (relative to beginning of the file)
-* `offset = offset + delta` for `whence == 1` (relative to the current offset)
-* `offset = n + delta` for `whence == 2` (relative to the end of the file, usually `delta` is negative in this case)
+
+> `def seek(self, delta: int, whence: int) -> None: ...`:
+
+Updates `offset` depending on `whence`
+* `whence == 0`: `offset = delta` (relative to beginning of the file)
+* `whence == 1`: `offset = offset + delta` (relative to the current offset)
+* `whence == 2`: `offset = n + delta` (relative to the end of the file, usually `delta` is negative in this case)
 
 
 > `def tell(self) -> int: ...`
 
-...
+Returns the current `offset`.
+
 

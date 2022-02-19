@@ -1,5 +1,5 @@
 ---
-title: How to Retrieve Video Frames Efficiently from S3 Buckets
+title: How to Efficiently Retrieve Video Frames from MinIO using pyAV
 date: 2022-02-18
 tags: ["software engineering", "python"]
 markup: "mmark"
@@ -7,15 +7,31 @@ use_math: false
 use_justify: true
 ---
 
-Let's say you have lot's of video files stored in a S3 Bucket and you want to retrieve specific frames from these. How could it be done efficiently?
+A video is made up of frames, but retrieving a specific frame from a video file is not straight forward.
 
 <!--more-->
 
 ## The Problem
 
+Let's say you have a dataset of video files stored in some kind of object storage. Also, in some script you need to access specific frames and now you want to build a service which provides the following interface:
+
+> `def get_frame(self, video_path: str, frame_index: int) -> npt.NDArray[np.uint8]: ...`
+
+In words: for a given video and frame number the decoded frame (3 channel matrix) should be returned.
+
+In this article the storage solution is [MinIO](https://min.io) ([which uses the same interface like S3 buckets on AWS](https://min.io/product/s3-compatibility)). For video decoding [pyAV](https://github.com/PyAV-Org/PyAV) is used which is one of the few libraries that provides _native_ bindings to libAV, many other packages [provide a glorified ffmpeg interface using `subprocess`](https://github.com/kkroening/ffmpeg-python/blob/f3079726fae7b7b71e4175f79c5eeaddc1d205fb/ffmpeg/_run.py#L288-L291).  (which is like starting a shell and printing a generated command in there, meh).
+
+
+## A Basic Solution
+
 Some kind of service which serves the correct frame for a given frame index from a remotely stored file and uses a minimum amount of bandwidth
 
 will be using MinIO and pyAV in this example.
+
+
+{{< highlight Python >}}
+pass
+{{< / highlight >}}
 
 
 ## Keyframes in Videos
@@ -24,7 +40,9 @@ will be using MinIO and pyAV in this example.
 
 ## Seeking in Videos
 
-
+{{< highlight Python >}}
+pass
+{{< / highlight >}}
 
 
 ## Wrapping a Remote File as a File Like Object
@@ -60,5 +78,17 @@ Updates `offset` depending on `whence`
 > `def tell(self) -> int: ...`
 
 Returns the current `offset`.
+
+
+{{< highlight Python >}}
+pass
+{{< / highlight >}}
+
+
+## Putting Things Together
+
+{{< highlight Python >}}
+pass
+{{< / highlight >}}
 
 

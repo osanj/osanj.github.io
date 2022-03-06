@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <link href="//gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.83.1" />
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>How to Efficiently Retrieve Video Frames from MinIO using pyAV &middot; Just a Notepad</title>
+
+  
+  <link type="text/css" rel="stylesheet" href="https://osanj.github.io/css/print.css" media="print">
+  <link type="text/css" rel="stylesheet" href="https://osanj.github.io/css/poole.css">
+  <link type="text/css" rel="stylesheet" href="https://osanj.github.io/css/syntax.css">
+  <link type="text/css" rel="stylesheet" href="https://osanj.github.io/css/hyde.css">
+  
+  <link type="text/css" rel="stylesheet" href="https://osanj.github.io/css/justified_text.css">
+  
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface|PT+Sans:400,400i,700">
+
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  
+
+  
+</head>
+
+  <body class=" ">
+  <aside class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://osanj.github.io/"><h1>Just a Notepad</h1></a>
+      <p class="lead">
+       For Stuff Worth Sharing 
+      </p>
+    </div>
+
+    <nav>
+      <ul class="sidebar-nav">
+        <li><a href="https://osanj.github.io/">Home</a> </li>
+        <li><a href="https://github.com/osanj/lava"> Lava </a></li><li><a href="/tags/"> Tags </a></li><li><a href="/about/"> About </a></li>
+      </ul>
+    </nav>
+
+    <p>© 2020-2022 Jonas Schuepfer</p>
+  </div>
+</aside>
+
+    <main class="content container">
+    <div class="post">
+  <h1>How to Efficiently Retrieve Video Frames from MinIO using pyAV</h1>
+  <time datetime=2022-02-18T00:00:00Z class="post-date">Fri, Feb 18, 2022</time>
+  <p>A video is made up of frames, but retrieving a specific frame from a video file is not straight forward. What if the video file is stored remotely?</p>
+
+<p>&nbsp;</p>
+
+<h2 id="the-problem">The Problem</h2>
+
+<p>Let's say you have a dataset of video files stored in some kind of object storage and in some script you need to access <em>specific</em> frames. In this post the storage solution is <a href="https://min.io">MinIO</a> (<a href="https://min.io/product/s3-compatibility">which uses the same interface like S3 buckets on AWS</a>). For video decoding <a href="https://github.com/PyAV-Org/PyAV">pyAV</a> is used which is one of the few libraries that provide <em>native</em> bindings to ffmpeg, especially to the ffmpeg module which performs the actual encoding and decoding. Many other packages <a href="https://github.com/kkroening/ffmpeg-python/blob/f3079726fae7b7b71e4175f79c5eeaddc1d205fb/ffmpeg/_run.py#L288-L291">provide a glorified ffmpeg interface using <code>subprocess</code></a> (which is like starting a shell and sending your generated command there, meh).</p>
+
+<p>The aim is to provide the following interface:</p>
+
+<p><code>def get_frame(client: Minio, video_id: str, frame_index: int) -&gt; npt.NDArray[np.uint8]:</code></p>
+
+<p>In words: given a client, a video id and a frame number the decoded frame (3 channel unsigned char matrix) should be returned.</p>
+
+<p>A quick and dirty solution would be to download the entire videofile and then loop over the frames (<a href="https://docs.opencv.org/4.5.5/dd/d43/tutorial_py_video_display.html">e.g. with opencv</a>) until you get the one you are looking for. If only short videos are stored or this is only used very rarely, it is fine. However, doing this in a system with reasonable traffic sounds inefficient, for a single frame the entire file needs to be downloaded. Let's say you want to create thumbnails for movie files, you would need to download the <em>entire</em> movie just to extract a single frame - that does not sound right 🙅‍♀️</p>
+
+<p>To come up with a somewhat reasonable solution we first need to gain some understanding on how videos are encoded.</p>
+
+<p>&nbsp;</p>
+
+<h2 id="a-highlevel-understanding-of-video-compression">A High-Level Understanding of Video Compression</h2>
+
+<p>For images we use encodings like JPEG or PNG. A video is a series of images (a.k.a frames), so just encode every frame with some image encoding, right? Well, no. Video encoding is a bit more involved. To reach reasonable compression rates, proper video encoding algorithms exploit the fact that consecutive frames likely show a lot of similar information. The basic idea is instead of storing that information for each frame, it is possible to store it once and then reuse it for some time with additional information, e.g. some kind of offset or scale. Video encoding is a true <a href="https://last.hit.bme.hu/download/vidtech/k%C3%B6nyvek/Iain%20E.%20Richardson%20-%20H264%20(2nd%20edition).pdf">rabbit hole</a>, all kinds of traditional signal and image processing concepts are thrown at the problem: Optical flow for motion estimation, discrete cosine transform for frequency decomposition of blocks, signal quantization, you name it.</p>
+
+<p><figure><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/I_P_and_B_frames.svg/1024px-I_P_and_B_frames.svg.png" alt="frame types"></figure></p>
+
+<p>For this usecase all these details are not important, however the notion that most frames only store partial information is important, more details <a href="https://ottverse.com/i-p-b-frames-idr-keyframes-differences-usecases/">here</a>. Only keyframes (also called I-frames) contain all the information of the specific frame, other frames depend on the nearest keyframe before as well as intermediate frames.</p>
+
+<p>&nbsp;</p>
+
+<h2 id="seeking-in-videos">Seeking in Videos</h2>
+
+<p>Armed with the knowledge of keyframes, there is a path forward for efficient frame retrieval. Assuming - of course - your video files have a reasonable distribution of keyframes! If a video is encoded with the first frame being the only keyframe, there is no way to retrieve frames without processing <em>all</em> frames before it. In the video player of your choice there would be noticable delays if you jump to different places of the video. If you want to check your video files, <code>ffprobe</code> can be used to <a href="https://stackoverflow.com/a/18088156">list the timestamps</a> of the keyframes:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">ffprobe -loglevel error -skip_frame nokey -select_streams v:0 -show_entries frame<span style="color:#f92672">=</span>pkt_pts_time -of csv<span style="color:#f92672">=</span>print_section<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span> some_video.mp4
+0.000000
+10.010000
+20.020000
+30.030000
+39.039000
+46.296244
+51.259544
+56.598211
+61.019289
+...</code></pre></div>
+<p>It should be clear now that the keyframe distribution defines how efficiently frames can be accessed. Since storing more keyframes likely increases redundancy, it will lead to a larger video file. Anyway, most videos do have a reasonable distribution of keyframes, so let's move on. The concept of frame retrieval is now fairly clear:</p>
+
+<ol>
+<li>for a given frame index, find the the closest keyframe <em>before</em> that frame index</li>
+<li>start decoding from that keyframe until the desired frame is reached</li>
+</ol>
+
+<p>So far, so good. Unfortunately, there is another obstacle in our way. There is no reliable frame index available in the <a href="https://libav.org/documentation/doxygen/release/9/structAVFrame.html">data structure for video frames</a>, see <a href="https://github.com/PyAV-Org/PyAV/issues/33">discussion in pyAV</a> for more details. One reliable part of the frame data structure is the frame timestamp. We have to update our retrieval algorithm:</p>
+
+<ol>
+<li>for a given frame index, find the corresponding frame timestamp</li>
+<li>find the the closest keyframe <em>before</em> that frame timestamp</li>
+<li>start decoding from that keyframe until the desired frame is reached</li>
+</ol>
+
+<p>For mapping an index to a timestamp it seems like there is no functionality built into ffmpeg (or pyAV). If the video in question has a <em>constant frame rate</em>, the frame timestamp could be computed as <code>frame_timestamp = frame_index / frame_rate</code> where <code>frame_rate</code> has unit frames per second. For videos of variable frame rate the only option is store the mapping from frame index to frame timestamp separately. For the rest of this post we will assume there is a function available to perform this mapping:</p>
+
+<p><code>def map_frame_index_to_ts(video_id: str, frame_index: int) -&gt; float</code></p>
+
+<p>&nbsp;</p>
+
+<h2 id="seeking-in-pyav">Seeking in pyAV</h2>
+
+<p>For now we will focus on local files, the interface looks like this:</p>
+
+<p><code>def get_frame_from_video(video_file: typing.BinaryIO, frame_ts: float) -&gt; npt.NDArray[np.uint8]: ...</code></p>
+
+<p>The argument <code>video_file</code> is type hinted as a binary IO object, i.e. files opened in binary mode (e.g. <code>open(video_file_path, &quot;rb&quot;)</code>) or bytes wrapped in a <code>io.BytesIO</code> object can be passed here. Apart from that there is not much left to say, here is the implementation:</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Python" data-lang="Python"><span style="color:#f92672">import</span> typing
+<span style="color:#f92672">import</span> warnings
+
+<span style="color:#f92672">import</span> av
+<span style="color:#f92672">import</span> numpy.typing <span style="color:#f92672">as</span> npt
+
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_frame_from_video</span>(video_file: typing<span style="color:#f92672">.</span>BinaryIO,
+                         frame_ts: float) <span style="color:#f92672">-&gt;</span> npt<span style="color:#f92672">.</span>NDArray[np<span style="color:#f92672">.</span>uint8]:
+    container <span style="color:#f92672">=</span> av<span style="color:#f92672">.</span>open(io_obj, mode<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;r&#34;</span>)
+    stream <span style="color:#f92672">=</span> container<span style="color:#f92672">.</span>streams<span style="color:#f92672">.</span>video[<span style="color:#ae81ff">0</span>]
+    offset <span style="color:#f92672">=</span> int(frame_ts <span style="color:#f92672">/</span> stream<span style="color:#f92672">.</span>time_base)
+
+    <span style="color:#75715e"># offset needs to be in the time base of the stream</span>
+    <span style="color:#75715e"># any_frame=False means seek only to keyframes</span>
+    <span style="color:#75715e"># backward=True means seek before the given offset (not behind)</span>
+    container<span style="color:#f92672">.</span>seek(stream<span style="color:#f92672">=</span>stream, offset<span style="color:#f92672">=</span>offset,
+                   any_frame<span style="color:#f92672">=</span>False, backward<span style="color:#f92672">=</span>True)
+
+    prev_frame <span style="color:#f92672">=</span> None
+    located_frame <span style="color:#f92672">=</span> None
+
+    <span style="color:#66d9ef">for</span> frame <span style="color:#f92672">in</span> container<span style="color:#f92672">.</span>decode(stream):
+        <span style="color:#66d9ef">if</span> frame<span style="color:#f92672">.</span>time <span style="color:#f92672">&lt;</span> frame_ts:
+            prev_frame <span style="color:#f92672">=</span> frame
+            <span style="color:#66d9ef">continue</span>
+
+        <span style="color:#66d9ef">elif</span> frame<span style="color:#f92672">.</span>time <span style="color:#f92672">==</span> frame_ts <span style="color:#f92672">or</span> prev_frame <span style="color:#f92672">is</span> None:
+            located_frame <span style="color:#f92672">=</span> frame
+
+        <span style="color:#66d9ef">else</span>:
+            warnings<span style="color:#f92672">.</span>warn(<span style="color:#e6db74">&#34;Could not find a frame at exactly &#34;</span>
+                          f<span style="color:#e6db74">&#34;{frame_ts}s, picking closest...&#34;</span>)
+            dist <span style="color:#f92672">=</span> abs(frame_ts <span style="color:#f92672">-</span> frame<span style="color:#f92672">.</span>time)
+            dist_prev <span style="color:#f92672">=</span> abs(frame_ts <span style="color:#f92672">-</span> prev_frame<span style="color:#f92672">.</span>time)
+            located_frame <span style="color:#f92672">=</span> frame <span style="color:#66d9ef">if</span> dist <span style="color:#f92672">&lt;</span> dist_prev <span style="color:#66d9ef">else</span> prev_frame
+        
+        <span style="color:#66d9ef">break</span>
+
+    <span style="color:#66d9ef">if</span> located_frame <span style="color:#f92672">is</span> None:
+        <span style="color:#66d9ef">raise</span> <span style="color:#a6e22e">RuntimeError</span>(f<span style="color:#e6db74">&#34;Could not get frame at {frame_ts}s&#34;</span>)
+
+    f: npt<span style="color:#f92672">.</span>NDArray[np<span style="color:#f92672">.</span>uint8]
+    f <span style="color:#f92672">=</span> located_frame<span style="color:#f92672">.</span>reformat(format<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;bgr24&#34;</span>)<span style="color:#f92672">.</span>to_ndarray()
+    <span style="color:#66d9ef">return</span> f</code></pre></div>
+
+<p>&nbsp;</p>
+
+<h2 id="wrapping-a-remote-file-as-a-file-like-object">Wrapping a Remote File as a File Like Object</h2>
+
+<p>Now that we have the seeking figured out, we can work on applying it on remote files directly. Since it is possible to pass any file-like object to pyAV, literally <em>anything</em> can be passed as long as the object behaves accordingly (🦆 typing, yeah!). But what is a file-like object? From <a href="https://github.com/PyAV-Org/PyAV/blob/f4a9df04dc08d28d1198af7b5550ad1e37b99aa5/av/container/core.pyx#L169-L175">peeking into the pyAV 8.1.0 code</a> and reading through <a href="https://docs.python.org/3/library/io.html">Python's I/O docs</a> it can be concluded that the following four methods are required:</p>
+
+<hr>
+
+<p><code>def read(self, n: int = -1) -&gt; bytes: ...</code> (<a href="https://docs.python.org/3/library/io.html#io.RawIOBase.read">docs</a>)</p>
+
+<p>Returns <code>n</code> bytes starting at <code>offset</code>. If less than <code>n</code> bytes are left, only the remaining bytes will be returned. If <code>-1</code> is passed, all remaining bytes from <code>offset</code> will be returned. Afterwards <code>offset</code> is set to the position after the last byte which was returned.</p>
+
+<hr>
+
+<p><code>def write(self, b: bytes) -&gt; None: ...</code> (<a href="https://docs.python.org/3/library/io.html#io.RawIOBase.write">docs</a>)</p>
+
+<p>Replaces <code>len(b)</code> bytes starting from <code>offset</code>. Afterwards <code>offset</code> is set to the position after the last written byte.</p>
+
+<hr>
+
+<p><code>def seek(self, delta: int, whence: int) -&gt; None: ...</code> (<a href="https://docs.python.org/3/library/io.html#io.IOBase.seek">docs</a>)</p>
+
+<p>Updates <code>offset</code> depending on <code>whence</code></p>
+
+<ul>
+<li><code>whence == 0</code>: <code>offset = delta</code> (relative to beginning of the file)</li>
+<li><code>whence == 1</code>: <code>offset = offset + delta</code> (relative to the current offset)</li>
+<li><code>whence == 2</code>: <code>offset = n + delta</code> (relative to the end of the file, usually <code>delta</code> is negative in this case)</li>
+</ul>
+
+<hr>
+
+<p><code>def tell(self) -&gt; int: ...</code> (<a href="https://docs.python.org/3/library/io.html#io.IOBase.tell">docs</a>)</p>
+
+<p>Returns the current <code>offset</code>.</p>
+
+<hr>
+
+<p>The API of MinIO provides the functionality required to construct a class which behaves like a file-like object for a given MinIO object:</p>
+
+<ul>
+<li><code>get_object</code> allows to retrieve partial files with <code>offset</code> and <code>length</code> (<a href="https://docs.min.io/docs/python-client-api-reference.html#get_object">docs</a>)</li>
+<li><code>stat_object</code> allows to retrieve the file size (<a href="https://docs.min.io/docs/python-client-api-reference.html#stat_object">docs</a>)</li>
+</ul>
+
+<p>Files stored on MinIO are also referred to as objects, so the terminology is not clearly separated here, but the implementation below should make it clear. Note that since we are only decoding (reading) videos, it won't be required to implement the <code>write</code> method.</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Python" data-lang="Python"><span style="color:#f92672">from</span> minio <span style="color:#f92672">import</span> Minio
+
+
+<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MinioFile</span>(object):
+
+    <span style="color:#66d9ef">def</span> __init__(self, client: Minio, bucket_name: str,
+                 obj_name: str):
+        self<span style="color:#f92672">.</span>client <span style="color:#f92672">=</span> client
+        self<span style="color:#f92672">.</span>bucket_name <span style="color:#f92672">=</span> bucket_name
+        self<span style="color:#f92672">.</span>obj_name <span style="color:#f92672">=</span> obj_name
+        self<span style="color:#f92672">.</span>offset <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+        self<span style="color:#f92672">.</span>overall_read <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+        stat <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>client<span style="color:#f92672">.</span>stat_object(bucket_name, obj_name)
+        self<span style="color:#f92672">.</span>size <span style="color:#f92672">=</span> int(stat<span style="color:#f92672">.</span>size)
+
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">read</span>(self, size: int <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>) <span style="color:#f92672">-&gt;</span> bytes:
+        <span style="color:#66d9ef">if</span> offset <span style="color:#f92672">==</span> self<span style="color:#f92672">.</span>size:
+            <span style="color:#66d9ef">return</span> bytes()
+        <span style="color:#66d9ef">if</span> size <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0</span>:
+            size <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>size <span style="color:#f92672">-</span> self<span style="color:#f92672">.</span>offset
+        resp <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>client<span style="color:#f92672">.</span>get_object(self<span style="color:#f92672">.</span>bucket_name, self<span style="color:#f92672">.</span>obj_name,
+                                      offset<span style="color:#f92672">=</span>self<span style="color:#f92672">.</span>offset, length<span style="color:#f92672">=</span>size)
+        self<span style="color:#f92672">.</span>offset <span style="color:#f92672">+=</span> len(resp<span style="color:#f92672">.</span>data)
+
+        <span style="color:#75715e"># # for debugging how much bytes were transferred</span>
+        <span style="color:#75715e"># self.overall_read += len(resp.data)</span>
+        <span style="color:#75715e"># rel_read = self.overall_read / self.size</span>
+        <span style="color:#75715e"># print(f&#34;read {size} bytes (overall {100 * rel_read:.02f}%)&#34;)</span>
+
+        <span style="color:#66d9ef">return</span> bytes(resp<span style="color:#f92672">.</span>data)
+
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">seek</span>(self, offset: int, whence: int <span style="color:#f92672">=</span> io<span style="color:#f92672">.</span>SEEK_SET) <span style="color:#f92672">-&gt;</span> None:
+        <span style="color:#66d9ef">if</span> whence <span style="color:#f92672">==</span> io<span style="color:#f92672">.</span>SEEK_SET:
+            self<span style="color:#f92672">.</span>offset <span style="color:#f92672">=</span> offset
+        <span style="color:#66d9ef">elif</span> whence <span style="color:#f92672">==</span> io<span style="color:#f92672">.</span>SEEK_CUR:
+            self<span style="color:#f92672">.</span>offset <span style="color:#f92672">+=</span> offset
+        <span style="color:#66d9ef">elif</span> whence <span style="color:#f92672">==</span> io<span style="color:#f92672">.</span>SEEK_END:
+            self<span style="color:#f92672">.</span>offset <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>size <span style="color:#f92672">+</span> offset
+        <span style="color:#66d9ef">else</span>:
+            <span style="color:#66d9ef">raise</span> <span style="color:#a6e22e">RuntimeError</span>(f<span style="color:#e6db74">&#34;Unknown whence value: {whence}&#34;</span>)
+
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">tell</span>(self) <span style="color:#f92672">-&gt;</span> int:
+        <span style="color:#66d9ef">return</span> self<span style="color:#f92672">.</span>offset</code></pre></div>
+
+<p>&nbsp;</p>
+
+<h2 id="putting-things-together">Putting Things Together</h2>
+
+<p><figure><img src="data/satisfying_high_precision_machining.gif" alt="https://imgur.com/XtwwylS"></figure></p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Python" data-lang="Python"><span style="color:#f92672">from</span> minio <span style="color:#f92672">import</span> Minio
+<span style="color:#f92672">import</span> numpy.typing <span style="color:#f92672">as</span> npt
+
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_frame</span>(client: Minio, video_id: str,
+              frame_index: int) <span style="color:#f92672">-&gt;</span> npt<span style="color:#f92672">.</span>NDArray[np<span style="color:#f92672">.</span>uint8]:
+    bucket, path <span style="color:#f92672">=</span> video_id<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#34;/&#34;</span>, maxsplit<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
+    video_obj <span style="color:#f92672">=</span> MinioFile(client, bucket, path)
+    frame_timestamp <span style="color:#f92672">=</span> map_frame_index_to_ts(video_id, frame_index)
+    <span style="color:#66d9ef">return</span> get_frame_from_video(video_obj, frame_timestamp)</code></pre></div>
+
+<p>Some remarks:</p>
+
+<ul>
+<li>it is assumed that <code>video_id</code> is formatted like <code>[bucket]/[path/in/bucket]</code></li>
+<li>the implementation of <code>map_frame_index_to_ts</code> is up to the reader (see options in the section about seeking)</li>
+<li>this was developed and tested with <a href="https://github.com/PyAV-Org/PyAV/tree/v8.1.0">pyAV 8.1.0</a> and <a href="https://github.com/minio/minio-py/tree/7.1.3">minIO 7.1.3</a></li>
+<li>make sure to install the <a href="https://pyav.org/docs/stable/overview/installation.html#dependencies">pyAV dependencies</a></li>
+</ul>
+
+<p>That's it, hope it was helpful 🙂</p>
+</div>
+
+
+    </main>
+
+    
+  </body>
+</html>

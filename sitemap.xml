@@ -3,6 +3,30 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://osanj.github.io/</loc>
+    <lastmod>2022-02-18T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://osanj.github.io/post/video-frames-from-remote-files/</loc>
+    <lastmod>2022-02-18T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://osanj.github.io/post/</loc>
+    <lastmod>2022-02-18T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://osanj.github.io/tags/python/</loc>
+    <lastmod>2022-02-18T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://osanj.github.io/tags/software-engineering/</loc>
+    <lastmod>2022-02-18T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://osanj.github.io/tags/</loc>
+    <lastmod>2022-02-18T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://osanj.github.io/tags/build-processes/</loc>
+    <lastmod>2022-02-06T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://osanj.github.io/post/dockerize-everything/</loc>
+    <lastmod>2022-02-06T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://osanj.github.io/tags/computer-vision/</loc>
     <lastmod>2021-12-27T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://osanj.github.io/tags/math/</loc>
@@ -11,25 +35,19 @@
     <loc>https://osanj.github.io/post/notes-on-homographies/</loc>
     <lastmod>2021-12-27T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://osanj.github.io/post/</loc>
-    <lastmod>2021-12-27T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://osanj.github.io/tags/</loc>
-    <lastmod>2021-12-27T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://osanj.github.io/tags/build/</loc>
+    <loc>https://osanj.github.io/tags/c&#43;&#43;/</loc>
     <lastmod>2021-03-21T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://osanj.github.io/tags/code/</loc>
+    <loc>https://osanj.github.io/tags/java/</loc>
     <lastmod>2021-03-21T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://osanj.github.io/post/gradle-swig-task-for-android/</loc>
     <lastmod>2021-03-21T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://osanj.github.io/post/efficient-triangle-intersection/</loc>
+    <loc>https://osanj.github.io/tags/computer-graphics/</loc>
     <lastmod>2019-04-02T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://osanj.github.io/tags/graphics/</loc>
+    <loc>https://osanj.github.io/post/efficient-triangle-intersection/</loc>
     <lastmod>2019-04-02T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://osanj.github.io/tags/shader/</loc>

@@ -6,7 +6,43 @@
     <description>Recent content in Tags on Just a Notepad</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 27 Dec 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://osanj.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 18 Feb 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://osanj.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>python</title>
+      <link>https://osanj.github.io/tags/python/</link>
+      <pubDate>Fri, 18 Feb 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://osanj.github.io/tags/python/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>software engineering</title>
+      <link>https://osanj.github.io/tags/software-engineering/</link>
+      <pubDate>Fri, 18 Feb 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://osanj.github.io/tags/software-engineering/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>build processes</title>
+      <link>https://osanj.github.io/tags/build-processes/</link>
+      <pubDate>Sun, 06 Feb 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://osanj.github.io/tags/build-processes/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>computer vision</title>
+      <link>https://osanj.github.io/tags/computer-vision/</link>
+      <pubDate>Mon, 27 Dec 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://osanj.github.io/tags/computer-vision/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>math</title>
       <link>https://osanj.github.io/tags/math/</link>
@@ -17,29 +53,29 @@
     </item>
     
     <item>
-      <title>build</title>
-      <link>https://osanj.github.io/tags/build/</link>
+      <title>c&#43;&#43;</title>
+      <link>https://osanj.github.io/tags/c&#43;&#43;/</link>
       <pubDate>Sun, 21 Mar 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://osanj.github.io/tags/build/</guid>
+      <guid>https://osanj.github.io/tags/c&#43;&#43;/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>code</title>
-      <link>https://osanj.github.io/tags/code/</link>
+      <title>java</title>
+      <link>https://osanj.github.io/tags/java/</link>
       <pubDate>Sun, 21 Mar 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://osanj.github.io/tags/code/</guid>
+      <guid>https://osanj.github.io/tags/java/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>graphics</title>
-      <link>https://osanj.github.io/tags/graphics/</link>
+      <title>computer graphics</title>
+      <link>https://osanj.github.io/tags/computer-graphics/</link>
       <pubDate>Tue, 02 Apr 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://osanj.github.io/tags/graphics/</guid>
+      <guid>https://osanj.github.io/tags/computer-graphics/</guid>
       <description></description>
     </item>
     

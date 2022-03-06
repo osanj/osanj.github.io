@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>build processes on Just a Notepad</title>
+    <link>https://osanj.github.io/tags/build-processes/</link>
+    <description>Recent content in build processes on Just a Notepad</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 06 Feb 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://osanj.github.io/tags/build-processes/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Just Put all Your Sh!t in Docker Images 🐋</title>
+      <link>https://osanj.github.io/post/dockerize-everything/</link>
+      <pubDate>Sun, 06 Feb 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://osanj.github.io/post/dockerize-everything/</guid>
+      <description>&lt;p&gt;Docker is awesome. It is even more awesome if you embrace it. So why stop at using it for production images?&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Quick and Dirty Gradle Task for Android Projects Using Swig</title>
+      <link>https://osanj.github.io/post/gradle-swig-task-for-android/</link>
+      <pubDate>Sun, 21 Mar 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://osanj.github.io/post/gradle-swig-task-for-android/</guid>
+      <description>&lt;p&gt;Swig is really great to wrap native projects. I have been working on wrapping native code in an Android app, figuring out how to run swig as part of the gradle build pipeline took me way too many google queries.&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

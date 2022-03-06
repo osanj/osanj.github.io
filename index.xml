@@ -6,7 +6,25 @@
     <description>Recent content on Just a Notepad</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 27 Dec 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://osanj.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 18 Feb 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://osanj.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How to Efficiently Retrieve Video Frames from MinIO using pyAV</title>
+      <link>https://osanj.github.io/post/video-frames-from-remote-files/</link>
+      <pubDate>Fri, 18 Feb 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://osanj.github.io/post/video-frames-from-remote-files/</guid>
+      <description>&lt;p&gt;A video is made up of frames, but retrieving a specific frame from a video file is not straight forward. What if the video file is stored remotely?&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Just Put all Your Sh!t in Docker Images 🐋</title>
+      <link>https://osanj.github.io/post/dockerize-everything/</link>
+      <pubDate>Sun, 06 Feb 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://osanj.github.io/post/dockerize-everything/</guid>
+      <description>&lt;p&gt;Docker is awesome. It is even more awesome if you embrace it. So why stop at using it for production images?&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>Notes on Homographies</title>
       <link>https://osanj.github.io/post/notes-on-homographies/</link>

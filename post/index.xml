@@ -6,7 +6,16 @@
     <description>Recent content in Posts on Just a Notepad</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 18 Feb 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://osanj.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 26 Jul 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://osanj.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Probability of a MRZ Checksum Failure</title>
+      <link>https://osanj.github.io/post/mrz-checksum-failure-analysis/</link>
+      <pubDate>Tue, 26 Jul 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://osanj.github.io/post/mrz-checksum-failure-analysis/</guid>
+      <description>&lt;p&gt;The machine readable zone (MRZ) of identity documents has various checksums which are intended to verify that a readout by a machine is actually correct. But how likely is it that mechanism fails?&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>How to Efficiently Retrieve Video Frames from MinIO using pyAV</title>
       <link>https://osanj.github.io/post/video-frames-from-remote-files/</link>

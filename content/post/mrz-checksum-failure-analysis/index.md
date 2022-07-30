@@ -7,7 +7,7 @@ use_math: true
 use_justify: true
 ---
 
-The machine readable zone (MRZ) of identity documents has various checksums which are intended to verify that a readout by a machine is actually correct. But how likely is it that mechanism fails?
+The machine readable zone (MRZ) of identity documents has various checksums which are intended to verify that a readout by a machine is actually correct. But how likely is it that this mechanism fails?
 
 <!--more-->
 
@@ -67,7 +67,7 @@ $$
 
 When computing and listing the remainders for possible characters, one can see that no remainder appears twice for a given weight:
 
-| $$c$$ | $$(c \cdot 7) \bmod 10$$ | $$(c \cdot 3) \bmod 10$$ | $$(c \cdot 1) \bmod 10$$ |
+| $$c$$ | $$(c \cdot 7) \bmod 10$$            | $$(c \cdot 3) \bmod 10$$            | $$(c \cdot 1) \bmod 10$$            |
 | ----- | ----------------------------------- | ----------------------------------- | ----------------------------------- |
 | 0     | 0                                   | 0                                   | 0                                   |
 | 1     | 7                                   | 3                                   | 1                                   |
@@ -94,7 +94,7 @@ So, if instead of `6503101` the readout is `8703101`, then the computed and read
 
 ### Observation #4 - Mathematically the Checksum Character can be Treated like the Other Characters
 
-This is an extension of observation #4. If the one of the flipping characters is the checksum character itself, the same argument applies. If any of the non checksum characters flip, it definitely will lead to a different computed checksum. This means if the checksum character of the readout is flipped to this new computed checksum, both match and the incorrect readout would not be detected.
+This is an extension of observation #3. If the one of the flipping characters is the checksum character itself, the same argument applies. If any of the non checksum characters flip, it definitely will lead to a different computed checksum. This means if the checksum character of the readout is flipped to this new computed checksum, both match and the incorrect readout would not be detected.
 
 The other way around works also, in this case the second character flip needs to happen in a way that the change in the checksum is cancelled.
 
@@ -167,7 +167,7 @@ For $$n = 7$$ the plot of this function looks like this:
 ![Scene](data/p_bad_match.svg)
 
 
-This confirms the initial intuiton that undetected flips are quite rare, especially for a good OCR engine with $$p_{char} \geq 0.95$$. Also within the MRZ there are multiple checksums and usually one that spans multiple data fields which decreases the probability of undetected flips further.
+This confirms the initial intuiton that undetected flips are quite rare, especially for a good OCR engine with $$p_{char} \geq 0.95$$. Also within the MRZ there are multiple checksums and usually one that spans multiple data fields which further decreases the probability of undetected flips.
 
 
 

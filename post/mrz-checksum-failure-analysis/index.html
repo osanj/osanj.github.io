@@ -60,7 +60,7 @@
     <div class="post">
   <h1>Probability of a MRZ Checksum Failure</h1>
   <time datetime=2022-07-26T00:00:00Z class="post-date">Tue, Jul 26, 2022</time>
-  <p>The machine readable zone (MRZ) of identity documents has various checksums which are intended to verify that a readout by a machine is actually correct. But how likely is it that mechanism fails?</p>
+  <p>The machine readable zone (MRZ) of identity documents has various checksums which are intended to verify that a readout by a machine is actually correct. But how likely is it that this mechanism fails?</p>
 
 <h3 id="the-icao-checksum-algorithm">The ICAO Checksum Algorithm</h3>
 
@@ -202,7 +202,7 @@ c_7 &= (c_1 \cdot 7 + c_2 \cdot 3 + c_3 \cdot 1 + c_4 \cdot 7 + c_5 \cdot 3 + c_
 
 <h3 id="observation-4--mathematically-the-checksum-character-can-be-treated-like-the-other-characters">Observation #4 - Mathematically the Checksum Character can be Treated like the Other Characters</h3>
 
-<p>This is an extension of observation #4. If the one of the flipping characters is the checksum character itself, the same argument applies. If any of the non checksum characters flip, it definitely will lead to a different computed checksum. This means if the checksum character of the readout is flipped to this new computed checksum, both match and the incorrect readout would not be detected.</p>
+<p>This is an extension of observation #3. If the one of the flipping characters is the checksum character itself, the same argument applies. If any of the non checksum characters flip, it definitely will lead to a different computed checksum. This means if the checksum character of the readout is flipped to this new computed checksum, both match and the incorrect readout would not be detected.</p>
 
 <p>The other way around works also, in this case the second character flip needs to happen in a way that the change in the checksum is cancelled.</p>
 
@@ -269,7 +269,7 @@ p_{bad\_match}(p_{char}) = \sum_{i=2}^n {p_{char}}^{n-i} \cdot (1 - p_{char})^i 
 
 <p><figure><img src="data/p_bad_match.svg" alt="Scene"></figure></p>
 
-<p>This confirms the initial intuiton that undetected flips are quite rare, especially for a good OCR engine with <span  class="math">\(p_{char} \geq 0.95\)</span>. Also within the MRZ there are multiple checksums and usually one that spans multiple data fields which decreases the probability of undetected flips further.</p>
+<p>This confirms the initial intuiton that undetected flips are quite rare, especially for a good OCR engine with <span  class="math">\(p_{char} \geq 0.95\)</span>. Also within the MRZ there are multiple checksums and usually one that spans multiple data fields which further decreases the probability of undetected flips.</p>
 </div>
 
 

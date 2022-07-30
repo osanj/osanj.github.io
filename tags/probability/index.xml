@@ -13,7 +13,7 @@
       <pubDate>Tue, 26 Jul 2022 00:00:00 +0000</pubDate>
       
       <guid>https://osanj.github.io/post/mrz-checksum-failure-analysis/</guid>
-      <description>&lt;p&gt;The machine readable zone (MRZ) of identity documents has various checksums which are intended to verify that a readout by a machine is actually correct. But how likely is it that mechanism fails?&lt;/p&gt;</description>
+      <description>&lt;p&gt;The machine readable zone (MRZ) of identity documents has various checksums which are intended to verify that a readout by a machine is actually correct. But how likely is it that this mechanism fails?&lt;/p&gt;</description>
     </item>
     
   </channel>

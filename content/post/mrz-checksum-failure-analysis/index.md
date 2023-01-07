@@ -166,6 +166,9 @@ For $$n = 7$$ the plot of this function looks like this:
 
 ![Scene](data/p_bad_match.svg)
 
+Here is a zoomed version:
+
+![Scene](data/p_bad_match_zoom.svg)
 
 This confirms the initial intuiton that undetected flips are quite rare, especially for a good OCR engine with $$p_{char} \geq 0.95$$. Also within the MRZ there are multiple checksums and usually one that spans multiple data fields which further decreases the probability of undetected flips.
 

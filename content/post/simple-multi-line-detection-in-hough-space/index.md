@@ -1,5 +1,5 @@
 ---
-title: A Heuristic Method to Find Multiple Lines in a Hough Space
+title: A Simple Method for Finding Multiple Lines in a Hough Space
 date: 2022-12-29
 tags: ["math", "computer vision"]
 markup: "mmark"
@@ -7,7 +7,7 @@ use_math: true
 use_justify: true
 ---
 
-Detecting the longest line in an Hough accumulator is easy, however detecting multiple lines is a much more difficult problem. This post shows an quick and dirty method that is not commonly known.
+Detecting the longest line in an Hough accumulator is easy, however detecting multiple lines is a more annoying problem.
 
 <!--more-->
 
@@ -15,13 +15,15 @@ Detecting the longest line in an Hough accumulator is easy, however detecting mu
 
 ### Hough Transform Recap
 
-The Hough transform is a brute force method for line detection. In simple terms for each given non-zero pixel in a binarized image it generates all possible lines and counts ("votes") how often each line occurs. To do this efficiently lines are represented in [normal form](https://en.wikipedia.org/wiki/Line_(geometry)#Hesse_normal_form):
+The Hough transform is a brute force method for line detection. In simple terms for each given non-zero pixel in a binarized image it generates all possible lines and counts ("votes") how often each line occurs. To this end lines are represented in [normal form](https://en.wikipedia.org/wiki/Line_(geometry)#Hesse_normal_form):
 
 $$
 \rho = x \cos \theta + y \sin \theta
 $$
 
-For implementation a set of discrete values for $$\rho$$ and $$\theta$$ are chosen and using the above formula the corresponding $$\rho$$ values are computed and discretized. An efficient numpy implementation is given below:
+For implementation a set of discrete values for $$\rho$$ and $$\theta$$ are chosen and using the above formula the corresponding $$\rho$$ values are computed and discretized. Then, in an accumulator array that represents the possible line configurations, votes are collected. The more votes a set of parameters $$(\rho, \theta)$$ has, the more points in the binarized image lay on this line.
+
+An efficient numpy implementation is given below:
 
 
 {{< highlight Python >}}
@@ -87,12 +89,12 @@ class HoughAccumulator:
 
 When finding the longest ("strongest") line in the Hough space, it's rather easy. With argmax the corresponding $$\rho_{argmax}$$ and $$\theta_{argmax}$$ can be found.
 
-However, when multiple lines are supposed to be detected, things get a bit more complicated. Typically a points in a binarized image are contributing to multiple lines in vicinity of the true line. All lines therefore create local maxima in the Hough space. Below is a visualization of an Hough accumulator, the x-axis represents $$\theta$$ and the y-axis $$\rho$$, the more votes a line has, the brighter it is:
+However, when multiple lines are supposed to be detected, things get a bit more complicated. Typically points in a binarized image are contributing to multiple lines in vicinity of the true line, so the signal in the Hough space is not a single entry. Lines are local maxima in the Hough space, however these are not necessarily strictly increasing in their neighborhood. Below is a visualization of an Hough accumulator, the x-axis represents $$\theta$$ and the y-axis $$\rho$$, the more votes a line has, the brighter it is:
 
 ![Hough Example](data/hough0.png)
 
 
-If multiple lines are need to be found, this requires finnicky searching through the Hough space and often leads to multiple line candidates per "true" line. For instance in OpenCV's implementation local maximas are found by [checking the 4-connected neighbors of a line](https://github.com/opencv/opencv/blob/725e440d278aca07d35a5e8963ef990572b07316/modules/imgproc/src/hough.cpp#L95-L108). There exists another, [probabilistic implementation of the Hough transform](https://docs.opencv.org/4.7.0/dd/d1a/group__imgproc__feature.html#ga46b4e588934f6c8dfd509cc6e0e4545a), however it also does not allow more control over the line picking.
+If multiple lines need to be found, this requires finnicky searching through the Hough space and often leads to multiple line candidates per "true" line. For instance in OpenCV's implementation local maximas are found by [checking the 4-connected neighbors of a line](https://github.com/opencv/opencv/blob/725e440d278aca07d35a5e8963ef990572b07316/modules/imgproc/src/hough.cpp#L95-L108). There exists another, [probabilistic implementation of the Hough transform](https://docs.opencv.org/4.7.0/dd/d1a/group__imgproc__feature.html#ga46b4e588934f6c8dfd509cc6e0e4545a), however it also does not allow more control over the line picking.
 
 
 
@@ -102,9 +104,9 @@ A simple, but surprisingly robust method to find multiple lines boils down to th
 
 1. process the binarized image with the Hough transform
 2. find the maximum in the Hough space or stop if the minimum requirements is not met for any line
-3. remove the line from the binarized image
+3. remove the line from the binarized image and go to step 1
 
-(in a more sophisticated implementation a "delta hough transform" could be used to update the Hough space instead of recomputing it every step)
+(in a more sophisticated version a "delta hough transform" can be implemented and used to update the Hough space instead of recomputing it every step)
 
 ### Demo
 
@@ -112,7 +114,7 @@ A simple, but surprisingly robust method to find multiple lines boils down to th
 
 (https://travelnevada.com/wp-content/uploads/2021/03/Highway50_Desktop.jpg)
 
-Processing above image with the algorithm sketched above, we can generate the following images that show the intermediate steps (Hough space on the left, binarized image below). Notice how the Hough space is updated in each iteration where the previous maximum as well as the surrouding values are removed. The script to generate the images including the Hough numpy implementation can be found [here](data/simple_hough_multiline.py).
+Processing above image with the described algorithm, we can generate the following images that show the intermediate steps (Hough space on the left, binarized image below). Notice that each line in the binarized image is removed and how the maxima plus more is disappearing in the Hough space every iteration. The script to generate the images including the Hough numpy implementation can be found [here](data/simple_hough_multiline.py).
 
 Step #0
 

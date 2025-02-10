@@ -3,7 +3,7 @@
 <head>
   <link href="//gmpg.org/xfn/11" rel="profile">
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
-  <meta name="generator" content="Hugo 0.83.1" />
+  <meta name="generator" content="Hugo 0.92.2" />
 
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -47,13 +47,46 @@
       </ul>
     </nav>
 
-    <p>© 2020-2022 Jonas Schuepfer</p>
+    <p>© 2020-2026 Jonas Schuepfer</p>
   </div>
 </aside>
 
     <main class="content container">
     <div class="posts">
 <article class="post">
+  <h1 class="post-title">
+    <a href="https://osanj.github.io/post/buildnrs-are-better-rcs/">Build Numbers are the Better Release Candidates</a>
+  </h1>
+  <time datetime="2024-04-07T00:00:00Z" class="post-date">Sun, Apr 7, 2024</time>
+  <p>Releasing a new version of a web application or larger software project usually involves some sort of build-deploy-test-fix cycle until it passes QA. A common approach is to have release candidates, however this implies re-building the last RC with the final tag which can be avoided with build numbers.</p>
+  
+  <div class="read-more-link">
+    <a href="/post/buildnrs-are-better-rcs/">Read More…</a>
+  </div>
+  
+</article><article class="post">
+  <h1 class="post-title">
+    <a href="https://osanj.github.io/post/how-denormal-floats-slow-down-inference/">How Denormal Floats Slow Down ML Inference</a>
+  </h1>
+  <time datetime="2023-07-18T00:00:00Z" class="post-date">Tue, Jul 18, 2023</time>
+  <p>Recently when converting a PyTorch checkpoint for CPU inference with ONNX throughput fell off a cliff. Of course, runtime on CPU is generally expected to be slower than on GPU, however something was off. Turns out a particular case of floating values was to blame.</p>
+  
+  <div class="read-more-link">
+    <a href="/post/how-denormal-floats-slow-down-inference/">Read More…</a>
+  </div>
+  
+</article><article class="post">
+  <h1 class="post-title">
+    <a href="https://osanj.github.io/post/simple-multi-line-detection-in-hough-space/">A Simple Method for Finding Multiple Lines in a Hough Space</a>
+  </h1>
+  <time datetime="2022-12-29T00:00:00Z" class="post-date">Thu, Dec 29, 2022</time>
+  <p>Detecting the longest line in an Hough accumulator is easy, however detecting multiple lines is a more annoying problem.</p>
+  
+  <div class="read-more-link">
+    <a href="/post/simple-multi-line-detection-in-hough-space/">Read More…</a>
+  </div>
+  
+</article><article class="post">
   <h1 class="post-title">
     <a href="https://osanj.github.io/post/mrz-checksum-failure-analysis/">Probability of a MRZ Checksum Failure</a>
   </h1>
@@ -124,7 +157,7 @@
     <a href="https://osanj.github.io/post/spring-dynamics-interpolation/">Using Spring Dynamics ODE for Animation Interpolation (Rebuilding Facebook Rebound)</a>
   </h1>
   <time datetime="2015-01-03T00:00:00Z" class="post-date">Sat, Jan 3, 2015</time>
-  Rebound is an open-source project by Facebook. It is used to control the course of animations. In case you are familiar with Android, you might know that Android provides several Interpolator classes (AccelerateInterpolator, DecelerateInterpolator, ...) to handle that task. While most of these provide a rather simple course of animation, Facebook's Rebound is based on spring dynamics which is not trivial to implement. This article describes my attempt to reverse engineer the Rebound library.
+  Rebound is an open-source project by Facebook. It is used to control the course of animations. In case you are familiar with Android, you might know that Android provides several Interpolator classes (AccelerateInterpolator, DecelerateInterpolator, &hellip;) to handle that task. While most of these provide a rather simple course of animation, Facebook&rsquo;s Rebound is based on spring dynamics which is not trivial to implement. This article describes my attempt to reverse engineer the Rebound library.
   
   <div class="read-more-link">
     <a href="/post/spring-dynamics-interpolation/">Read More…</a>

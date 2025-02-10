@@ -3,7 +3,7 @@
 <head>
   <link href="//gmpg.org/xfn/11" rel="profile">
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
-  <meta name="generator" content="Hugo 0.83.1" />
+  <meta name="generator" content="Hugo 0.92.2" />
 
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -48,7 +48,7 @@
       </ul>
     </nav>
 
-    <p>© 2020-2022 Jonas Schuepfer</p>
+    <p>© 2020-2026 Jonas Schuepfer</p>
   </div>
 </aside>
 
@@ -57,129 +57,109 @@
   <h1>Just Put all Your Sh!t in Docker Images 🐋</h1>
   <time datetime=2022-02-06T00:00:00Z class="post-date">Sun, Feb 6, 2022</time>
   <p>Docker is awesome. It is even more awesome if you embrace it. So why stop at using it for production images?</p>
-
-<p>Containerization is one of the puzzle piece in the big scheme of abstracting hardware. You have written your code on a unix machine, but need to run it on a Microsoft server farm? Don't worry, as long as you use platform agnostic protocols for interfacing with your code (e.g. HTTP, websockets, gRPC), you are golden.</p>
-
+<p>Containerization is one of the puzzle piece in the big scheme of abstracting hardware. You have written your code on a unix machine, but need to run it on a Microsoft server farm? Don&rsquo;t worry, as long as you use platform agnostic protocols for interfacing with your code (e.g. HTTP, websockets, gRPC), you are golden.</p>
 <p>There are some obvious and some less obvious usecases for containers, to the experienced folks out there these might be all no-brainers, but I feel like some really carry home that perspective of containerization, so it seems worth sharing this list anyway. Also, this article is written in the context of Docker since I am familiar with it plus I wanted to put a 🐋 in the title, but the ideas apply to other <a href="https://opencontainers.org/">OCI</a> systems as well.</p>
-
-<p>&nbsp;</p>
-
+<p> </p>
 <h3 id="production-images">Production Images</h3>
-
 <blockquote>
 <p><strong>Imagine</strong> running some kind of web service before containers and virtual machines.</p>
-
+</blockquote>
+<blockquote>
 <p><strong>Imagine</strong> scaling it to multiple nodes with a load balancer in front of it to manage the new traffic.</p>
-
+</blockquote>
+<blockquote>
 <p><strong>Imagine</strong> having more than 1 person with <code>ssh</code> and <code>sudo</code> rights maintaining them.</p>
-
+</blockquote>
+<blockquote>
 <p><strong>Imagine</strong> having duplicated and unversioned shell scripts on all machines.</p>
-
+</blockquote>
+<blockquote>
 <p><strong>Imagine</strong> doing a release by compiling code directly on the production servers.</p>
-
+</blockquote>
+<blockquote>
 <p><strong>Imagine</strong> after a release, stuff is broken on 1 machine, but works on the others.</p>
-
+</blockquote>
+<blockquote>
 <p><strong>Imagine</strong> doing any kind of rollback.</p>
 </blockquote>
-
-<p><figure><img src="https://www.meme-arsenal.com/memes/407c34ee2ace7621d4b816cea92e6078.jpg" alt="make it stop"></figure></p>
-
+<p><img src="https://www.meme-arsenal.com/memes/407c34ee2ace7621d4b816cea92e6078.jpg" alt="make it stop"></p>
 <p>Ok, ok, ok, yes that sounds like a house of cards. Using Docker images to serve code in production is probably the easiest of the bunch (of usecases) and the reason why containers are so popular.</p>
-
 <p>It moves the responsibility of defining the dependencies to the developer who knows about them naturally since the code supposedly was tested <em>on his/her machine</em>. The people running and maintaining the production servers only need to care about how they run the Docker images, with plain <code>docker run</code> / <code>docker-compose</code>, in a Kubernetes setup or whatever they deem reasonable. They no longer need to know about certain dependencies of some software that they have not written themselves and can focus on the other aspects of delivering code.</p>
-
-<p>&nbsp;</p>
-
+<p> </p>
 <h3 id="development-setups">Development Setups</h3>
-
 <blockquote>
 <p><strong>Imagine</strong> your code requires services from other teams.</p>
-
+</blockquote>
+<blockquote>
 <p><strong>Imagine</strong> the other teams do not provide Docker images.</p>
-
+</blockquote>
+<blockquote>
 <p><strong>Imagine</strong> you need to work through their (hopefully existent and up-to-date) documentation to build and run everything on your system.</p>
-
+</blockquote>
+<blockquote>
 <p><strong>Imagine</strong> needing to launch all these services everytime you do basic development and testing.</p>
 </blockquote>
-
-<p>Ok, first of all it's the other teams' fault or the person that decided not to use Docker images. Go tell them to change this. Also tell them to use some registry to share the Docker images with other teams. Once that is done, write yourself a docker compose file which defines all images you need, how you need them to be started and check this into your git repo. Before developing run <code>docker-compose up</code> to get your dependencies running. If you need them running all the time, you might as well <a href="https://docs.docker.com/compose/compose-file/compose-file-v3/#restart">set the restart policy to always</a>, this way the services are started together with Docker itself (i.e. when your machine starts - yes, I shutdown my notebook everyday).</p>
-
-<p>&nbsp;</p>
-
+<p>Ok, first of all it&rsquo;s the other teams' fault or the person that decided not to use Docker images. Go tell them to change this. Also tell them to use some registry to share the Docker images with other teams. Once that is done, write yourself a docker compose file which defines all images you need, how you need them to be started and check this into your git repo. Before developing run <code>docker-compose up</code> to get your dependencies running. If you need them running all the time, you might as well <a href="https://docs.docker.com/compose/compose-file/compose-file-v3/#restart">set the restart policy to always</a>, this way the services are started together with Docker itself (i.e. when your machine starts - yes, I shutdown my notebook everyday).</p>
+<p> </p>
 <h3 id="testing">Testing</h3>
-
 <blockquote>
 <p><strong>Imagine</strong> running a test on your machine and everything passes.</p>
-
+</blockquote>
+<blockquote>
 <p><strong>Imagine</strong> running the <em>same</em> test on the <em>same</em> code in a continuous integration pipeline and some tests fail.</p>
 </blockquote>
-
-<p>Tests are important and environment differences are annoying to debug. If your code depends on a native library, system packages or similar it is possible that your tests or even build will fail on the generic setup of a continuous integration (CI) pipeline. This can range from obvious errors where the tests don't start to more subtle things like everything runs fine, but some image encoding library being newer in the CI environment which leads to different pixel values.</p>
-
+<p>Tests are important and environment differences are annoying to debug. If your code depends on a native library, system packages or similar it is possible that your tests or even build will fail on the generic setup of a continuous integration (CI) pipeline. This can range from obvious errors where the tests don&rsquo;t start to more subtle things like everything runs fine, but some image encoding library being newer in the CI environment which leads to different pixel values.</p>
 <p>Fortunately, in most CI products it is possible to configure a Docker image which shall be used as a runtime environment. There you go, define your dependencies in the image to have the same environment there. To have the exact same environment on your local machine, just do the same: mount your code into the image and run the tests there.</p>
-
-<p>&nbsp;</p>
-
+<p> </p>
 <h3 id="native-build-processes">Native Build Processes</h3>
-
 <blockquote>
 <p><strong>Imagine</strong> you need to install 3 software packages and compile 2 native libraries to even compile your own code</p>
-
+</blockquote>
+<blockquote>
 <p><strong>Imagine</strong> all of this only works on a specific linux distro with some backported gcc</p>
 </blockquote>
-
 <p>Compiling native projects is never easy. There are packaging systems like <a href="https://github.com/conan-io/conan">conan</a> becoming more commonly used, but in my experience it is still a pain.
 Writing documentation about the build process is good, but making the build work <em>everywhere</em> is even better. For this add two components:</p>
-
 <ul>
 <li>a docker image which defines the build environment</li>
 <li>a script acting as the single point of entry for the build process, it does the following:
-
 <ul>
 <li>runs the Docker image</li>
 <li>mounts all project files into the image</li>
 <li>triggers the build</li>
-</ul></li>
 </ul>
-
+</li>
+</ul>
 <p>This will turn your <code>cmake bla bla</code> into <code>docker run -v $(pwd):/source my_build_image bla bla</code> and allows for consistent and reproducible builds.</p>
-
-<p>&nbsp;</p>
-
+<p> </p>
 <h3 id="platform-independent-command-line-tools">Platform Independent Command Line Tools</h3>
-
 <blockquote>
 <p><strong>Imagine</strong> you have written an awesome script and it would help your co-workers as well</p>
-
+</blockquote>
+<blockquote>
 <p><strong>Imagine</strong> you want to share it with them</p>
-
+</blockquote>
+<blockquote>
 <p><strong>Imagine</strong> it requires them to install Python <code>X.Y</code> and 3 other dependencies</p>
-
+</blockquote>
+<blockquote>
 <p><strong>Imagine</strong> having to <em>sell</em> your script to your co-workers although it would ease their workflow</p>
 </blockquote>
-
 <p>How about 1 dependency? That seems okay, they will get some benefit from it after going through the pain of installing that 1 dependency after all. What if I told you there is a way where this dependency is likely already installed on your co-workers' systems. How about putting your script into a Docker container and setting the <code>ENTRYPOINT</code> accordingly?</p>
-
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Docker" data-lang="Docker"><span style="color:#66d9ef">FROM</span><span style="color:#e6db74"> python:3.10-buster</span><span style="color:#960050;background-color:#1e0010">
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Docker" data-lang="Docker"><span style="color:#66d9ef">FROM</span><span style="color:#e6db74"> python:3.10-buster</span><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">COPY</span> script.py /script.py<span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">COPY</span> requirements.txt /requirements.txt<span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">RUN</span> pip install -r /requirements.txt <span style="color:#75715e"># installing all dependencies</span><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">ENTRYPOINT</span> [<span style="color:#e6db74">&#34;python3&#34;</span>, <span style="color:#e6db74">&#34;/script.py&#34;</span>]</code></pre></div>
-
 <p>The docker image can now be used like the script itself without worrying about the installation, <code>docker run my_dockerized_script argument --option</code>. If you want it to feel less Docker, you could add a simple script in <code>/usr/local/bin</code> which starts the image and <a href="https://stackoverflow.com/a/1537695">forwards</a> all inputs to the container:</p>
-
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Bash" data-lang="Bash"><span style="color:#75715e">#!/bin/bash
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Bash" data-lang="Bash"><span style="color:#75715e">#!/bin/bash
 </span><span style="color:#75715e"></span>docker run my_script_dockerized $@</code></pre></div>
-
 <p>There are some caveats here, though:</p>
-
 <ul>
 <li>File paths for both input and output need to be mounted in the image otherwise the script within the container will not find the input file and, respectively, store output inside the container which will be gone once it is stopped. One could mount the entire root directory with <code>-v /:/host</code> and have corresponding logic in the script, but tbh I am not sure about the security implications of this</li>
 <li>You might want to specify a host mode if the script is supposed to reach services which are running on the host machine</li>
 </ul>
-
 <p>You see that this is admittedly not the best way of distributing a script. But it certainly has its benefits and skips a lot of hurdles when building full-fledged packages, e.g. for the <a href="https://pypi.org/">Python Package Index</a> or even on an OS level (e.g. Debian).</p>
-
 <p>Another option might be to learn Go, rewrite your script and <a href="https://golangcookbook.com/chapters/running/cross-compiling/">cross-compile</a> it into self-contained executables (one for each platform) 🙃</p>
 </div>
 

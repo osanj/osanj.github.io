@@ -6,13 +6,31 @@
     <description>Recent content in Tags on Just a Notepad</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 26 Jul 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://osanj.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 07 Apr 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://osanj.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>software engineering</title>
+      <link>https://osanj.github.io/tags/software-engineering/</link>
+      <pubDate>Sun, 07 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>https://osanj.github.io/tags/software-engineering/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>math</title>
       <link>https://osanj.github.io/tags/math/</link>
-      <pubDate>Tue, 26 Jul 2022 00:00:00 +0000</pubDate>
+      <pubDate>Tue, 18 Jul 2023 00:00:00 +0000</pubDate>
       
       <guid>https://osanj.github.io/tags/math/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>computer vision</title>
+      <link>https://osanj.github.io/tags/computer-vision/</link>
+      <pubDate>Thu, 29 Dec 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://osanj.github.io/tags/computer-vision/</guid>
       <description></description>
     </item>
     
@@ -35,29 +53,11 @@
     </item>
     
     <item>
-      <title>software engineering</title>
-      <link>https://osanj.github.io/tags/software-engineering/</link>
-      <pubDate>Fri, 18 Feb 2022 00:00:00 +0000</pubDate>
-      
-      <guid>https://osanj.github.io/tags/software-engineering/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>build processes</title>
       <link>https://osanj.github.io/tags/build-processes/</link>
       <pubDate>Sun, 06 Feb 2022 00:00:00 +0000</pubDate>
       
       <guid>https://osanj.github.io/tags/build-processes/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>computer vision</title>
-      <link>https://osanj.github.io/tags/computer-vision/</link>
-      <pubDate>Mon, 27 Dec 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://osanj.github.io/tags/computer-vision/</guid>
       <description></description>
     </item>
     

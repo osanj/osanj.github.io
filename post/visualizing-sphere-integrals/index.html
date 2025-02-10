@@ -3,7 +3,7 @@
 <head>
   <link href="//gmpg.org/xfn/11" rel="profile">
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
-  <meta name="generator" content="Hugo 0.83.1" />
+  <meta name="generator" content="Hugo 0.92.2" />
 
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -52,7 +52,7 @@
       </ul>
     </nav>
 
-    <p>© 2020-2022 Jonas Schuepfer</p>
+    <p>© 2020-2026 Jonas Schuepfer</p>
   </div>
 </aside>
 
@@ -61,125 +61,95 @@
   <h1>Visualizing Sphere Integrals</h1>
   <time datetime=2014-11-18T00:00:00Z class="post-date">Tue, Nov 18, 2014</time>
   <p>You know that feeling when you have been using some rule blindly forever and one day you finally spend the time to figure out where this rule comes from? Below is my effort to visualize the integrals which lead to the formulas for surface area and volume of spheres.</p>
-
 <h2 id="circle-circumference">Circle Circumference</h2>
-
-<p><figure><img src="data/circle-area.png" alt="Circle Area and Circumference"></figure></p>
-
-<p>To compute the circumference <span  class="math">\(U\)</span> let's chop up the circle in <span  class="math">\(n\)</span> triangles with <span  class="math">\(\phi = \frac{2\pi}{n}\)</span>. One of them is highlighted above. The length of side <span  class="math">\(u\)</span> can be computed the following way:</p>
-
-<p><span  class="math">\[
+<p><img src="data/circle-area.png" alt="Circle Area and Circumference"></p>
+<p>To compute the circumference $$U$$ let&rsquo;s chop up the circle in $$n$$ triangles with $$\phi = \frac{2\pi}{n}$$. One of them is highlighted above. The length of side $$u$$ can be computed the following way:</p>
+<p>$$
 \begin{aligned}
 u = r \cdot \tan(\phi)
 \end{aligned}
-\]</span></p>
-
-<p>By considering this side <span  class="math">\(n\)</span> times we approximate the circumference:</p>
-
-<p><span  class="math">\[
+$$</p>
+<p>By considering this side $$n$$ times we approximate the circumference:</p>
+<p>$$
 \begin{aligned}
 U = n \cdot u = n \cdot r \cdot \tan\left(\frac{2\pi}{n}\right)
 \end{aligned}
-\]</span></p>
-
-<p>Now, with increasing <span  class="math">\(n\)</span> our approximation becomes more precise. In the limit we can drop the tangent because of the <a href="https://en.wikipedia.org/wiki/Small-angle_approximation">small angle approximation</a>.</p>
-
-<p><span  class="math">\[
+$$</p>
+<p>Now, with increasing $$n$$ our approximation becomes more precise. In the limit we can drop the tangent because of the <a href="https://en.wikipedia.org/wiki/Small-angle_approximation">small angle approximation</a>.</p>
+<p>$$
 \begin{aligned}
 U = \lim_{n \to \infty} n \cdot r \cdot \tan\left(\frac{2\pi}{n}\right) = \lim_{n \to \infty} n \cdot r \cdot \frac{2\pi}{n} = 2\pi r
 \end{aligned}
-\]</span></p>
-
+$$</p>
 <h2 id="circle-area">Circle Area</h2>
-
-<p>The approach to determine area <span  class="math">\(A\)</span> is quite similar. This time the area of the <span  class="math">\(n\)</span> triangles are considered, the area of a single triangle is defined as:</p>
-
-<p><span  class="math">\[
+<p>The approach to determine area $$A$$ is quite similar. This time the area of the $$n$$ triangles are considered, the area of a single triangle is defined as:</p>
+<p>$$
 \begin{aligned}
-a &= \frac{1}{2} \cdot r \cdot u = \frac{1}{2} \cdot r^2 \cdot \tan(\phi)
+a &amp;= \frac{1}{2} \cdot r \cdot u = \frac{1}{2} \cdot r^2 \cdot \tan(\phi)
 \end{aligned}
-\]</span></p>
-
+$$</p>
 <p>Analogously we can approximate the area and regard the limit:</p>
-
-<p><span  class="math">\[
+<p>$$
 \begin{aligned}
-A &= n \cdot a = n \cdot \frac{1}{2} \cdot r^2 \cdot \tan\left(\frac{2\pi}{n}\right) \\ \\
-A &= \lim_{n \to \infty} n \cdot \frac{1}{2} \cdot r^2 \cdot \tan\left(\frac{2\pi}{n}\right) = \lim_{n \to \infty} n \cdot \frac{1}{2} \cdot r^2 \cdot \frac{2\pi}{n} = \pi r^2
+A &amp;= n \cdot a = n \cdot \frac{1}{2} \cdot r^2 \cdot \tan\left(\frac{2\pi}{n}\right) \ \
+A &amp;= \lim_{n \to \infty} n \cdot \frac{1}{2} \cdot r^2 \cdot \tan\left(\frac{2\pi}{n}\right) = \lim_{n \to \infty} n \cdot \frac{1}{2} \cdot r^2 \cdot \frac{2\pi}{n} = \pi r^2
 \end{aligned}
-\]</span></p>
-
+$$</p>
 <h2 id="surface-area-of-a-sphere">Surface Area of a Sphere</h2>
-
-<p><figure><img src="data/sphere-surface.png" alt="Sphere Surface"></figure></p>
-
+<p><img src="data/sphere-surface.png" alt="Sphere Surface"></p>
 <p>When decomposing the the sphere surface in lots of small quads we can approximate the surface area. The sides are defined as:</p>
-
-<p><span  class="math">\[
+<p>$$
 \begin{aligned}
-  b &= \frac{d\phi_b}{2\pi} \cdot 2\pi r = d\phi_b \cdot r \\ \\
-  a &= \frac{d\phi_a}{2\pi} \cdot 2\pi r_a = d\phi_b \cdot r_a \\ \\
-r_a &= r \cdot \cos\left(\phi_b\right)
+b &amp;= \frac{d\phi_b}{2\pi} \cdot 2\pi r = d\phi_b \cdot r \ \
+a &amp;= \frac{d\phi_a}{2\pi} \cdot 2\pi r_a = d\phi_b \cdot r_a \ \
+r_a &amp;= r \cdot \cos\left(\phi_b\right)
 \end{aligned}
-\]</span></p>
-
+$$</p>
 <p>The area of a quad is simply:</p>
-
-<p><span  class="math">\[
+<p>$$
 \begin{aligned}
 A_{quad} = a \cdot b = r^2 \cos\left(\phi_b\right) ~ d\phi_b ~ d\phi_a
 \end{aligned}
-\]</span></p>
-
-<p>In the limit the quads become infinitesimal and the approximation converges to the correct solution. This time an integration over <span  class="math">\(\phi_a\)</span> and <span  class="math">\(\phi_b\)</span> does the job. The way the integral is constructed it &quot;moves along the z-axis&quot;, after each step in <span  class="math">\(\phi_b\)</span> it sums up the areas of all quads along this &quot;latitude of the sphere&quot;.</p>
-
-<p>Please note that this integral only considers an eighth of the actual sphere. Accordingly, a factor of <span  class="math">\(8\)</span> is included.</p>
-
-<p><span  class="math">\[
+$$</p>
+<p>In the limit the quads become infinitesimal and the approximation converges to the correct solution. This time an integration over $$\phi_a$$ and $$\phi_b$$ does the job. The way the integral is constructed it &ldquo;moves along the z-axis&rdquo;, after each step in $$\phi_b$$ it sums up the areas of all quads along this &ldquo;latitude of the sphere&rdquo;.</p>
+<p>Please note that this integral only considers an eighth of the actual sphere. Accordingly, a factor of $$8$$ is included.</p>
+<p>$$
 \begin{aligned}
-A &= 8 \cdot \int_0^{\frac{1}{2} \pi} \int_0^{\frac{1}{2} \pi} A_{quad} \\ \\
-&= 8 \cdot \int_0^{\frac{1}{2} \pi} \int_0^{\frac{1}{2} \pi} r^2 \cos\left(\phi_b\right) ~ d\phi_b ~ d\phi_a \\ \\
-&= 8 r^2 \cdot \int_0^{\frac{1}{2} \pi} \bigg\lvert \sin\left(\phi_b \right) \bigg\rvert _0^{\frac{1}{2}\pi} ~ d\phi_a \\ \\
-&= 8 r^2 \cdot \int_0^{\frac{1}{2} \pi} \left(\sin\left(\frac{1}{2}\pi\right) - \sin(0) \right) ~ d\phi_a \\ \\
-&= 8 r^2 \cdot \int_0^{\frac{1}{2} \pi} ~ d\phi_a \\ \\
-&= 8 r^2 \cdot \frac{1}{2} \pi \\ \\
-&= 4 \pi r^2
+A &amp;= 8 \cdot \int_0^{\frac{1}{2} \pi} \int_0^{\frac{1}{2} \pi} A_{quad} \ \
+&amp;= 8 \cdot \int_0^{\frac{1}{2} \pi} \int_0^{\frac{1}{2} \pi} r^2 \cos\left(\phi_b\right) ~ d\phi_b ~ d\phi_a \ \
+&amp;= 8 r^2 \cdot \int_0^{\frac{1}{2} \pi} \bigg\lvert \sin\left(\phi_b \right) \bigg\rvert _0^{\frac{1}{2}\pi} ~ d\phi_a \ \
+&amp;= 8 r^2 \cdot \int_0^{\frac{1}{2} \pi} \left(\sin\left(\frac{1}{2}\pi\right) - \sin(0) \right) ~ d\phi_a \ \
+&amp;= 8 r^2 \cdot \int_0^{\frac{1}{2} \pi} ~ d\phi_a \ \
+&amp;= 8 r^2 \cdot \frac{1}{2} \pi \ \
+&amp;= 4 \pi r^2
 \end{aligned}
-\]</span></p>
-
+$$</p>
 <h2 id="volume-of-a-sphere">Volume of a Sphere</h2>
-
-<p><figure><img src="data/sphere-volume.png" alt="Sphere Volumne"></figure></p>
-
+<p><img src="data/sphere-volume.png" alt="Sphere Volumne"></p>
 <p>For the volume a different kind of decomposition is chosen. As depicted above the sphere can be approximated with a set of thin disks. The radius of each disk is defined as:</p>
-
-<p><span  class="math">\[
+<p>$$
 \begin{aligned}
-r_u &= \sqrt{r^2 - u^2}
+r_u &amp;= \sqrt{r^2 - u^2}
 \end{aligned}
-\]</span></p>
-
+$$</p>
 <p>Using the formula for the area of a circle the volume of a disk is:</p>
-
-<p><span  class="math">\[
+<p>$$
 \begin{aligned}
 V_{disk} = \pi {r_u}^2 \cdot du
 \end{aligned}
-\]</span></p>
-
-<p>Integration over <span  class="math">\(u\)</span> leads to infinitesimally thin disks and convergence to the correct solution. Please note that the integral below only considers one half of the sphere, to account for that a factor of <span  class="math">\(2\)</span> is included.</p>
-
-<p><span  class="math">\[
+$$</p>
+<p>Integration over $$u$$ leads to infinitesimally thin disks and convergence to the correct solution. Please note that the integral below only considers one half of the sphere, to account for that a factor of $$2$$ is included.</p>
+<p>$$
 \begin{aligned}
-V &= 2 \cdot \int_0^r V_{disk} \\ \\
-&= 2 \cdot \int_0^r \pi {r_u}^2 ~ du \\ \\
-&= 2 \cdot \int_0^r \pi (r^2 - u^2) ~ du \\ \\
-&= 2 \pi \left( r^2 \int_0^r du - \int_0^r u^2 ~du \right) \\ \\
-&= 2 \pi \left( r^2 \cdot r - \bigg\lvert \frac{1}{3} u^3 \bigg\rvert _0^r \right) \\ \\
-&= 2 \pi \left( r^3 - \frac{1}{3} r^3 \right) \\ \\
-&= \frac{4}{3} \pi r^3
+V &amp;= 2 \cdot \int_0^r V_{disk} \ \
+&amp;= 2 \cdot \int_0^r \pi {r_u}^2 ~ du \ \
+&amp;= 2 \cdot \int_0^r \pi (r^2 - u^2) ~ du \ \
+&amp;= 2 \pi \left( r^2 \int_0^r du - \int_0^r u^2 ~du \right) \ \
+&amp;= 2 \pi \left( r^2 \cdot r - \bigg\lvert \frac{1}{3} u^3 \bigg\rvert _0^r \right) \ \
+&amp;= 2 \pi \left( r^3 - \frac{1}{3} r^3 \right) \ \
+&amp;= \frac{4}{3} \pi r^3
 \end{aligned}
-\]</span></p>
+$$</p>
 </div>
 
 

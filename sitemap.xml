@@ -3,21 +3,36 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://osanj.github.io/</loc>
-    <lastmod>2022-07-26T00:00:00+00:00</lastmod>
+    <lastmod>2024-04-07T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://osanj.github.io/tags/math/</loc>
-    <lastmod>2022-07-26T00:00:00+00:00</lastmod>
+    <loc>https://osanj.github.io/post/buildnrs-are-better-rcs/</loc>
+    <lastmod>2024-04-07T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://osanj.github.io/post/</loc>
-    <lastmod>2022-07-26T00:00:00+00:00</lastmod>
+    <lastmod>2024-04-07T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://osanj.github.io/tags/software-engineering/</loc>
+    <lastmod>2024-04-07T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://osanj.github.io/tags/</loc>
+    <lastmod>2024-04-07T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://osanj.github.io/post/how-denormal-floats-slow-down-inference/</loc>
+    <lastmod>2023-07-18T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://osanj.github.io/tags/math/</loc>
+    <lastmod>2023-07-18T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://osanj.github.io/post/simple-multi-line-detection-in-hough-space/</loc>
+    <lastmod>2022-12-29T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://osanj.github.io/tags/computer-vision/</loc>
+    <lastmod>2022-12-29T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://osanj.github.io/tags/probability/</loc>
     <lastmod>2022-07-26T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://osanj.github.io/post/mrz-checksum-failure-analysis/</loc>
-    <lastmod>2022-07-26T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://osanj.github.io/tags/</loc>
     <lastmod>2022-07-26T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://osanj.github.io/post/video-frames-from-remote-files/</loc>
@@ -26,17 +41,11 @@
     <loc>https://osanj.github.io/tags/python/</loc>
     <lastmod>2022-02-18T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://osanj.github.io/tags/software-engineering/</loc>
-    <lastmod>2022-02-18T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>https://osanj.github.io/tags/build-processes/</loc>
     <lastmod>2022-02-06T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://osanj.github.io/post/dockerize-everything/</loc>
     <lastmod>2022-02-06T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://osanj.github.io/tags/computer-vision/</loc>
-    <lastmod>2021-12-27T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://osanj.github.io/post/notes-on-homographies/</loc>
     <lastmod>2021-12-27T00:00:00+00:00</lastmod>

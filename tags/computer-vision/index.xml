@@ -6,7 +6,16 @@
     <description>Recent content in computer vision on Just a Notepad</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 27 Dec 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://osanj.github.io/tags/computer-vision/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 29 Dec 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://osanj.github.io/tags/computer-vision/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>A Simple Method for Finding Multiple Lines in a Hough Space</title>
+      <link>https://osanj.github.io/post/simple-multi-line-detection-in-hough-space/</link>
+      <pubDate>Thu, 29 Dec 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://osanj.github.io/post/simple-multi-line-detection-in-hough-space/</guid>
+      <description>&lt;p&gt;Detecting the longest line in an Hough accumulator is easy, however detecting multiple lines is a more annoying problem.&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>Notes on Homographies</title>
       <link>https://osanj.github.io/post/notes-on-homographies/</link>

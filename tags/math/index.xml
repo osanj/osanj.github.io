@@ -6,7 +6,25 @@
     <description>Recent content in math on Just a Notepad</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 26 Jul 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://osanj.github.io/tags/math/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 18 Jul 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://osanj.github.io/tags/math/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How Denormal Floats Slow Down ML Inference</title>
+      <link>https://osanj.github.io/post/how-denormal-floats-slow-down-inference/</link>
+      <pubDate>Tue, 18 Jul 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://osanj.github.io/post/how-denormal-floats-slow-down-inference/</guid>
+      <description>&lt;p&gt;Recently when converting a PyTorch checkpoint for CPU inference with ONNX throughput fell off a cliff. Of course, runtime on CPU is generally expected to be slower than on GPU, however something was off. Turns out a particular case of floating values was to blame.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>A Simple Method for Finding Multiple Lines in a Hough Space</title>
+      <link>https://osanj.github.io/post/simple-multi-line-detection-in-hough-space/</link>
+      <pubDate>Thu, 29 Dec 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://osanj.github.io/post/simple-multi-line-detection-in-hough-space/</guid>
+      <description>&lt;p&gt;Detecting the longest line in an Hough accumulator is easy, however detecting multiple lines is a more annoying problem.&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>Probability of a MRZ Checksum Failure</title>
       <link>https://osanj.github.io/post/mrz-checksum-failure-analysis/</link>
@@ -40,7 +58,7 @@
       <pubDate>Sat, 03 Jan 2015 00:00:00 +0000</pubDate>
       
       <guid>https://osanj.github.io/post/spring-dynamics-interpolation/</guid>
-      <description>Rebound is an open-source project by Facebook. It is used to control the course of animations. In case you are familiar with Android, you might know that Android provides several Interpolator classes (AccelerateInterpolator, DecelerateInterpolator, ...) to handle that task. While most of these provide a rather simple course of animation, Facebook&#39;s Rebound is based on spring dynamics which is not trivial to implement. This article describes my attempt to reverse engineer the Rebound library.</description>
+      <description>Rebound is an open-source project by Facebook. It is used to control the course of animations. In case you are familiar with Android, you might know that Android provides several Interpolator classes (AccelerateInterpolator, DecelerateInterpolator, &amp;hellip;) to handle that task. While most of these provide a rather simple course of animation, Facebook&amp;rsquo;s Rebound is based on spring dynamics which is not trivial to implement. This article describes my attempt to reverse engineer the Rebound library.</description>
     </item>
     
     <item>

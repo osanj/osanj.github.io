@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <link href="//gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.92.2" />
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>How Denormal Floats Slow Down ML Inference &middot; Just a Notepad</title>
+
+  
+  <link type="text/css" rel="stylesheet" href="https://osanj.github.io/css/print.css" media="print">
+  <link type="text/css" rel="stylesheet" href="https://osanj.github.io/css/poole.css">
+  <link type="text/css" rel="stylesheet" href="https://osanj.github.io/css/syntax.css">
+  <link type="text/css" rel="stylesheet" href="https://osanj.github.io/css/hyde.css">
+  
+  <link type="text/css" rel="stylesheet" href="https://osanj.github.io/css/justified_text.css">
+  
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface|PT+Sans:400,400i,700">
+
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  
+
+  
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
+  
+</head>
+
+  <body class=" ">
+  <aside class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://osanj.github.io/"><h1>Just a Notepad</h1></a>
+      <p class="lead">
+       For Stuff Worth Sharing 
+      </p>
+    </div>
+
+    <nav>
+      <ul class="sidebar-nav">
+        <li><a href="https://osanj.github.io/">Home</a> </li>
+        <li><a href="https://github.com/osanj/lava"> Lava </a></li><li><a href="/tags/"> Tags </a></li><li><a href="/about/"> About </a></li>
+      </ul>
+    </nav>
+
+    <p>© 2020-2026 Jonas Schuepfer</p>
+  </div>
+</aside>
+
+    <main class="content container">
+    <div class="post">
+  <h1>How Denormal Floats Slow Down ML Inference</h1>
+  <time datetime=2023-07-18T00:00:00Z class="post-date">Tue, Jul 18, 2023</time>
+  <p>Recently when converting a PyTorch checkpoint for CPU inference with ONNX throughput fell off a cliff. Of course, runtime on CPU is generally expected to be slower than on GPU, however something was off. Turns out a particular case of floating values was to blame.</p>
+<h3 id="what-are-subnormals">What are Subnormals?</h3>
+<p><em>Normal</em> floating point numbers are <a href="https://en.wikipedia.org/wiki/IEEE_754-1985#Representation_of_numbers">representated</a> in base 2 in scientific format &ldquo;normalized&rdquo; to <code>&lt;sign&gt; 1.&lt;fraction&gt; * 2^(&lt;exponent&gt; + bias)</code>. In memory it is stored as <code>[sign|exponent|fraction]</code>, e.g. for 32-bit floats the exponent is represented with 8 bits and the fraction with 23 bits (and the sign with 1 bit).</p>
+<p>When the floating point number that is supposed to be encoded becomes so small that (with the available bits for fraction and exponent) it&rsquo;s no longer possible to reach a <code>1.</code> leading representation, the floating number is considered <a href="https://en.wikipedia.org/wiki/Subnormal_number">subnormal, denormalized or denormal</a>.</p>
+<h3 id="why-is-this-an-issue">Why is this an Issue?</h3>
+<p>Processing subnormals requires additional logic for basic handling and arithmetic operations. In the case of the x86 instruction set architecture this additional logic seems to be <a href="https://stackoverflow.com/a/54938328">usually not implemented in silicon and instead handled in software</a> which leads to significant slowdowns. The same post also notes that there Nvidia GPUs generally implement this in hardware which is consistent with my experience: No problems on Nvidia GPUs, but performance drop on a x86 CPU 💁</p>
+<h3 id="how-to-resolve-it">How to Resolve it?</h3>
+<p>Fortunately, the remedy to this problem is a quick one: Setting the denormal floats to actual zeros. In PyTorch one achieves this by calling <code>torch.set_flush_denormal(True)</code> (<a href="https://pytorch.org/docs/stable/generated/torch.set_flush_denormal.html">docs</a>) before creating/loading tensors that may contain denormal floats.</p>
+<p>Generally, minor changes to model weights should have negligible impact on model outputs, however in case denormals of existing weights get zero&rsquo;ed it&rsquo;s advisable to rerun tests and confirm there is no impact on model accuracy.</p>
+</div>
+
+
+    </main>
+
+    
+  </body>
+</html>

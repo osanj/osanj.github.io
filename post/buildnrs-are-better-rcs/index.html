@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <link href="//gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.92.2" />
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Build Numbers are the Better Release Candidates &middot; Just a Notepad</title>
+
+  
+  <link type="text/css" rel="stylesheet" href="https://osanj.github.io/css/print.css" media="print">
+  <link type="text/css" rel="stylesheet" href="https://osanj.github.io/css/poole.css">
+  <link type="text/css" rel="stylesheet" href="https://osanj.github.io/css/syntax.css">
+  <link type="text/css" rel="stylesheet" href="https://osanj.github.io/css/hyde.css">
+  
+  <link type="text/css" rel="stylesheet" href="https://osanj.github.io/css/justified_text.css">
+  
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface|PT+Sans:400,400i,700">
+
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  
+
+  
+</head>
+
+  <body class=" ">
+  <aside class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://osanj.github.io/"><h1>Just a Notepad</h1></a>
+      <p class="lead">
+       For Stuff Worth Sharing 
+      </p>
+    </div>
+
+    <nav>
+      <ul class="sidebar-nav">
+        <li><a href="https://osanj.github.io/">Home</a> </li>
+        <li><a href="https://github.com/osanj/lava"> Lava </a></li><li><a href="/tags/"> Tags </a></li><li><a href="/about/"> About </a></li>
+      </ul>
+    </nav>
+
+    <p>© 2020-2026 Jonas Schuepfer</p>
+  </div>
+</aside>
+
+    <main class="content container">
+    <div class="post">
+  <h1>Build Numbers are the Better Release Candidates</h1>
+  <time datetime=2024-04-07T00:00:00Z class="post-date">Sun, Apr 7, 2024</time>
+  <p>Releasing a new version of a web application or larger software project usually involves some sort of build-deploy-test-fix cycle until it passes QA. A common approach is to have release candidates, however this implies re-building the last RC with the final tag which can be avoided with build numbers.</p>
+<h2 id="the-typical-release-candidate-flow">The Typical Release Candidate Flow</h2>
+<p>Let&rsquo;s say our next release version is <code>1.3.0</code>, as we go along new features/fixes/etc. were developed and make it into the codebase. Depending on the process, we may create a release candidate tag after every merge or only once we reach the &ldquo;release preparation stage&rdquo;. Either way the first build will be <code>1.3.0-RC.1</code>, it should be deployed and tested by the QA suite. After more features and fixes, it may be <code>1.3.0-RC.4</code> that passes all tests 🟢 and is ready to move to production.</p>
+<p>Now, to get a clean final build, the same commit from which <code>1.3.0-RC.4</code> was built, needs to be tagged and built once again with <code>1.3.0</code>. This seems like a minuscule step, but technically it invalidates the tests that have been performed before since the build pipeline could lead to another artifact, e.g. if dependency versions are not properly pinned.</p>
+<p>One may say &ldquo;ok, then let&rsquo;s only use RCs&rdquo;, but then why do &ldquo;normal&rdquo; version strings not have &ldquo;RC&rdquo;? It doesn&rsquo;t seem consistent. Other things to consider are:</p>
+<ul>
+<li>having proper tags in the repository boosts developer experience and allows for straightforward comparison of versions</li>
+<li>if the build should be aware of its own tag (e.g. an app having an endpoint serving its own version) it needs to be added as part of the build pipeline (and previous builds will have RC tags)</li>
+</ul>
+<h2 id="extend-semver-to-skip-the-final-rebuild">Extend SemVer to Skip the Final Rebuild</h2>
+<p>Sofar we sticked to <a href="https://semver.org/">SemVer</a>. By adding another number we can get rid of the retagging and rebuilding implied by the release candidate naming scheme: <code>MAJOR.MINOR.PATCH.BUILD</code> where <code>BUILD</code> is the build number for certain version. In our example from before the RCs would become <code>1.3.0.1</code> &hellip; <code>1.3.0.4</code>. With that formality the &ldquo;ok, then let&rsquo;s only use RCs&rdquo; mindset becomes consistent with the versioning scheme - we can just move on with the last build and deploy it on prod.</p>
+<p>A word of caution: for software libraries it should be checked if this scheme is compatible with the eco system (for Python this is the case). Alternatively, if consistency with SemVer is required <code>MAJOR.MINOR.PATCH-BUILD</code> may be used (see <a href="https://semver.org/#spec-item-10">specification point 10 on build metadata</a>). However, also note that the spec says:</p>
+<blockquote>
+<p>Build metadata MUST be ignored when determining version precedence.</p>
+</blockquote>
+<p>And finally, removing non-prod tags is still recommended for a clean git repo 😉</p>
+</div>
+
+
+    </main>
+
+    
+  </body>
+</html>

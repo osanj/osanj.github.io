@@ -26,24 +26,24 @@ The relation between the image points and the homography is given by:
 
 $$
 \begin{aligned}
-\begin{pmatrix} X_i \\ Y_i \end{pmatrix} = \Pi \left( H \begin{pmatrix} x_i \\ y_i \\ 1 \end{pmatrix} \right)
- = \Pi \left( \begin{pmatrix} h_{11} & h_{12} & h_{13} \\ h_{21} & h_{22} & h_{23} \\ h_{31} & h_{32} & h_{33} \end{pmatrix} \begin{pmatrix} x_i \\ y_i \\ 1 \end{pmatrix} \right)
+\begin{pmatrix} X_i \\\ Y_i \end{pmatrix} = \Pi \left( H \begin{pmatrix} x_i \\\ y_i \\\ 1 \end{pmatrix} \right)
+ = \Pi \left( \begin{pmatrix} h_{11} & h_{12} & h_{13} \\\ h_{21} & h_{22} & h_{23} \\\ h_{31} & h_{32} & h_{33} \end{pmatrix} \begin{pmatrix} x_i \\\ y_i \\\ 1 \end{pmatrix} \right)
 \end{aligned}
 $$
 
-The homography is a 3x3 matrix which maps from the domain of $$\left(\begin{smallmatrix} x_i \\ y_i \end{smallmatrix}\right)$$ to $$\left(\begin{smallmatrix} X_i \\ Y_i \end{smallmatrix}\right)$$. It works on homogeneous coordinates which is why a 1 was added above. $$\Pi$$ denotes the perspective projection which maps 3d vectors into 2d by dividing by its third component:
+The homography is a 3x3 matrix which maps from the domain of $\left(\begin{smallmatrix} x_i \\\ y_i \end{smallmatrix}\right)$ to $\left(\begin{smallmatrix} X_i \\\ Y_i \end{smallmatrix}\right)$. It works on homogeneous coordinates which is why a 1 was added above. $\Pi$ denotes the perspective projection which maps 3d vectors into 2d by dividing by its third component:
 
 $$
 \begin{aligned}
-\Pi \left( \begin{pmatrix} x \\ y \\ z \end{pmatrix} \right) &= \frac{1}{z} \begin{pmatrix} x \\ y \end{pmatrix} \\
+\Pi \left( \begin{pmatrix} x \\\ y \\\ z \end{pmatrix} \right) &= \frac{1}{z} \begin{pmatrix} x \\\ y \end{pmatrix} \\\
 \end{aligned}
 $$
 
-To use the correspondences of the target domain the perspective projection needs to be undone. Therefore we consider the direct output of the matrix multiplication with $$H$$:
+To use the correspondences of the target domain the perspective projection needs to be undone. Therefore we consider the direct output of the matrix multiplication with $H$:
 
 $$
 \begin{aligned}
-\begin{pmatrix} \tilde{X}_i \\ \tilde{Y}_i \\ \tilde{Z}_i \end{pmatrix} = \begin{pmatrix} X_i \cdot \tilde{Z}_i \\ Y_i \cdot \tilde{Z}_i \\ \tilde{Z}_i \end{pmatrix} = H \begin{pmatrix} x_i \\ y_i \\ 1 \end{pmatrix}
+\begin{pmatrix} \tilde{X_i} \\\ \tilde{Y_i} \\\ \tilde{Z_i} \end{pmatrix} = \begin{pmatrix} X_i \cdot \tilde{Z_i} \\\ Y_i \cdot \tilde{Z_i} \\\ \tilde{Z_i} \end{pmatrix} = H \begin{pmatrix} x_i \\\ y_i \\\ 1 \end{pmatrix}
 \end{aligned}
 $$
 
@@ -51,58 +51,58 @@ Now it is time to expand the matrix multiplication, so we get 3 equations:
 
 $$
 \begin{aligned}
-X_i \cdot \tilde{Z}_i &= h_{11} x_i + h_{12} y_i + h_{13} \\
-Y_i \cdot \tilde{Z}_i &= h_{21} x_i + h_{22} y_i + h_{23} \\
-\tilde{Z}_i &= h_{31} x_i + h_{32} y_i + h_{33}
+X_i \cdot \tilde{Z_i} &= h_{11} x_i + h_{12} y_i + h_{13} \\\
+Y_i \cdot \tilde{Z_i} &= h_{21} x_i + h_{22} y_i + h_{23} \\\
+\tilde{Z_i} &= h_{31} x_i + h_{32} y_i + h_{33}
 \end{aligned}
 $$
 
 The next steps are not that obvious IMO:
 
-1. Since the correspondences are only available in the 2d space the third equation above itself does not help to solve for unknowns, this means we have 2x4 equations for 9 unknowns and the solution is up to scale. In this case we can just fix one of the matrix values and be done with it, a common choice is $$h_{33} = 1$$
+1. Since the correspondences are only available in the 2d space the third equation above itself does not help to solve for unknowns, this means we have 2x4 equations for 9 unknowns and the solution is up to scale. In this case we can just fix one of the matrix values and be done with it, a common choice is $h_{33} = 1$
 
-2. With this additional constraint we can plug the equation for $$\tilde{Z}_i$$ in the other equations and arrange them in a way that all $$H$$ related terms are on one side and all other terms are on the opposite side
+2. With this additional constraint we can plug the equation for $\tilde{Z}_i$ in the other equations and arrange them in a way that all $H$ related terms are on one side and all other terms are on the opposite side
 
 $$
 \begin{aligned}
-\\
-X_i \cdot \left( h_{31} x_i + h_{32} y_i + 1 \right) &= h_{11} x_i + h_{12} y_i + h_{13} \\
-h_{31} x_i X_i + h_{32} y_i X_i + X_i &= h_{11} x_i + h_{12} y_i + h_{13} \\
-X_i &= h_{11} x_i + h_{12} y_i + h_{13} - h_{31} x_i X_i - h_{32} y_i X_i \\ \\
-Y_i \cdot \left( h_{31} x_i + h_{32} y_i + 1 \right) &= h_{21} x_i + h_{22} y_i + h_{23} \\
-h_{31} x_i Y_i + h_{32} y_i X_i + Y_i &= h_{21} x_i + h_{22} y_i + h_{23} \\
+\\\
+X_i \cdot \left( h_{31} x_i + h_{32} y_i + 1 \right) &= h_{11} x_i + h_{12} y_i + h_{13} \\\
+h_{31} x_i X_i + h_{32} y_i X_i + X_i &= h_{11} x_i + h_{12} y_i + h_{13} \\\
+X_i &= h_{11} x_i + h_{12} y_i + h_{13} - h_{31} x_i X_i - h_{32} y_i X_i \\\ \\\
+Y_i \cdot \left( h_{31} x_i + h_{32} y_i + 1 \right) &= h_{21} x_i + h_{22} y_i + h_{23} \\\
+h_{31} x_i Y_i + h_{32} y_i X_i + Y_i &= h_{21} x_i + h_{22} y_i + h_{23} \\\
 Y_i &= h_{21} x_i + h_{22} y_i + h_{23} - h_{31} x_i Y_i - h_{32} y_i Y_i
-\\
+\\\
 \end{aligned}
 $$
 
-With all four pairs of equations ($$i = 1, 2, 3, 4$$), it is possible to construct one large linear equation system where the unknown entries of the homography are stacked in a vector:
+With all four pairs of equations ($i = 1, 2, 3, 4$), it is possible to construct one large linear equation system where the unknown entries of the homography are stacked in a vector:
 
 $$
-\begin{pmatrix} X_1 \\ X_2 \\ X_3 \\ X_4 \\ Y_1 \\ Y_2 \\ Y_3 \\ Y_4 \end{pmatrix} =
+\begin{pmatrix} X_1 \\\ X_2 \\\ X_3 \\\ X_4 \\\ Y_1 \\\ Y_2 \\\ Y_3 \\\ Y_4 \end{pmatrix} =
 \begin{pmatrix}
-x_1 & y_1 & 1 & 0 & 0 & 0 & -x_1 X_1 & -y_1 X_1 \\
-x_2 & y_2 & 1 & 0 & 0 & 0 & -x_2 X_2 & -y_2 X_2 \\
-x_3 & y_3 & 1 & 0 & 0 & 0 & -x_3 X_3 & -y_3 X_3 \\
-x_4 & y_4 & 1 & 0 & 0 & 0 & -x_4 X_4 & -y_4 X_4 \\
-0 & 0 & 0 & x_1 & y_1 & 1 & -x_1 Y_1 & -y_1 Y_1 \\
-0 & 0 & 0 & x_2 & y_2 & 1 & -x_2 Y_2 & -y_2 Y_2 \\
-0 & 0 & 0 & x_3 & y_3 & 1 & -x_3 Y_3 & -y_3 Y_3 \\
-0 & 0 & 0 & x_4 & y_4 & 1 & -x_4 Y_4 & -y_4 Y_4 \\
+x_1 & y_1 & 1 & 0 & 0 & 0 & -x_1 X_1 & -y_1 X_1 \\\
+x_2 & y_2 & 1 & 0 & 0 & 0 & -x_2 X_2 & -y_2 X_2 \\\
+x_3 & y_3 & 1 & 0 & 0 & 0 & -x_3 X_3 & -y_3 X_3 \\\
+x_4 & y_4 & 1 & 0 & 0 & 0 & -x_4 X_4 & -y_4 X_4 \\\
+0 & 0 & 0 & x_1 & y_1 & 1 & -x_1 Y_1 & -y_1 Y_1 \\\
+0 & 0 & 0 & x_2 & y_2 & 1 & -x_2 Y_2 & -y_2 Y_2 \\\
+0 & 0 & 0 & x_3 & y_3 & 1 & -x_3 Y_3 & -y_3 Y_3 \\\
+0 & 0 & 0 & x_4 & y_4 & 1 & -x_4 Y_4 & -y_4 Y_4 \\\
 \end{pmatrix} \cdot
-\begin{pmatrix} h_{11} \\ h_{12} \\ h_{13} \\ h_{21} \\ h_{22} \\ h_{23} \\ h_{31} \\ h_{32} \end{pmatrix}
+\begin{pmatrix} h_{11} \\\ h_{12} \\\ h_{13} \\\ h_{21} \\\ h_{22} \\\ h_{23} \\\ h_{31} \\\ h_{32} \end{pmatrix}
 $$
 
 This is nice because now common math machinery can be thrown at this problem. The matrix needs to be inverted, then only a matrix multiplication is left to solve for the homography entries:
 
 $$
 \begin{aligned}
-\vec{k} &= M \vec{h} \\
+\vec{k} &= M \vec{h} \\\
 M^{-1}\vec{k} &= \vec{h}
 \end{aligned}
 $$
 
-Once this is done the elements of $$\vec{h}$$ and $$h_{33}$$ (or whatever element was fixed) can be arranged into a matrix again. Then the homography can be used to project points from one domain to another. Of course, the usual requirements for matrix inversion also apply here, i.e. $$M$$ needs to exhibit linear independence, for instance this is not given if two correspondence pairs are identical.
+Once this is done the elements of $\vec{h}$ and $h_{33}$ (or whatever element was fixed) can be arranged into a matrix again. Then the homography can be used to project points from one domain to another. Of course, the usual requirements for matrix inversion also apply here, i.e. $M$ needs to exhibit linear independence, for instance this is not given if two correspondence pairs are identical.
 
 This kind of approach is called _Direct Linear Transform_ (DLT) in literature. It is only a viable approach if the correspondences are sufficiently precise. Robust homography estimation is usually done with more than 4 correspondences and using RANSAC-style methods which can cope with incorrect correspondences.
 
@@ -149,8 +149,8 @@ Consider points that are on a different scale relative to the scale where the ho
 
 $$
 \begin{aligned}
-\begin{pmatrix} X^\prime \\ Y^\prime \end{pmatrix} &= s_1 \begin{pmatrix} X \\ Y \end{pmatrix} \\ \\
-\begin{pmatrix} x^\prime \\ y^\prime \end{pmatrix} &= s_2 \begin{pmatrix} x \\ y \end{pmatrix}
+\begin{pmatrix} X^\prime \\\ Y^\prime \end{pmatrix} &= s_1 \begin{pmatrix} X \\\ Y \end{pmatrix} \\\ \\\
+\begin{pmatrix} x^\prime \\\ y^\prime \end{pmatrix} &= s_2 \begin{pmatrix} x \\\ y \end{pmatrix}
 \end{aligned}
 $$
 
@@ -158,33 +158,33 @@ The objective is now to transform the homography in a way that the scaling does 
 
 $$
 \begin{aligned}
-\frac{1}{s_1} \begin{pmatrix} X^\prime \\ Y^\prime \end{pmatrix} = \Pi \left( H \frac{1}{s_2} \begin{pmatrix} x^\prime \\ y^\prime \\ s_2 \end{pmatrix} \right)
+\frac{1}{s_1} \begin{pmatrix} X^\prime \\\ Y^\prime \end{pmatrix} = \Pi \left( H \frac{1}{s_2} \begin{pmatrix} x^\prime \\\ y^\prime \\\ s_2 \end{pmatrix} \right)
 \end{aligned}
 $$
 
-When expanding the equation, $$s_1$$ can be moved on the other side while maintaining the original structure of the equation:
+When expanding the equation, $s_1$ can be moved on the other side while maintaining the original structure of the equation:
 
 $$
 \begin{aligned}
-\begin{pmatrix} X^\prime \\ Y^\prime \end{pmatrix} &= s_1 \Pi \left( H \frac{1}{s_2} \begin{pmatrix} x^\prime \\ y^\prime \\ s_2 \end{pmatrix} \right) \\
-&= s_1 \Pi \left( \begin{pmatrix} \frac{1}{s_2} h_{11} x^\prime + \frac{1}{s_2} h_{12} y^\prime + h_{13} \\ \frac{1}{s_2} h_{21} x^\prime + \frac{1}{s_2} h_{22} y^\prime + h_{23} \\ \frac{1}{s_2} h_{31} x^\prime + \frac{1}{s_2} h_{32} y^\prime + h_{33} \end{pmatrix} \right) \\
-&= s_1 \frac{1}{\frac{1}{s_2} h_{31} x^\prime + \frac{1}{s_2} h_{32} y^\prime + h_{33}} \begin{pmatrix} \frac{1}{s_2} h_{11} x^\prime + \frac{1}{s_2} h_{12} y^\prime + h_{13} \\ \frac{1}{s_2} h_{21} x^\prime + \frac{1}{s_2} h_{22} y^\prime + h_{23} \end{pmatrix} \\
-&= \frac{1}{\frac{1}{s_2} h_{31} x^\prime + \frac{1}{s_2} h_{32} y^\prime + h_{33}} \begin{pmatrix} \frac{s_1}{s_2} h_{11} x^\prime + \frac{s_1}{s_2} h_{12} y^\prime + s_1 h_{13} \\ \frac{s_1}{s_2} h_{21} x^\prime + \frac{s_1}{s_2} h_{22} y^\prime + s_1 h_{23} \end{pmatrix} \\
-&= \Pi \left( H_s \begin{pmatrix} x^\prime \\ y^\prime \\ 1 \end{pmatrix} \right)
+\begin{pmatrix} X^\prime \\\ Y^\prime \end{pmatrix} &= s_1 \Pi \left( H \frac{1}{s_2} \begin{pmatrix} x^\prime \\\ y^\prime \\\ s_2 \end{pmatrix} \right) \\\
+&= s_1 \Pi \left( \begin{pmatrix} \frac{1}{s_2} h_{11} x^\prime + \frac{1}{s_2} h_{12} y^\prime + h_{13} \\\ \frac{1}{s_2} h_{21} x^\prime + \frac{1}{s_2} h_{22} y^\prime + h_{23} \\\ \frac{1}{s_2} h_{31} x^\prime + \frac{1}{s_2} h_{32} y^\prime + h_{33} \end{pmatrix} \right) \\\
+&= s_1 \frac{1}{\frac{1}{s_2} h_{31} x^\prime + \frac{1}{s_2} h_{32} y^\prime + h_{33}} \begin{pmatrix} \frac{1}{s_2} h_{11} x^\prime + \frac{1}{s_2} h_{12} y^\prime + h_{13} \\\ \frac{1}{s_2} h_{21} x^\prime + \frac{1}{s_2} h_{22} y^\prime + h_{23} \end{pmatrix} \\\
+&= \frac{1}{\frac{1}{s_2} h_{31} x^\prime + \frac{1}{s_2} h_{32} y^\prime + h_{33}} \begin{pmatrix} \frac{s_1}{s_2} h_{11} x^\prime + \frac{s_1}{s_2} h_{12} y^\prime + s_1 h_{13} \\\ \frac{s_1}{s_2} h_{21} x^\prime + \frac{s_1}{s_2} h_{22} y^\prime + s_1 h_{23} \end{pmatrix} \\\
+&= \Pi \left( H_s \begin{pmatrix} x^\prime \\\ y^\prime \\\ 1 \end{pmatrix} \right)
 \end{aligned}
 $$
 
-Now it is possible to read off the entries of a modified homography $$H_s$$ that maps between the scaled domains:
+Now it is possible to read off the entries of a modified homography $H_s$ that maps between the scaled domains:
 
 $$
 H_s = \begin{pmatrix}
-\frac{s_1}{s_2} h_{11} & \frac{s_1}{s_2} h_{12} & s_1 h_{13} \\
-\frac{s_1}{s_2} h_{21} & \frac{s_1}{s_2} h_{22} & s_1 h_{23} \\
+\frac{s_1}{s_2} h_{11} & \frac{s_1}{s_2} h_{12} & s_1 h_{13} \\\
+\frac{s_1}{s_2} h_{21} & \frac{s_1}{s_2} h_{22} & s_1 h_{23} \\\
 \frac{1}{s_2} h_{31} & \frac{1}{s_2} h_{32} & h_{33}
 \end{pmatrix}
 $$
 
-This is a generalization of a [Stackoverflow answer](https://stackoverflow.com/a/48915151) I submitted some years ago (on Stackoverflow only the case $$s = s_1 = s_2$$ is covered and the usage of scales is inverted). Depending on the exact usecase doing the computations on the original scale and only scaling the resulting geometry to your desired scale might be more straightforward. Also recomputing the homography with the DLT instead of modifying the existing one is an easy option. However, if you feel nerdy and want to make your code harder to read feel free to use this :upside_down_face:
+This is a generalization of a [Stackoverflow answer](https://stackoverflow.com/a/48915151) I submitted some years ago (on Stackoverflow only the case $s = s_1 = s_2$ is covered and the usage of scales is inverted). Depending on the exact usecase doing the computations on the original scale and only scaling the resulting geometry to your desired scale might be more straightforward. Also recomputing the homography with the DLT instead of modifying the existing one is an easy option. However, if you feel nerdy and want to make your code harder to read feel free to use this :upside_down_face:
 
 {{< highlight Python >}}
 import numpy as np
@@ -209,17 +209,17 @@ Consider a homography is computed for a quad correspondence and the objective is
 This time it is only required to introduce new variables for the source domain:
 
 $$
-\begin{pmatrix} x^\prime \\ y^\prime \end{pmatrix} = \begin{pmatrix} x + t_x \\ y + t_y \end{pmatrix}
+\begin{pmatrix} x^\prime \\\ y^\prime \end{pmatrix} = \begin{pmatrix} x + t_x \\\ y + t_y \end{pmatrix}
 $$
 
 The modus operandi remains the same, let's plug this new relation in the basic equation, rearrange and read off the new homography:
 
 $$
 \begin{aligned}
-\begin{pmatrix} X \\ Y \end{pmatrix} &= \Pi \left( H \begin{pmatrix} x^\prime - t_x \\ y^\prime - t_y \\ 1 \end{pmatrix} \right) \\
-&= \Pi \left( \begin{pmatrix} h_{11} \left( x^\prime - t_x \right) + h_{12} \left( y^\prime - t_y \right) + h_{13} \\ h_{21} \left( x^\prime - t_x \right) + h_{22} \left( y^\prime - t_y \right) + h_{23} \\ h_{31} \left( x^\prime - t_x \right) + h_{32} \left( y^\prime - t_y \right) + h_{33} \end{pmatrix} \right) \\
-&= \Pi \left( \begin{pmatrix} h_{11} x^\prime + h_{12} y^\prime + h_{13} - h_{11} t_x - h_{12} t_y \\ h_{21} x^\prime + h_{22} y^\prime + h_{23} - h_{21} t_x - h_{22} t_y \\ h_{31} x^\prime + h_{32} y^\prime + h_{33} - h_{31} t_x - h_{32} t_y \end{pmatrix} \right) \\
-&= \Pi \left( H_t \begin{pmatrix} x^\prime \\ y^\prime \\ 1 \end{pmatrix} \right)
+\begin{pmatrix} X \\\ Y \end{pmatrix} &= \Pi \left( H \begin{pmatrix} x^\prime - t_x \\\ y^\prime - t_y \\\ 1 \end{pmatrix} \right) \\\
+&= \Pi \left( \begin{pmatrix} h_{11} \left( x^\prime - t_x \right) + h_{12} \left( y^\prime - t_y \right) + h_{13} \\\ h_{21} \left( x^\prime - t_x \right) + h_{22} \left( y^\prime - t_y \right) + h_{23} \\\ h_{31} \left( x^\prime - t_x \right) + h_{32} \left( y^\prime - t_y \right) + h_{33} \end{pmatrix} \right) \\\
+&= \Pi \left( \begin{pmatrix} h_{11} x^\prime + h_{12} y^\prime + h_{13} - h_{11} t_x - h_{12} t_y \\\ h_{21} x^\prime + h_{22} y^\prime + h_{23} - h_{21} t_x - h_{22} t_y \\\ h_{31} x^\prime + h_{32} y^\prime + h_{33} - h_{31} t_x - h_{32} t_y \end{pmatrix} \right) \\\
+&= \Pi \left( H_t \begin{pmatrix} x^\prime \\\ y^\prime \\\ 1 \end{pmatrix} \right)
 \end{aligned}
 $$
 
@@ -227,13 +227,13 @@ In this case the modified homography is:
 
 $$
 H_t = \begin{pmatrix}
-h_{11} & h_{12} & h_{13} - h_{11} t_x - h_{12} t_y \\
-h_{21} & h_{22} & h_{23} - h_{21} t_x - h_{22} t_y \\
+h_{11} & h_{12} & h_{13} - h_{11} t_x - h_{12} t_y \\\
+h_{21} & h_{22} & h_{23} - h_{21} t_x - h_{22} t_y \\\
 h_{31} & h_{32} & h_{33} - h_{31} t_x - h_{32} t_y
 \end{pmatrix}
 $$
 
-For this usecase a pragmatic, less elegant alternative exists as well: Using the initial homography, the corners of the image with frame (top right corner will be $$\left(-a, -b\right)$$) can be mapped into the image. Afterwards a new homography can be estimated using these new points and the corners of the image with frame: $$\left(0, 0\right)$$, $$\left(0, w_2\right)$$, $$\left(h_2, w_2\right)$$ and $$\left(h_2, 0\right)$$ where $$h_2 = h + 2a$$ and $$w_2 = w + 2b$$.
+For this usecase a pragmatic, less elegant alternative exists as well: Using the initial homography, the corners of the image with frame (top right corner will be $\left(-a, -b\right)$) can be mapped into the image. Afterwards a new homography can be estimated using these new points and the corners of the image with frame: $\left(0, 0\right)$, $\left(0, w_2\right)$, $\left(h_2, w_2\right)$ and $\left(h_2, 0\right)$ where $h_2 = h + 2a$ and $w_2 = w + 2b$.
 
 {{< highlight Python >}}
 import numpy as np

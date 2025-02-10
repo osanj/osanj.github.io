@@ -21,7 +21,7 @@ $$
 \rho = x \cos \theta + y \sin \theta
 $$
 
-For implementation a set of discrete values for $$\rho$$ and $$\theta$$ are chosen and using the above formula the corresponding $$\rho$$ values are computed and discretized. Then, in an accumulator array that represents the possible line configurations, votes are collected. The more votes a set of parameters $$(\rho, \theta)$$ has, the more points in the binarized image lay on this line.
+For implementation a set of discrete values for $\rho$ and $\theta$ are chosen and using the above formula the corresponding $\rho$ values are computed and discretized. Then, in an accumulator array that represents the possible line configurations, votes are collected. The more votes a set of parameters $(\rho, \theta)$ has, the more points in the binarized image lay on this line.
 
 An efficient numpy implementation is given below:
 
@@ -87,9 +87,9 @@ class HoughAccumulator:
 
 ### So What's the Deal?
 
-When finding the longest ("strongest") line in the Hough space, it's rather easy. With argmax the corresponding $$\rho_{argmax}$$ and $$\theta_{argmax}$$ can be found.
+When finding the longest ("strongest") line in the Hough space, it's rather easy. With argmax the corresponding $\rho_{argmax}$ and $\theta_{argmax}$ can be found.
 
-However, when multiple lines are supposed to be detected, things get a bit more complicated. Typically points in a binarized image are contributing to multiple lines in vicinity of the true line, so the signal in the Hough space is not a single entry. Lines are local maxima in the Hough space, however these are not necessarily strictly increasing in their neighborhood. Below is a visualization of an Hough accumulator, the x-axis represents $$\theta$$ and the y-axis $$\rho$$, the more votes a line has, the brighter it is:
+However, when multiple lines are supposed to be detected, things get a bit more complicated. Typically points in a binarized image are contributing to multiple lines in vicinity of the true line, so the signal in the Hough space is not a single entry. Lines are local maxima in the Hough space, however these are not necessarily strictly increasing in their neighborhood. Below is a visualization of an Hough accumulator, the x-axis represents $\theta$ and the y-axis $\rho$, the more votes a line has, the brighter it is:
 
 ![Hough Example](data/hough0.png)
 

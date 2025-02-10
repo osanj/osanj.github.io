@@ -28,10 +28,10 @@ To compute the checksum one needs to compute a weighted sum of the characters an
 
 $$
 \begin{aligned}
-c_7 &= (c_1 \cdot 7 + c_2 \cdot 3 + c_3 \cdot 1 + c_4 \cdot 7 + c_5 \cdot 3 + c_6 \cdot 1) \bmod 10 \\
- &= (6 \cdot 7 + 5 \cdot 3 + 0 \cdot 1 + 3 \cdot 7 + 1 \cdot 3 + 0 \cdot 1) \bmod 10 \\
- &= 81 \bmod 10 \\
- &= 1 \\
+c_7 &= (c_1 \cdot 7 + c_2 \cdot 3 + c_3 \cdot 1 + c_4 \cdot 7 + c_5 \cdot 3 + c_6 \cdot 1) \bmod 10 \\\
+ &= (6 \cdot 7 + 5 \cdot 3 + 0 \cdot 1 + 3 \cdot 7 + 1 \cdot 3 + 0 \cdot 1) \bmod 10 \\\
+ &= 81 \bmod 10 \\\
+ &= 1 \\\
 \end{aligned}
 $$
 
@@ -55,8 +55,8 @@ Using the fact that a modulo operation has a [distributive property](https://mat
 
 $$
 \begin{aligned}
-c_7 &= (c_1 \cdot 7 + c_2 \cdot 3 + c_3 \cdot 1 + c_4 \cdot 7 + c_5 \cdot 3 + c_6 \cdot 1) \bmod 10 \\
- &= ((c_1 \cdot 7) \bmod 10 + (c_2 \cdot 3) \bmod 10 + (c_3 \cdot 1) \bmod 10 + \ldots) \bmod 10 \\
+c_7 &= (c_1 \cdot 7 + c_2 \cdot 3 + c_3 \cdot 1 + c_4 \cdot 7 + c_5 \cdot 3 + c_6 \cdot 1) \bmod 10 \\\
+ &= ((c_1 \cdot 7) \bmod 10 + (c_2 \cdot 3) \bmod 10 + (c_3 \cdot 1) \bmod 10 + \ldots) \bmod 10 \\\
  &= c_{7^\prime} \bmod 10
 \end{aligned}
 $$
@@ -106,16 +106,16 @@ This follows from observations #1 and #2. If only one character flips there will
 
 
 
-### Construction of $p_{bad\_match}(p_{char})$
+### Construction of $p_{badmatch}(p_{char})$
 
 The probability of matching checksums for flipped characters can be constructed as sum of the probabilities for the amount of flips weighted by the respective probability that the flip will not be detected:
 
 
 $$
 \begin{aligned}
-p_{bad\_match}(p_{char}) = ~ & {p_{char}}^{n-1} \cdot (1 - p_{char})^1 \cdot p_{undetected\_flips=1} ~ + \\
-& {p_{char}}^{n-2} \cdot (1 - p_{char})^2 \cdot p_{undetected\_flips=2} ~ + \\
-& {p_{char}}^{n-3} \cdot (1 - p_{char})^3 \cdot p_{undetected\_flips=3} ~ + \\
+p_{badmatch}(p_{char}) = ~ & {p_{char}}^{n-1} \cdot (1 - p_{char})^1 \cdot p_{undetectedflips=1} ~ + \\\
+& {p_{char}}^{n-2} \cdot (1 - p_{char})^2 \cdot p_{undetectedflips=2} ~ + \\\
+& {p_{char}}^{n-3} \cdot (1 - p_{char})^3 \cdot p_{undetectedflips=3} ~ + \\\
 & \ldots
 \end{aligned}
 $$
@@ -124,7 +124,7 @@ From observation #5 it is known that:
 
 $$
 \begin{aligned}
-p_{undetected\_flips=1} = 0
+p_{undetectedflips=1} = 0
 \end{aligned}
 $$
 
@@ -132,7 +132,7 @@ From observation #3 it is known that:
 
 $$
 \begin{aligned}
-p_{undetected\_flips=2} = \frac{9 \cdot 1}{9 \cdot 9} = \frac{1}{9}
+p_{undetectedflips=2} = \frac{9 \cdot 1}{9 \cdot 9} = \frac{1}{9}
 \end{aligned}
 $$
 
@@ -140,7 +140,7 @@ From observation #3 it is also known that for 3 flips, the second flip needs to 
 
 $$
 \begin{aligned}
-p_{undetected\_flips=3} = \frac{9 \cdot 8 \cdot 1}{9 \cdot 9 \cdot 9} = \frac{8}{81}
+p_{undetectedflips=3} = \frac{9 \cdot 8 \cdot 1}{9 \cdot 9 \cdot 9} = \frac{8}{81}
 \end{aligned}
 $$
 
@@ -148,7 +148,7 @@ This can be generalized for a flip count that is greater than 1:
 
 $$
 \begin{aligned}
-p_{undetected\_flips=k} = \frac{9 \cdot 8^{k - 2} \cdot 1}{9^k} ~~ \textrm{for} ~~ k \gt 1
+p_{undetectedflips=k} = \frac{9 \cdot 8^{k - 2} \cdot 1}{9^k} ~~ \textrm{for} ~~ k \gt 1
 \end{aligned}
 $$
 
@@ -158,7 +158,7 @@ Moving on, the somewhat imprecise equation for undetected flips can be assembled
 
 $$
 \begin{aligned}
-p_{bad\_match}(p_{char}) = \sum_{i=2}^n {p_{char}}^{n-i} \cdot (1 - p_{char})^i \cdot \frac{9 \cdot 8^{i - 2} \cdot 1}{9^i}
+p_{badmatch}(p_{char}) = \sum_{i=2}^n {p_{char}}^{n-i} \cdot (1 - p_{char})^i \cdot \frac{9 \cdot 8^{i - 2} \cdot 1}{9^i}
 \end{aligned}
 $$
 

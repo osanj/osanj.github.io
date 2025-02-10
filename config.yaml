@@ -6,7 +6,7 @@ enableEmoji: yes
 
 params:
   description: "For Stuff Worth Sharing"
-  copyright: "© 2020-2026 Jonas Schuepfer"
+  copyright: "© 2020-2025 Jonas Schuepfer"
 #  themeColor: "theme-base-0b"  # https://github.com/spf13/hyde/tree/8bfa46de4850c1bf018adf396e413474a19ba96d#themes
 
 

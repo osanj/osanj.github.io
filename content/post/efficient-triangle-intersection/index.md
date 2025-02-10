@@ -37,7 +37,7 @@ So, if computing intersections is required so often, how can meshes with thousan
 ![Animation Ray Intersection](data/animation1_50ms_v5_cropped.gif)
 
 
-By leveraging data structures and avoiding unnecessary computations for intersections. Methods of this kind are often called _bounding volume hierarchy_ (BVH) or, more generally, _acceleration structures_. Testing all triangles for an intersection is of linear complexity $$\mathcal{O}(n)$$, of course.
+By leveraging data structures and avoiding unnecessary computations for intersections. Methods of this kind are often called _bounding volume hierarchy_ (BVH) or, more generally, _acceleration structures_. Testing all triangles for an intersection is of linear complexity $\mathcal{O}(n)$, of course.
 
 
 The triangles of an object mesh are often arranged in a compact manner. Before testing all triangles one can first test a box which encloses all triangles for intersection. This way all the frames passing by that object already save a lot of unnecessary computations. The computations for rays which actually hit that object can also be accelerated by decomposing that box further and further into a search tree. In the example below a binary search tree was built with [AABB](https://stackoverflow.com/questions/22512319/what-is-aabb-collision-detection)s. 
@@ -46,7 +46,7 @@ The triangles of an object mesh are often arranged in a compact manner. Before t
 ![Animation BVH Intersection](data/animation3_500ms_with_tree_v2.gif)
 
 
-_In the best case_ testing such a bounding volume hierarchy has a complexity of $$\mathcal{O}(\log_2 n)$$. Unfortunately, a ray can hit mulitple boxes of an object, then mulitple branches of the search tree have to be evaluated. In the worst case the complexity is linear again. Consider a degenerate configuration where all triangles of a mesh are positioned along a line. For rays parallel to that line all branches and triangles have to be evaluated.
+_In the best case_ testing such a bounding volume hierarchy has a complexity of $\mathcal{O}(\log_2 n)$. Unfortunately, a ray can hit mulitple boxes of an object, then mulitple branches of the search tree have to be evaluated. In the worst case the complexity is linear again. Consider a degenerate configuration where all triangles of a mesh are positioned along a line. For rays parallel to that line all branches and triangles have to be evaluated.
 
 For developing the code to build BVHs, the following links proved useful to me:
 

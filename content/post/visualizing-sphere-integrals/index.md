@@ -18,7 +18,7 @@ You know that feeling when you have been using some rule blindly forever and one
 
 ![Circle Area and Circumference](data/circle-area.png)
 
-To compute the circumference $$U$$ let's chop up the circle in $$n$$ triangles with $$\phi = \frac{2\pi}{n}$$. One of them is highlighted above. The length of side $$u$$ can be computed the following way:
+To compute the circumference $U$ let's chop up the circle in $n$ triangles with $\phi = \frac{2\pi}{n}$. One of them is highlighted above. The length of side $u$ can be computed the following way:
 
 $$
 \begin{aligned}
@@ -26,7 +26,7 @@ u = r \cdot \tan(\phi)
 \end{aligned}
 $$
 
-By considering this side $$n$$ times we approximate the circumference:
+By considering this side $n$ times we approximate the circumference:
 
 $$
 \begin{aligned}
@@ -35,7 +35,7 @@ U = n \cdot u = n \cdot r \cdot \tan\left(\frac{2\pi}{n}\right)
 $$
 
 
-Now, with increasing $$n$$ our approximation becomes more precise. In the limit we can drop the tangent because of the [small angle approximation](https://en.wikipedia.org/wiki/Small-angle_approximation).
+Now, with increasing $n$ our approximation becomes more precise. In the limit we can drop the tangent because of the [small angle approximation](https://en.wikipedia.org/wiki/Small-angle_approximation).
 
 $$
 \begin{aligned}
@@ -47,7 +47,7 @@ $$
 ## Circle Area
 
 
-The approach to determine area $$A$$ is quite similar. This time the area of the $$n$$ triangles are considered, the area of a single triangle is defined as:
+The approach to determine area $A$ is quite similar. This time the area of the $n$ triangles are considered, the area of a single triangle is defined as:
 
 $$
 \begin{aligned}
@@ -59,7 +59,7 @@ Analogously we can approximate the area and regard the limit:
 
 $$
 \begin{aligned}
-A &= n \cdot a = n \cdot \frac{1}{2} \cdot r^2 \cdot \tan\left(\frac{2\pi}{n}\right) \\ \\
+A &= n \cdot a = n \cdot \frac{1}{2} \cdot r^2 \cdot \tan\left(\frac{2\pi}{n}\right) \\\ \\\
 A &= \lim_{n \to \infty} n \cdot \frac{1}{2} \cdot r^2 \cdot \tan\left(\frac{2\pi}{n}\right) = \lim_{n \to \infty} n \cdot \frac{1}{2} \cdot r^2 \cdot \frac{2\pi}{n} = \pi r^2
 \end{aligned}
 $$
@@ -72,8 +72,8 @@ When decomposing the the sphere surface in lots of small quads we can approximat
 
 $$
 \begin{aligned}
-  b &= \frac{d\phi_b}{2\pi} \cdot 2\pi r = d\phi_b \cdot r \\ \\
-  a &= \frac{d\phi_a}{2\pi} \cdot 2\pi r_a = d\phi_b \cdot r_a \\ \\
+  b &= \frac{d\phi_b}{2\pi} \cdot 2\pi r = d\phi_b \cdot r \\\ \\\
+  a &= \frac{d\phi_a}{2\pi} \cdot 2\pi r_a = d\phi_b \cdot r_a \\\ \\\
 r_a &= r \cdot \cos\left(\phi_b\right)
 \end{aligned}
 $$
@@ -86,19 +86,19 @@ A_{quad} = a \cdot b = r^2 \cos\left(\phi_b\right) ~ d\phi_b ~ d\phi_a
 \end{aligned}
 $$
 
-In the limit the quads become infinitesimal and the approximation converges to the correct solution. This time an integration over $$\phi_a$$ and $$\phi_b$$ does the job. The way the integral is constructed it "moves along the z-axis", after each step in $$\phi_b$$ it sums up the areas of all quads along this "latitude of the sphere".
+In the limit the quads become infinitesimal and the approximation converges to the correct solution. This time an integration over $\phi_a$ and $\phi_b$ does the job. The way the integral is constructed it "moves along the z-axis", after each step in $\phi_b$ it sums up the areas of all quads along this "latitude of the sphere".
 
-Please note that this integral only considers an eighth of the actual sphere. Accordingly, a factor of $$8$$ is included.
+Please note that this integral only considers an eighth of the actual sphere. Accordingly, a factor of $8$ is included.
 
 
 $$
 \begin{aligned}
-A &= 8 \cdot \int_0^{\frac{1}{2} \pi} \int_0^{\frac{1}{2} \pi} A_{quad} \\ \\
-&= 8 \cdot \int_0^{\frac{1}{2} \pi} \int_0^{\frac{1}{2} \pi} r^2 \cos\left(\phi_b\right) ~ d\phi_b ~ d\phi_a \\ \\
-&= 8 r^2 \cdot \int_0^{\frac{1}{2} \pi} \bigg\lvert \sin\left(\phi_b \right) \bigg\rvert _0^{\frac{1}{2}\pi} ~ d\phi_a \\ \\
-&= 8 r^2 \cdot \int_0^{\frac{1}{2} \pi} \left(\sin\left(\frac{1}{2}\pi\right) - \sin(0) \right) ~ d\phi_a \\ \\
-&= 8 r^2 \cdot \int_0^{\frac{1}{2} \pi} ~ d\phi_a \\ \\
-&= 8 r^2 \cdot \frac{1}{2} \pi \\ \\
+A &= 8 \cdot \int_0^{\frac{1}{2} \pi} \int_0^{\frac{1}{2} \pi} A_{quad} \\\ \\\
+&= 8 \cdot \int_0^{\frac{1}{2} \pi} \int_0^{\frac{1}{2} \pi} r^2 \cos\left(\phi_b\right) ~ d\phi_b ~ d\phi_a \\\ \\\
+&= 8 r^2 \cdot \int_0^{\frac{1}{2} \pi} \bigg\lvert \sin\left(\phi_b \right) \bigg\rvert _0^{\frac{1}{2}\pi} ~ d\phi_a \\\ \\\
+&= 8 r^2 \cdot \int_0^{\frac{1}{2} \pi} \left(\sin\left(\frac{1}{2}\pi\right) - \sin(0) \right) ~ d\phi_a \\\ \\\
+&= 8 r^2 \cdot \int_0^{\frac{1}{2} \pi} ~ d\phi_a \\\ \\\
+&= 8 r^2 \cdot \frac{1}{2} \pi \\\ \\\
 &= 4 \pi r^2
 \end{aligned}
 $$
@@ -124,16 +124,16 @@ V_{disk} = \pi {r_u}^2 \cdot du
 \end{aligned}
 $$
 
-Integration over $$u$$ leads to infinitesimally thin disks and convergence to the correct solution. Please note that the integral below only considers one half of the sphere, to account for that a factor of $$2$$ is included.
+Integration over $u$ leads to infinitesimally thin disks and convergence to the correct solution. Please note that the integral below only considers one half of the sphere, to account for that a factor of $2$ is included.
 
 $$
 \begin{aligned}
-V &= 2 \cdot \int_0^r V_{disk} \\ \\
-&= 2 \cdot \int_0^r \pi {r_u}^2 ~ du \\ \\
-&= 2 \cdot \int_0^r \pi (r^2 - u^2) ~ du \\ \\
-&= 2 \pi \left( r^2 \int_0^r du - \int_0^r u^2 ~du \right) \\ \\
-&= 2 \pi \left( r^2 \cdot r - \bigg\lvert \frac{1}{3} u^3 \bigg\rvert _0^r \right) \\ \\
-&= 2 \pi \left( r^3 - \frac{1}{3} r^3 \right) \\ \\
+V &= 2 \cdot \int_0^r V_{disk} \\\ \\\
+&= 2 \cdot \int_0^r \pi {r_u}^2 ~ du \\\ \\\
+&= 2 \cdot \int_0^r \pi (r^2 - u^2) ~ du \\\ \\\
+&= 2 \pi \left( r^2 \int_0^r du - \int_0^r u^2 ~du \right) \\\ \\\
+&= 2 \pi \left( r^2 \cdot r - \bigg\lvert \frac{1}{3} u^3 \bigg\rvert _0^r \right) \\\ \\\
+&= 2 \pi \left( r^3 - \frac{1}{3} r^3 \right) \\\ \\\
 &= \frac{4}{3} \pi r^3
 \end{aligned}
 $$

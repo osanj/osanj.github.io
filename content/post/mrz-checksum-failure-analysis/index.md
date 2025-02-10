@@ -45,7 +45,7 @@ If an OCR algorithm reads the MRZ, i.e. converts the image into a string of char
 
 But is it possible that something is read incorrectly and the checksums still match?
 
-To figure this out $$p_{char}$$ is introduced which denotes that a character is read correctly (not "flipped"). As a simplification, it is assumed that characters that can be read are 0 to 9. Before constructing an equation $$p_{bad\_match}(p_{char})$$ which represents the probability of a bad match (false positive), some observations are required.
+To figure this out $p_{char}$ is introduced which denotes that a character is read correctly (not "flipped"). As a simplification, it is assumed that characters that can be read are 0 to 9. Before constructing an equation $p_{bad\_match}(p_{char})$ which represents the probability of a bad match (false positive), some observations are required.
 
 
 
@@ -67,7 +67,7 @@ $$
 
 When computing and listing the remainders for possible characters, one can see that no remainder appears twice for a given weight:
 
-| $$c$$ | $$(c \cdot 7) \bmod 10$$            | $$(c \cdot 3) \bmod 10$$            | $$(c \cdot 1) \bmod 10$$            |
+| $c$   | $(c \cdot 7) \bmod 10$              | $(c \cdot 3) \bmod 10$              | $(c \cdot 1) \bmod 10$              |
 | ----- | ----------------------------------- | ----------------------------------- | ----------------------------------- |
 | 0     | 0                                   | 0                                   | 0                                   |
 | 1     | 7                                   | 3                                   | 1                                   |
@@ -86,7 +86,7 @@ When computing and listing the remainders for possible characters, one can see t
 
 This is possible because of observations #1 and #2. Let's consider the example from above again: `6503101`
 
-If we flip the first character (weight 7) from `6` to `8` the contribution of the first character to $$c_{7^\prime}$$ is changed by $$-2 + 6 = +4$$. If we flip the second character (weight 3) from `5` to `7` it changes the contribution of the second character by $$-5 + 1 = -4$$. Both changes in contribution taken together cancel out, i.e. the checksum $$c_7$$ does not change.
+If we flip the first character (weight 7) from `6` to `8` the contribution of the first character to $c_{7^\prime}$ is changed by $-2 + 6 = +4$. If we flip the second character (weight 3) from `5` to `7` it changes the contribution of the second character by $-5 + 1 = -4$. Both changes in contribution taken together cancel out, i.e. the checksum $c_7$ does not change.
 
 So, if instead of `6503101` the readout is `8703101`, then the computed and read checksums would still match and the incorrect readout would not be detected. In a similar style cancelling flips can be constructed for each initial flip.
 
@@ -102,11 +102,11 @@ The other way around works also, in this case the second character flip needs to
 
 ### Observation #5 - If a single character flips the Checksums don't Match
 
-This follows from observations #1 and #2. If only one character flips there will be a change in contribution to $$c_{7^\prime}$$ for each possibility, so in any case the computed and read checksum will differ and the incorrect readout would be detected.
+This follows from observations #1 and #2. If only one character flips there will be a change in contribution to $c_{7^\prime}$ for each possibility, so in any case the computed and read checksum will differ and the incorrect readout would be detected.
 
 
 
-### Construction of $$p_{bad\_match}(p_{char})$$
+### Construction of $p_{bad\_match}(p_{char})$
 
 The probability of matching checksums for flipped characters can be constructed as sum of the probabilities for the amount of flips weighted by the respective probability that the flip will not be detected:
 
@@ -162,7 +162,7 @@ p_{bad\_match}(p_{char}) = \sum_{i=2}^n {p_{char}}^{n-i} \cdot (1 - p_{char})^i 
 \end{aligned}
 $$
 
-For $$n = 7$$ the plot of this function looks like this:
+For $n = 7$ the plot of this function looks like this:
 
 ![Scene](data/p_bad_match.svg)
 
@@ -170,7 +170,7 @@ Here is a zoomed version:
 
 ![Scene](data/p_bad_match_zoom.svg)
 
-This confirms the initial intuiton that undetected flips are quite rare, especially for a good OCR engine with $$p_{char} \geq 0.95$$. Also within the MRZ there are multiple checksums and usually one that spans multiple data fields which further decreases the probability of undetected flips.
+This confirms the initial intuiton that undetected flips are quite rare, especially for a good OCR engine with $p_{char} \geq 0.95$. Also within the MRZ there are multiple checksums and usually one that spans multiple data fields which further decreases the probability of undetected flips.
 
 
 

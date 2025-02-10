@@ -29,9 +29,27 @@
   
 
   
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css" integrity="sha384-zh0CIslj+VczCZtlzBcjt5ppRcsAmDnRem7ESsYwWwg3m/OaJ2l4x7YBZl9Kxxib" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.js" integrity="sha384-Rma6DA2IPUwhNxmrB/7S3Tno0YY7sFu9WSYMCuulLhIqYSGZ2gKCJWIqhBWqMQfh" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+          
+          
+          delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$', right: '$', display: false},
+              {left: '\\(', right: '\\)', display: false},
+              {left: '\\[', right: '\\]', display: true}
+          ],
+          
+          throwOnError : false
+        });
+    });
+</script>
+
   
 </head>
 
@@ -52,7 +70,7 @@
       </ul>
     </nav>
 
-    <p>© 2020-2026 Jonas Schuepfer</p>
+    <p>© 2020-2025 Jonas Schuepfer</p>
   </div>
 </aside>
 
@@ -66,7 +84,7 @@
 <p>$$
 \rho = x \cos \theta + y \sin \theta
 $$</p>
-<p>For implementation a set of discrete values for $$\rho$$ and $$\theta$$ are chosen and using the above formula the corresponding $$\rho$$ values are computed and discretized. Then, in an accumulator array that represents the possible line configurations, votes are collected. The more votes a set of parameters $$(\rho, \theta)$$ has, the more points in the binarized image lay on this line.</p>
+<p>For implementation a set of discrete values for $\rho$ and $\theta$ are chosen and using the above formula the corresponding $\rho$ values are computed and discretized. Then, in an accumulator array that represents the possible line configurations, votes are collected. The more votes a set of parameters $(\rho, \theta)$ has, the more points in the binarized image lay on this line.</p>
 <p>An efficient numpy implementation is given below:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Python" data-lang="Python"><span style="color:#a6e22e">@dataclass</span>
 <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">HoughAccumulator</span>:
@@ -123,8 +141,8 @@ $$</p>
         idx <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>arange(len(counts))
         self<span style="color:#f92672">.</span>votes<span style="color:#f92672">.</span>flat[idx[counts_mask]] <span style="color:#f92672">+=</span> counts[counts_mask]</code></pre></div>
 <h3 id="so-whats-the-deal">So What&rsquo;s the Deal?</h3>
-<p>When finding the longest (&ldquo;strongest&rdquo;) line in the Hough space, it&rsquo;s rather easy. With argmax the corresponding $$\rho_{argmax}$$ and $$\theta_{argmax}$$ can be found.</p>
-<p>However, when multiple lines are supposed to be detected, things get a bit more complicated. Typically points in a binarized image are contributing to multiple lines in vicinity of the true line, so the signal in the Hough space is not a single entry. Lines are local maxima in the Hough space, however these are not necessarily strictly increasing in their neighborhood. Below is a visualization of an Hough accumulator, the x-axis represents $$\theta$$ and the y-axis $$\rho$$, the more votes a line has, the brighter it is:</p>
+<p>When finding the longest (&ldquo;strongest&rdquo;) line in the Hough space, it&rsquo;s rather easy. With argmax the corresponding $\rho_{argmax}$ and $\theta_{argmax}$ can be found.</p>
+<p>However, when multiple lines are supposed to be detected, things get a bit more complicated. Typically points in a binarized image are contributing to multiple lines in vicinity of the true line, so the signal in the Hough space is not a single entry. Lines are local maxima in the Hough space, however these are not necessarily strictly increasing in their neighborhood. Below is a visualization of an Hough accumulator, the x-axis represents $\theta$ and the y-axis $\rho$, the more votes a line has, the brighter it is:</p>
 <p><img src="data/hough0.png" alt="Hough Example"></p>
 <p>If multiple lines need to be found, this requires finnicky searching through the Hough space and often leads to multiple line candidates per &ldquo;true&rdquo; line. For instance in OpenCV&rsquo;s implementation local maximas are found by <a href="https://github.com/opencv/opencv/blob/725e440d278aca07d35a5e8963ef990572b07316/modules/imgproc/src/hough.cpp#L95-L108">checking the 4-connected neighbors of a line</a>. There exists another, <a href="https://docs.opencv.org/4.7.0/dd/d1a/group__imgproc__feature.html#ga46b4e588934f6c8dfd509cc6e0e4545a">probabilistic implementation of the Hough transform</a>, however it also does not allow more control over the line picking.</p>
 <h3 id="hough-pick-erase-and-repeat-">Hough, Pick, Erase and Repeat 🔁</h3>

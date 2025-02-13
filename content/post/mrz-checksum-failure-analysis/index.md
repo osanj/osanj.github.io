@@ -45,7 +45,7 @@ If an OCR algorithm reads the MRZ, i.e. converts the image into a string of char
 
 But is it possible that something is read incorrectly and the checksums still match?
 
-To figure this out $p_{char}$ is introduced which denotes that a character is read correctly (not "flipped"). As a simplification, it is assumed that characters that can be read are 0 to 9. Before constructing an equation $p_{bad\_match}(p_{char})$ which represents the probability of a bad match (false positive), some observations are required.
+To figure this out $p_{char}$ is introduced which denotes that a character is read correctly (not "flipped"). As a simplification, it is assumed that characters that can be read are 0 to 9. Before constructing an equation $p_{badmatch}(p_{char})$ which represents the probability of a bad match (false positive), some observations are required.
 
 
 
@@ -148,7 +148,7 @@ This can be generalized for a flip count that is greater than 1:
 
 $$
 \begin{aligned}
-p_{undetectedflips=k} = \frac{9 \cdot 8^{k - 2} \cdot 1}{9^k} ~~ \textrm{for} ~~ k \gt 1
+p_{undetectedflips=k} = \frac{8^{k - 2}}{9^{k - 1}} ~~ \textrm{for} ~~ k \gt 1
 \end{aligned}
 $$
 
@@ -158,7 +158,7 @@ Moving on, the somewhat imprecise equation for undetected flips can be assembled
 
 $$
 \begin{aligned}
-p_{badmatch}(p_{char}) = \sum_{i=2}^n {p_{char}}^{n-i} \cdot (1 - p_{char})^i \cdot \frac{9 \cdot 8^{i - 2} \cdot 1}{9^i}
+p_{badmatch}(p_{char}) = \sum_{i=2}^n {p_{char}}^{n-i} \cdot (1 - p_{char})^i \cdot \frac{8^{k - 2}}{9^{k - 1}}
 \end{aligned}
 $$
 

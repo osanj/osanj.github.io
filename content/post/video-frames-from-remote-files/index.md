@@ -62,7 +62,7 @@ It should be clear now that the keyframe distribution defines how efficiently fr
 1. for a given frame index, find the the closest keyframe _before_ that frame index
 2. start decoding from that keyframe until the desired frame is reached
 
-So far, so good. Unfortunately, there is another obstacle in our way. There is no reliable frame index available in the [data structure for video frames](https://libav.org/documentation/doxygen/release/9/structAVFrame.html), see [discussion in pyAV](https://github.com/PyAV-Org/PyAV/issues/33) for more details. One reliable part of the frame data structure is the frame timestamp. We have to update our retrieval algorithm:
+So far, so good. Unfortunately, there is another obstacle in our way. There is no reliable frame index available in the [data structure for video frames](https://libav.org/documentation/doxygen/release/9/structAVFrame.html), see [this discussion in pyAV](https://github.com/PyAV-Org/PyAV/issues/33) for more details. One reliable part of the frame data structure is the frame timestamp. We have to update our retrieval algorithm:
 
 1. for a given frame index, find the corresponding frame timestamp
 2. find the the closest keyframe _before_ that frame timestamp

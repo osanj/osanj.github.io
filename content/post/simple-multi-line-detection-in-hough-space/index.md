@@ -103,10 +103,12 @@ If multiple lines need to be found, this requires finnicky searching through the
 A simple, but surprisingly robust method to find multiple lines boils down to the following steps:
 
 1. process the binarized image with the Hough transform
-2. find the maximum in the Hough space or stop if the minimum requirements is not met for any line
+2. find the maximum in the Hough space or stop if the minimum requirements are not met for any line
 3. remove the line from the binarized image and go to step 1
 
 (in a more sophisticated version a "delta hough transform" can be implemented and used to update the Hough space instead of recomputing it every step)
+
+
 
 ### Demo
 

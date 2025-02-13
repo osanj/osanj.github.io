@@ -21,7 +21,7 @@ When the floating point number that is supposed to be encoded becomes so small t
 
 ### Why is this an Issue?
 
-Processing subnormals requires additional logic for basic handling and arithmetic operations. In the case of the x86 instruction set architecture this additional logic seems to be [usually not implemented in silicon and instead handled in software](https://stackoverflow.com/a/54938328) which leads to significant slowdowns. The same post also notes that there Nvidia GPUs generally implement this in hardware which is consistent with my experience: No problems on Nvidia GPUs, but performance drop on a x86 CPU 💁
+Processing subnormals requires additional logic for basic handling and arithmetic operations. In the case of the x86 instruction set architecture this additional logic seems to be [usually not implemented in silicon and instead handled in software](https://stackoverflow.com/a/54938328) which leads to significant slowdowns. The same post also notes that Nvidia GPUs generally implement this in hardware which is consistent with my experience: No problems on Nvidia GPUs, but performance drop on a x86 CPU 💁
 
 
 ### How to Resolve it?

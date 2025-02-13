@@ -89,7 +89,7 @@
 <li>for a given frame index, find the the closest keyframe <em>before</em> that frame index</li>
 <li>start decoding from that keyframe until the desired frame is reached</li>
 </ol>
-<p>So far, so good. Unfortunately, there is another obstacle in our way. There is no reliable frame index available in the <a href="https://libav.org/documentation/doxygen/release/9/structAVFrame.html">data structure for video frames</a>, see <a href="https://github.com/PyAV-Org/PyAV/issues/33">discussion in pyAV</a> for more details. One reliable part of the frame data structure is the frame timestamp. We have to update our retrieval algorithm:</p>
+<p>So far, so good. Unfortunately, there is another obstacle in our way. There is no reliable frame index available in the <a href="https://libav.org/documentation/doxygen/release/9/structAVFrame.html">data structure for video frames</a>, see <a href="https://github.com/PyAV-Org/PyAV/issues/33">this discussion in pyAV</a> for more details. One reliable part of the frame data structure is the frame timestamp. We have to update our retrieval algorithm:</p>
 <ol>
 <li>for a given frame index, find the corresponding frame timestamp</li>
 <li>find the the closest keyframe <em>before</em> that frame timestamp</li>

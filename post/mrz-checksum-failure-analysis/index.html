@@ -97,7 +97,7 @@ $$</p>
 <h3 id="robustness-of-the-checksum-verification">Robustness of the Checksum Verification</h3>
 <p>If an OCR algorithm reads the MRZ, i.e. converts the image into a string of characters, the checksum is intended to be used for verification of the readout correctness. Like in the example above, one can compute the checksum of the characters that were read and compare it to the checksum that was read. If they don&rsquo;t match, it is likely that something was read out incorrectly.</p>
 <p>But is it possible that something is read incorrectly and the checksums still match?</p>
-<p>To figure this out $p_{char}$ is introduced which denotes that a character is read correctly (not &ldquo;flipped&rdquo;). As a simplification, it is assumed that characters that can be read are 0 to 9. Before constructing an equation $p_{bad_match}(p_{char})$ which represents the probability of a bad match (false positive), some observations are required.</p>
+<p>To figure this out $p_{char}$ is introduced which denotes that a character is read correctly (not &ldquo;flipped&rdquo;). As a simplification, it is assumed that characters that can be read are 0 to 9. Before constructing an equation $p_{badmatch}(p_{char})$ which represents the probability of a bad match (false positive), some observations are required.</p>
 <h3 id="observation-1---the-checksum-computation-can-be-decomposed-into-multiple-modulo-operations">Observation #1 - The Checksum Computation can be Decomposed into Multiple Modulo Operations</h3>
 <p>Using the fact that a modulo operation has a <a href="https://math.stackexchange.com/a/2164001">distributive property</a> the checksum computation can be rewritten like so:</p>
 <p>$$
@@ -221,14 +221,14 @@ $$</p>
 <p>This can be generalized for a flip count that is greater than 1:</p>
 <p>$$
 \begin{aligned}
-p_{undetectedflips=k} = \frac{9 \cdot 8^{k - 2} \cdot 1}{9^k} ~~ \textrm{for} ~~ k \gt 1
+p_{undetectedflips=k} = \frac{8^{k - 2}}{9^{k - 1}} ~~ \textrm{for} ~~ k \gt 1
 \end{aligned}
 $$</p>
 <p>It needs to be noted here that this formula is not exhaustive. Cases where multiple subsets of flips do cancel out, are not covered, i.e. for 4 flips it is possible that 2x2 flips cancel out. This also means that the real probability of undetected flips is higher. Sorry, but I am not sure how to fit this in some concise equation 🙁</p>
 <p>Moving on, the somewhat imprecise equation for undetected flips can be assembled as:</p>
 <p>$$
 \begin{aligned}
-p_{badmatch}(p_{char}) = \sum_{i=2}^n {p_{char}}^{n-i} \cdot (1 - p_{char})^i \cdot \frac{9 \cdot 8^{i - 2} \cdot 1}{9^i}
+p_{badmatch}(p_{char}) = \sum_{i=2}^n {p_{char}}^{n-i} \cdot (1 - p_{char})^i \cdot \frac{8^{k - 2}}{9^{k - 1}}
 \end{aligned}
 $$</p>
 <p>For $n = 7$ the plot of this function looks like this:</p>
